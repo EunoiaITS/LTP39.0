@@ -217,7 +217,7 @@ class Owner extends Controller
                 }
             }else{
                 return redirect()
-                    ->to('/create-client')
+                    ->to('/create-device')
                     ->with('errors', $errors)
                     ->withInput();
             }
