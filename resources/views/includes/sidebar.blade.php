@@ -13,8 +13,8 @@
             <div id="dropdown-lvl1" class="panel-collapse collapse">
                 <div class="panel-body">
                     <ul class="nav navbar-nav">
-                        <li><a href="create-device.html">Create Device</a></li>
-                        <li><a href="manage-device.html">Manage Device</a></li>
+                        <li><a href="{{ url('/create-device') }}">Create Device</a></li>
+                        <li><a href="{{ url('/manage-device') }}">Manage Device</a></li>
                     </ul>
                 </div>
             </div>

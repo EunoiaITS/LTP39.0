@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CreateDevice;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -64,4 +65,55 @@ class Owner extends Controller
         return view('pages.owner.create-client');
     }
 
+    /**
+     * CreateDevice - function for creating devices
+     * param - request - takes all the post request data
+     */
+    public function createDevice(Request $request){
+        if($request->isMethod('post')){
+            $errors = array();
+            $cd = new CreateDevice();
+            if(!$cd->validate($data)){
+                $cd_e = $cd->errors();
+                foreach ($cd_e->messages() as $k => $v){
+                    foreach ($v as $e){
+                        $errors[] = $e;
+                    }
+                }
+            }
+
+            if(empty($errors)){
+                $cd->device_id = $request->device_id;
+                $cd->factory_id = $request->factory_id;
+                $cd->charger_id = $request->charger_id;
+                $cd->created_by = 'PIC';
+                $cd->modified_by = 'MOD';
+                $cd->status = 'unassigned';
+                if($cd->save()){
+                    return redirect()
+                        ->to('/create-device')
+                        ->with('success', 'The device was created successfully!!');
+                }else{
+                    return redirect()
+                        ->to('/create-device')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
+            }else{
+                return redirect()
+                    ->to('/create-client')
+                    ->with('errors', $errors)
+                    ->withInput();
+            }
+        }
+        return view('pages.owner.create-device');
+    }
+
+
+    /**
+     * ManageDevice - function for managing devices
+     * param - request - takes all the post request data
+     */
+    public function manageDevice(){
+        return view('pages.owner.manage-device');
+    }
 }

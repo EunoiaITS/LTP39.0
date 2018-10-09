@@ -17,3 +17,7 @@ Route::get('/', function () {
 
 Route::get('/create-client', 'Owner@createClient');
 Route::post('/create-client', 'Owner@createClient');
+Route::get('/create-device', 'Owner@createDevice');
+Route::post('/create-device', 'Owner@createDevice');
+Route::get('/manage-device', 'Owner@manageDevice');
+Route::post('/manage-device', 'Owner@manageDevice');
