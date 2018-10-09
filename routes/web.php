@@ -17,3 +17,7 @@ Route::get('/', function () {
 
 Route::get('/create-client', 'Owner@createClient');
 Route::post('/create-client', 'Owner@createClient');
+Route::get('/clients-list', 'Owner@allClients');
+Route::post('/clients-list', 'Owner@allClients');
+Route::get('/client-details', 'Owner@clientDetails');
+Route::post('/client-details', 'Owner@clientDetails');

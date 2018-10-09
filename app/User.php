@@ -35,6 +35,7 @@ class User extends Authenticatable
         'password' => 'required|min:6|max:100',
         'role' => 'required|in:dev,owner,client,emp',
     );
+
     protected $errors;
 
     public function validate($data)
