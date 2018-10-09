@@ -17,7 +17,8 @@
             </div>
             <div class="col-sm-12">
                 <div class="employee-form form-employee-center clearfix">
-                    <form action="">
+                    <form name="create_device" action="{{ url('/create-device') }}" method="post">
+                        {{ csrf_field() }}
                         <div class="form-group">
                             <label for="device-id" class="usr-lock"><i class="fas fa-id-badge"></i></label>
                             <input type="text" name="device_id" placeholder="ID" class="form-control" id="device-id" required>

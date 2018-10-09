@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 
 
 use App\Clients;
-use App\CreateDevice;
+use App\CompanyDevice;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -189,8 +189,8 @@ class Owner extends Controller
     public function createDevice(Request $request){
         if($request->isMethod('post')){
             $errors = array();
-            $cd = new CreateDevice();
-            if(!$cd->validate($data)){
+            $cd = new CompanyDevice();
+            if(!$cd->validate($request->all())){
                 $cd_e = $cd->errors();
                 foreach ($cd_e->messages() as $k => $v){
                     foreach ($v as $e){
@@ -222,16 +222,53 @@ class Owner extends Controller
                     ->withInput();
             }
         }
-        return view('pages.owner.create-device');
+        return view('pages.owner.create-device',[
+            'modal' => 'pages.owner.modals.create-device-modal'
+        ]);
     }
 
 
     /**
-     * ManageDevice - function for managing devices
+     * ManageDevice view,edit - function for managing devices
      * param - request - takes all the post request data
      */
-    public function manageDevice(){
-        return view('pages.owner.manage-device');
+    public function manageDevice(Request $request){
+        $devices = CompanyDevice::all();
+        if($request->isMethod('post')){
+            $cd = CompanyDevice::find($request->device_id);
+            $cd->charger_id = $request->charger_id;
+            if($cd->save()){
+                return redirect()
+                    ->to('/manage-device')
+                    ->with('success', 'The device was edited successfully!!');
+            }else{
+                return redirect()
+                    ->to('/manage-device')
+                    ->with('error', 'Something went wrong! Please try again!');
+            }
+        }
+        return view('pages.owner.manage-device',[
+            'modal' => 'pages.owner.modals.manage-device-modal',
+            'devices' => $devices
+        ]);
+    }
+
+
+    /**
+     * ManageDevice delete - function for managing devices
+     * param - request - takes all the post request data
+     */
+    public function deleteDevice(Request $request){
+        if($request->isMethod('post')){
+            CompanyDevice::destroy($request->device_id);
+            return redirect()
+                ->to('/manage-device')
+                ->with('success', 'Device deleted successfully!!');
+        }else{
+            return redirect()
+                ->to('/manage-device')
+                ->with('error', 'Method not allowed!!');
+        }
     }
 
 

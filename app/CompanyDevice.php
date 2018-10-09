@@ -3,8 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
 
-class CreateDevice extends Model
+class CompanyDevice extends Model
 {
     protected $rules = array(
         'factory_id'  => 'required',
@@ -13,7 +14,7 @@ class CreateDevice extends Model
 
     protected $errors;
 
-    protected $table = 'create_device';
+    protected $table = 'company_device';
 
     public function validate($data)
     {
