@@ -1,0 +1,1421 @@
+  /*--================
+  font family
+  ===============================--*/
+  @import url('https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i');
+
+  @font-face {
+    font-family: 'aquawaxblack';
+    src: url('../webfonts/aquawax_black_trial-webfont.woff2') format('woff2'),
+         url('../webfonts/aquawax_black_trial-webfont.woff') format('woff'),
+         url('../webfonts/aquawax_black_trial-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'aquawaxmedium';
+    src: url('../webfonts/aquawax_medium_trial-webfont.woff2') format('woff2'),
+         url('../webfonts/aquawax_medium_trial-webfont.woff') format('woff'),
+         url('../webfonts/aquawax_medium_trial-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'aquawaxlight';
+    src: url('../webfonts/aquawax_light_trial-webfont.woff2') format('woff2'),
+         url('../webfonts/aquawax_light_trial-webfont.woff') format('woff'),
+         url('../webfonts/aquawax_light_trial-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+  
+
+
+  /* ==========================================================================
+   Base styles: opinionated defaults
+   ========================================================================== */
+
+    html {
+        color: #222;
+        font-size: 1em;
+        line-height: 1.4;
+    }
+     button:focus{
+    }
+
+
+    ::-moz-selection {
+        background: #b3d4fc;
+        text-shadow: none;
+    }
+
+    ::selection {
+        background: #b3d4fc;
+        text-shadow: none;
+    }
+
+    hr {
+        display: block;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid #ccc;
+        margin: 1em 0;
+        padding: 0;
+    }
+
+   
+
+    audio,
+    canvas,
+    iframe,
+    img,
+    svg,
+    video {
+        vertical-align: middle;
+    }
+
+  
+    fieldset {
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    *, *:aftwe, *:before {
+      padding: 0;
+      margin: 0;
+    }
+
+    /*--======================
+    default class
+    ========================--*/
+    ol, ul{
+      list-style: none;
+      margin:0;
+      padding:0;
+    }
+    a:hover, a:focus{
+      text-decoration:none;
+    }
+    img{
+      max-width: 100%;
+      height: auto;
+    }
+
+    h1, .h1{
+      font-size: 57px;
+    }
+    .padding-left-o{
+      padding-left: 0px;
+    }
+
+    h2, h2 {
+      font-size: 37px;
+    }
+
+    p{
+      font-size: 15px;
+      line-height: 24px;
+    }
+
+    .clearfix {
+      overflow: hidden;
+      display: block;
+      clear: both;
+    }
+    .padding-0{
+      padding: 0px;
+    }
+    .margin-top-150{
+      margin-top: 150px;
+    }
+
+
+    html, body { 
+      margin: 0;
+      font-family: 'Lato', sans-serif;
+      font-size: 15px;
+      line-height: 1.42857143;
+      background: #f2f2f2;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .btn, .menu-icon, .menu-icon-small, .icon-right:before, 
+    .user-dropdown ul li a, .user-dropdown, .download-btn, a, .dashboad-title .plus-icon, .form-control:focus::placeholder{
+      transition: all 0.5s ease;
+       -webkit-transition:all 0.5s ease;
+       -ms-transition:all 0.5s ease;
+    }
+    .navbar-nav>li>a, .user-dropdown ul li{
+      transition: all .3s ease;
+      -webkit-transition: all .3s ease;
+      -moz-transition: all .3s ease;
+    }
+
+
+    /*nicescroll*/
+    .nicescroll-rails {
+       background-color:#fff;
+     }
+     
+     .nicescroll-cursors {
+       border: none !important;
+       background:#efc59b !important;
+       border-radius: 0 !important;
+     }
+
+    /*--===================
+    parking kori login page
+    ======================================--*/
+
+    .parking-kori{
+      background: url(../img/pk-bg.png);
+      background-size: cover;
+      width: 100%;
+      padding:0px 0px 50px;
+    }
+    .parking-kori-logo img{
+        width: 46%;
+        margin: 0 auto;
+    }
+    .parking-login{
+      display: table;
+      margin: 30px auto 0px;
+    }
+    .manage-client-c{
+        margin-top: 15px;
+    }
+    .form-group{
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .form-control{
+      width: 415px;
+      background: transparent;
+      border-color: transparent transparent #fff transparent;
+      border-width: 1px;
+      border-style: solid;
+      border-radius: 0px;
+      box-shadow: none;
+      font-size: 20px;
+      text-transform: uppercase;
+      color: #fff;
+      padding-left: 25px;
+      height: 40px;
+      position: relative;
+    }
+    .bill-amount .form-control{
+      padding-left: 0px;
+    }
+    .form-control::placeholder{
+      color: #fff;
+    }
+    .form-control::-webkit-placeholder{
+      color: #fff;
+    }
+    .form-control::-moz-placeholder{
+      color: #fff;
+    }
+
+    .form-control:focus::placeholder{
+      color: transparent;
+    }
+    .form-control:focus::-webkit-placeholder{
+      color:transparent;
+    }
+    .form-control:focus::-moz-placeholder{
+      color: transparent;
+    }
+
+    .form-control:focus,
+    .form-control:hover{
+      outline: none;
+      box-shadow: none;
+      border-color:transparent  transparent #fff transparent;
+    }
+    .usr-lock{
+        top: 10px;
+        position: absolute;
+        color: #fff;
+    }
+    .btn.btn-login{
+        display: table;
+        margin: 18px auto;
+        font-size: 17px;
+        text-transform: uppercase;
+        color: #be4357;
+        background: #fff;
+        border-color: #fff;
+        padding: 7px 50px;
+        border-radius: 0px;
+    }
+    .btn.btn-login:hover{
+      color: #fff;
+      background: transparent;
+    }
+    .parking-login a{
+        text-align: center;
+        display: block;
+        color: #fff;
+        font-size: 18px;
+    }
+    .parking-login a:hover{
+      opacity: .7;  
+    }
+    .footer-content p{
+      color: #fff;
+      font-size: 16px;  
+      line-height: 18px;
+    }
+    .footer-content p a{
+      color: #fff;
+    }
+    .footer-content p a:hover{
+       opacity: .7; 
+    }
+
+    .forget-passwrod-text{
+      margin-bottom: 25px;
+      color: #fff
+    }
+    .forget-passwrod-text h4{
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .submit-forget-password{
+      display: table;
+      margin:0 auto;
+    }
+    .submit-forget-password .btn.btn-login{
+      display: inline-block;
+      margin: 19px 10px;
+    }
+    .btn-cancel{
+      background: transparent !important;
+      color: #fff !important;
+    }
+    .btn-cancel:hover{
+      color: #be4357 !important;
+      background: #fff !important;
+    }
+
+    /*modal css*/
+
+    .modal-content{
+      border-radius: 0px;
+    }
+    .modal-padding{
+        padding: 30px 15px;
+    }
+    .modal-padding p{
+        font-size: 14px;
+        color: #af1b3f;
+    }
+    .modal-padding .btn-default {
+        background: #af1b3f;
+        border-radius: 0px;
+        color: #fff;
+        text-transform: uppercase;
+        padding: 2px 30px;
+        margin-top: 13px;
+        border-color: #af1b3f;
+    }
+    .modal-content .form-control{
+      border-color: transparent transparent #af1b3f transparent;
+      color:#af1b3f;
+      text-transform: capitalize;
+      font-size: 15px;
+    }
+    .modal-content form {
+        display: table;
+        margin: 20px auto;
+    }
+   .modal-content .form-control::placeholder{
+      color:#af1b3f;
+    }
+    .modal-content .form-control::-webkit-placeholder{
+      color:#af1b3f;
+    }
+    .modal-content .form-control::-moz-placeholder{
+     color:#af1b3f;
+    }
+    .modal-content .usr-lock{
+      color:#af1b3f;
+      left: 0; 
+    }
+    .modal-content.modal-form .modal-padding .btn-default {
+        padding: 6px 30px;
+        margin-top: 0px;
+        margin-right: 10px;
+        width: 115px;
+    }
+    .modal-content span{
+        text-align: left;
+        float: left;
+        margin-left: 26px;
+        margin-top: 2px;
+        color: #af1b3f;
+    }
+    .modal-content .usr-name-lock{
+        position: absolute;
+        left: 0;
+        top: 0px;
+        color: #af1b3f;
+    }
+    .modal-device label{
+      text-align: left;
+      display: block;
+    }
+    .modal-device .form-control{
+      padding-left: 0;
+    }
+
+    .manage-client-b-modal label{
+        text-align: left;
+        display: block;
+        color: #000;
+    }
+    .manage-client-b-modal form{
+      display: block;
+      overflow: hidden;
+    }
+    .manage-client-b-modal .file.btn.btn-sm span{
+      color: #fff;
+    }
+    .manage-client-b-modal textarea{
+      padding-left: 0px;
+    }
+    .preview-option{
+        border: 1px solid #af1b3f;
+        margin-top: 30px;
+    }
+    .preview-option h4 {
+        padding: 20% 0px;
+        text-align: center;
+    }
+     #charlimit {
+      width: 100%;
+      margin-left: 0px;
+      margin-top: 10px;
+    }
+
+
+
+
+     /*dashboard header*/
+
+    .dashboard-header{
+      background: rgb(76,48,68);
+      background: -webkit-linear-gradient(left, rgba(76,48,68,1) 0%, rgba(182,44,72,1) 34%, rgba(238,197,154,1) 100%);
+      background: -o-linear-gradient(left, rgba(76,48,68,1) 0%, rgba(182,44,72,1) 34%, rgba(238,197,154,1) 100%);
+      background: linear-gradient(to right, rgba(76,48,68,1) 0%, rgba(182,44,72,1) 34%, rgba(238,197,154,1) 100%);
+      padding:8px 0px;
+      height: 80px;
+    }
+
+    .parking-kori-dash-logo img {
+        width: 255px;
+        margin: 0 auto;
+        display: block;
+    }
+    .user-icon{
+      width: 50px;
+      float: right;
+      padding: 4px 0px;
+      position: relative;
+      cursor: pointer;
+    }
+    .user-dropdown {
+        position: absolute;
+        top: 57px;
+        right: -190px;
+        background:#f2f2f2;
+        width: 150px;
+        z-index: 999;
+        border-radius: 5px;
+        box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+    }
+    .new-user.user-dropdown{
+      right: 15px;
+    }
+    .user-dropdown ul li a{
+        padding: 5px 1px;
+        display: block;
+        color: #4f4f4f;
+        font-weight: 600;
+        text-align: center;
+        font-size: 18px;
+    }
+    .user-dropdown ul li a:hover{
+      color: #af1b3f;
+    }
+    .slide-drawer-menu{
+        padding: 20px 0px;
+        cursor: pointer;
+    }
+    .menu-icon {
+        width: 26px;
+        height: 2px;
+        background: #fff;
+        display: block;
+        margin-bottom: 6px;
+    }
+    .menu-icon:last-child{
+      margin-bottom: 0;
+    }
+    .slide-drawer .menu-icon{
+      width: 20px;
+    }
+    .slide-drawer .menu-icon-small{
+      width: 26px !important;
+    }
+    .menu-icon-small{
+      width: 20px !important;
+    }
+    .navbar-nav li{
+      float: none;
+      display: block;
+    }
+
+    .dashboard-sidebar {
+        width: 80%;
+        max-width: 250px;
+        height: 100%;
+        overflow-y: auto !important;
+        background: rgb(245,209,207);
+        background: -webkit-linear-gradient(left, rgba(245,209,207,1) 30%, rgba(255,239,214,1) 100%);
+        background: -o-linear-gradient(left, rgba(245,209,207,1) 30%, rgba(255,239,214,1) 100%);
+        background: linear-gradient(to right, rgba(245,209,207,1) 30%, rgba(255,239,214,1) 100%);
+        position: fixed;
+        left: 0px;
+        top: 80px;
+        z-index: 150000;
+        -webkit-box-shadow: 0px 0px 20px 1px rgba(0,0,0,0.1);
+        -moz-box-shadow: 0px 0px 20px 1px rgba(0,0,0,0.1);
+        box-shadow: 0px 0px 20px 1px rgba(0,0,0,0.1);
+        -webkit-transform: translate3d(-100%, 0, 0);
+        -moz-transform: translate3d(-100%, 0, 0);
+        -ms-transform: translate3d(-100%, 0, 0);
+        -o-transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        -ms-backface-visibility: hidden;
+        -o-backface-visibility: hidden;
+        backface-visibility: hidden;
+        -webkit-transition: -webkit-transform 400ms ease;
+        -moz-transition: -moz-transform 400ms ease;
+        -o-transition: -o-transform 400ms ease;
+        transition: transform 400ms ease;
+      }
+      .nav-open .dashboard-sidebar {
+          -webkit-transform: translate3d(0, 0, 0);
+          -moz-transform: translate3d(0, 0, 0);
+          -ms-transform: translate3d(0, 0, 0);
+          -o-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
+      }
+      .sidebar-location{
+          border-bottom: 1px solid #b72e49;
+          margin-bottom: 25px;
+          background-image: -webkit-linear-gradient(top left, #4d3044, #67324d, #823152, #9d2f50, #b72e49);
+          background-image: -o-linear-gradient(top left, #4d3044, #67324d, #823152, #9d2f50, #b72e49);
+          background-image: linear-gradient(to bottom right, #4d3044, #67324d, #823152, #9d2f50, #b72e49);
+      }
+      .sidebar-location h4{
+        font-size: 25px;
+        text-transform: uppercase;
+        color: #fff;
+        margin: 30px 0px 20px;
+      }
+      .dashboard-sidebar  .panel{
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        padding: 3px 0px;
+        width: 100%;
+      }
+      .navbar-nav{
+        padding-left: 0px;
+        width: 100%;
+        margin:0px;
+      }
+      .navbar-nav>li>a {
+        padding-top: 6px;
+        padding-bottom: 6px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #4d4d4d;
+        padding: 6px 28px;
+      }
+      .nav>li>a:focus, .nav>li>a:hover {
+          text-decoration: none;
+          color: #af1b3f;
+          background-color: transparent;
+      }
+      .active-employee{
+        background: #9e2d47 !important;
+        color: #fff !important;
+      }
+      .active-employee a{
+        color: #fff !important;
+      }
+      .active-employee a:hover{
+        color: #000 !important;
+      }
+      .active-employee a.active{
+        color: #000 !important;
+        margin: 0px;
+      }
+
+      .panel-body{
+        padding: 5px 0px !important;
+        margin:0px 10px;
+      }
+      .panel-body ul li a{
+        font-weight: normal;
+        color: #4d4d4d;
+        font-size: 16px;
+        margin-bottom: 3px;
+      }
+     
+      .panel-collapse .panel-body{
+         border-bottom: 1px solid #9e2d47;
+      }
+      .icon-right{
+        margin-left: 5px;
+        position: relative;
+      }
+      .icon-right:before {
+          content: "\e080";
+          font-family: "Glyphicons Halflings";
+          font-style: normal;
+          font-weight: normal;
+          text-decoration: inherit;
+          font-size: 12px;
+          top: 3px;
+          position: absolute;
+      }
+
+      .click-color .icon-right:before {
+        transform: rotate(90deg); 
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+      }
+    
+          
+    /*main content css*/
+
+    .dashboard-main-content{
+      margin:120px 0px;
+    }
+
+    .dashboad-title h2{
+      font-size: 30px;
+      color: #af1b3f;
+      font-weight: bold;
+    }
+    .dashboad-title h2 img {
+        width: 18px;
+        margin-left: 3px;
+    }
+    .date {
+        color: #000;
+        font-size: 24px;
+    }
+    .dashboad-title .plus-icon{
+        display: inline-block;
+        margin-left: 13px;
+        font-size: 20px;
+        font-size: 23px;
+        cursor: pointer;
+        transform: rotate(0deg);
+        filter: drop-shadow(0px 0px 4px rgba(0,0,0,0));
+        filter: drop-shadow(0px 0px 4px rgba(0,0,0,0));
+        filter: drop-shadow(0px 0px 4px rgba(0,0,0,0));
+    }
+    .dashboad-title .plus-icon:hover{
+        transform: rotate(90deg);
+        -webkit-transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+         filter: drop-shadow(0px 0px 4px rgba(0,0,0,.4));
+        filter: drop-shadow(0px 0px 4px rgba(0,0,0,.4));
+        filter: drop-shadow(0px 0px 4px rgba(0,0,0,.4));
+    }
+
+
+    .dashboard-total {
+        background: #f2f2f2;
+        -webkit-box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        -moz-box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        text-align: center;
+        margin: 50px 5px 26px 11px;
+        padding: 30px 0px;
+        border-radius: 5px;
+    }
+    .money-icon{
+      width: 35%;
+      float: left;
+    }
+    .money-icon img {
+        width: 48px;
+        margin: 60px auto;
+    }
+    .parking-pie-chart{
+      padding: 0px !important;
+    }
+    .parking-pie-chart canvas{
+      width: 175px !important;
+      height: 175px !important;
+    }
+    .total-cost{
+        float: left;
+        width: 65%;
+        text-align: center;
+        border-left: 1px solid #af1b3f;
+        padding: 40px 0px;
+    }
+    .total-cost h3{
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 0px;
+    }
+    .total-cost p{
+        font-size: 16px;
+    }
+    .dashboard-total h3.total-dash{
+      margin:0px 0px 20px;
+    }
+    .money-icon h4 {
+        padding: 40px 5px;
+        text-align: center;
+        font-size: 18px;
+        color: #af1b3f;
+        font-weight: 700;
+    }
+    .dashboard-footer p{
+      color: #b3b3b3;
+    }
+    .dashboard-footer{
+      margin-bottom: 30px;
+    }
+    .dashboard-footer p a{
+      color: #b3b3b3;
+    }
+
+
+    /*employee form*/
+
+
+    .form-employee-center.web-company-dashboard{
+      display: inline-block !important;
+    }
+    .employee-form.form-employee-center {
+        display: table;
+        margin:40px auto;
+        padding: 30px;
+        background: #f2f2f2;
+        -webkit-box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        -moz-box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        border-radius: 6px;
+        position: relative;
+    }
+    .employee-form .form-group{
+      margin-bottom: 30px;
+    }
+    .employee-form .form-control{
+      border-bottom-color: #000;
+      color: #000;
+      font-size: 16px;
+    }
+    .employee-form .form-control::placeholder{
+      color: #000;
+    }
+    .employee-form .form-control::-webkit-placeholder{
+      color: #000;
+    }
+    .employee-form .form-control::-moz-placeholder{
+      color: #000;
+    }
+    .employee-form .form-control:focus,
+    .employee-form .form-control:hover{
+      outline: none;
+      box-shadow: none;
+      border-color:transparent  transparent #af1b3f transparent;
+    }
+    .employee-form .usr-lock{
+      color: #000;
+    }
+    .employee-form .btn-login{
+      background: #af1b3f;
+      border-color: #af1b3f;
+      color: #fff;
+      opacity: 1;
+    }
+    .employee-form .btn-login:hover{
+      background: #af1b3f;
+      border-color: #af1b3f;
+      color: #fff;
+      opacity: .5;
+    }
+
+    .file.btn.btn-sm.btn-primary {
+        width: 170px;
+        height: 45px;
+        background: #af1b3f;
+        border: 1px solid #af1b3f;
+        font-size: 16px;
+        padding: 0px;
+        border-radius: 0px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        float: left;
+        -webkit-overflow-scrolling: touch;
+        display: inline-block;
+    }
+    .file.btn.btn-sm.btn-primary span {
+        padding: 8px 0px;
+        display: block;
+    }
+    input.input-upload{
+      position: absolute;
+      font-size: 50px;
+      opacity: 0;
+      right: 0;
+      top: 0;
+      cursor: pointer;
+    }
+    .upload-icon{
+        width: 42px;
+        float: left;
+        height: 44px;
+        text-align: center;
+        padding: 7px 2px;
+        background: #8c0f0f;
+        border-radius: 0px;
+    }
+    .file-picutre img{
+        width: 150px;
+        margin: 20px auto;
+        display: block;
+    }
+    .edit-icon-absolute .edit-icon-option{
+        position: absolute;
+        top: 35px;
+        right: 48px;
+        font-size: 18px;
+        color: #af1b3f;
+        cursor: pointer;
+    }
+
+
+
+
+    /*manage employee*/
+
+
+    .employee-table-center{
+        display: block;
+        margin: 30px auto;
+        padding: 30px;
+        background: #f2f2f2;
+        -webkit-box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        -moz-box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        border-radius: 6px;
+    }
+    .edit-icon{
+      display: inline-block;
+      float: left;
+    }
+    .edit-icon.icon-ed{
+      width: 25px;
+      cursor: pointer;
+    }
+    .edit-icon.icon-ed img{
+      display: table;
+      margin:5px auto;
+    }
+    .edit-icon.btn {
+        width: 100px;
+        font-size: 12px;
+        text-transform: capitalize;
+        padding: 6px 0px;
+        text-align: center;
+        margin: 0px 10px 0px 0px;
+        background: #be4357;
+        color: #fff;
+        opacity: 1;
+    }
+    .edit-icon.btn:hover{
+      opacity: .5;
+      background: #be4357;
+      color: #fff;
+    }
+    .fluid-padding {
+        margin: 0px 4%;
+    }
+    #example_filter .form-control,
+    #example2_filter .form-control{
+        background: transparent;
+        border: 1px solid #be4357;
+        color: #be4357;
+        text-transform: capitalize;
+    }
+    .table>tbody>tr>td,
+    .table>tbody>tr>th, 
+    .table>tfoot>tr>td, 
+    .table>tfoot>tr>th,
+    .table>thead>tr>td, .table>thead>tr>th {
+      padding: 8px 20px;
+      font-size: 13px;
+    }
+
+    .table>thead>tr>th{
+      border-bottom:1px solid #ddd;
+      font-size: 14px;
+    }
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+        margin: -4px 0 0px;
+        white-space: nowrap;
+    }
+    div.dataTables_wrapper div.dataTables_info,
+    div.dataTables_wrapper div.dataTables_paginate{
+        padding-top: 7px;
+        white-space: nowrap;
+    }
+    table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
+    table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th:first-child:before{
+        top: 9px;
+        left: -5px;
+        height: 14px;
+        width: 14px;
+        display: block;
+        position: absolute;
+        color: white;
+        border: 2px solid #eec59a;
+        border-radius: 14px;
+        box-shadow: 0 0 3px #eec59a;
+        box-sizing: content-box;
+        text-align: center;
+        text-indent: 0 !important;
+        font-family: 'Courier New', Courier, monospace;
+        line-height: 14px;
+        content: '+';
+        background-color: #af1b3f;
+    }
+    table.dataTable.dtr-inline.collapsed>tbody>tr.parent>td:first-child:before,
+    table.dataTable.dtr-inline.collapsed>tbody>tr.parent>th:first-child:before {
+          content: '-';
+          background-color: #d68276;
+      }
+    .pagination>li>a, .pagination>li>span{
+      background: transparent;
+      border-color: transparent;
+      color: #000;
+    }
+    .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, 
+    .pagination>.disabled>span,
+    .pagination>.disabled>span:focus, .pagination>.disabled>span:hover{
+      background: transparent;
+      border-color: transparent;
+      color: #000;
+      opacity: .5;
+    }
+    .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+      z-index: 3;
+      color: #be4357;
+      cursor: default;
+      background-color: transparent; 
+      border-color: transparent;
+      font-weight: bold;
+    }
+    .pagination li a:hover, 
+    .pagination li a:focus{
+      background: transparent;
+      color: #be4357;
+      border-color: transparent;
+    }
+    .previous a,
+    .next a{
+      color: #be4357 !important;
+    }
+    .alert.alert-success,
+    .alert.alert-danger{
+      width: 60%;
+      margin:20px 0px;
+    }
+    .alert-simple.alert.alert-danger {
+        width: 100%;
+    }
+
+    /*vechicle category*/
+    .total-area{
+      margin:30px 0px 20px;
+      display: block;
+    }
+    .calender-area-date{
+      background: #fff;
+      padding: 30px 0px 25px;
+      position: relative;
+    }
+    .date-icon{
+        position: absolute;
+        top: -16px;
+        left: 15px;
+        width: 35px;
+        height: 35px;
+        background: url(../img/calender-icon.png);
+        background-size: cover;
+        filter: drop-shadow(4px 6px 5px rgba(0,0,0,.2));
+        vertical-align: middle;
+    }
+    .date-icon span{
+        text-align: center;
+        display: block;
+        font-size: 18px;
+        margin: 7px 0px;
+        color: #af1b3f;
+        font-weight: bold;
+    }
+    .date-timepicker{
+      overflow: hidden;
+      display: block;
+    }
+    .date-span{
+        font-size: 30px;
+        font-weight: bold;
+        color: #000;
+        float: left;
+        width: 80%;
+        padding-left: 16px;
+    }
+    .per {
+        float: left;
+        width: 35px;
+        background: #af1b3f;
+        color: #fff;
+        margin-top: 10px;
+        font-size: 13px;
+        text-align: center;
+        padding: 9px 0px;
+    }
+
+    .vechicale-catagory{
+      margin:20px 0px 15px;
+    }
+    .vechicale-catagory label{
+      text-align: center;
+      color: #000;
+      font-size: 16px;
+      margin-bottom: 10px;
+      font-weight: 500;
+      display: block;
+    }
+    .vechicle-select .form-control, .vechicle-select .btn-default{
+        width: 100%;
+        background: #af1b3f;
+        border: 0px solid #af1b3f;
+        font-size: 14px;
+        color: #fff !important;
+        border-radius: 0px;
+        text-transform: capitalize;
+        height: 37px;
+    }
+    .vechicle-select .form-control:focus, .vechicle-select .form-control:hover, 
+    .btn-default:hover , .btn-default:focus{
+       background: #af1b3f;
+       color: #fff !important;
+    }
+    .btn-default.active, .btn-default:active, .open>.dropdown-toggle.btn-default{
+      background: #af1b3f;
+    }
+    .btn-default.active.focus, .btn-default.active:focus,
+    .btn-default.active:hover, .btn-default:active.focus,
+    .btn-default:active:focus, .btn-default:active:hover,
+    .open>.dropdown-toggle.btn-default.focus, .open>.dropdown-toggle.btn-default:focus,
+    .open>.dropdown-toggle.btn-default:hover{
+       background: #af1b3f;
+    }
+    .dropdown-menu.open ul li a:hover {
+        background: #af1b3f;
+        color: #fff;
+    }
+    .btn-group.open .dropdown-toggle{
+      box-shadow: none;
+    }
+    .bootstrap-select.btn-group .dropdown-menu {
+        min-width: 100%;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        border-radius: 0px;
+        border: 0px solid;
+    }
+    .dropdown-menu>li>a{
+      padding: 5px 20px;
+    }
+    .or-vechicle {
+        width: 40px;
+        float: left;
+        text-align: left;
+        margin: 38px 0px 20px;
+    }
+    .vechicle-select.optional-or{
+      width: 83%;
+      float: left;
+      display: inline-block;
+    }
+    .vechicle-select.optional-or .form-control {
+        width: 45%;
+        float: left;
+        margin-right: 10px;
+        font-size: 11px;
+    }
+    .vechicle-select.optional-or .form-control:last-child{
+      margin-right: 0;
+    }
+
+    /*request notification page*/
+    .bootstrap-datetimepicker-widget table td.active, 
+    .bootstrap-datetimepicker-widget table td.active:hover {
+        background: #af1b3f;
+    }
+
+    .request-notification .edit-icon.btn {
+        width: 80px !important;
+    }
+    label.model-label{
+        text-align: left;
+        display: block;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+    .modal-content.modal-form .dropdown-toggle{
+        width: 200px !important;
+    }
+    .modal-content.modal-form .dropdown-toggle span{
+      color: #fff;
+      margin-left: 0px;
+      text-transform: capitalize;
+    }
+    .modal-content.modal-form .dropdown-menu>li>a {
+        display: inline-block;
+        padding: 0px 7px;
+        width: 100%;
+    }
+    .btn-genarate{
+        float: left;
+        width: 145px !important;
+    }
+    .qr-codeimg{
+        width: 200px;
+        float: left;
+    }
+    .download-btn{
+        background: transparent;
+        border: transparent;
+        margin-top: 10px;
+        font-size: 2em;
+        color: #000;
+    }
+    .download-btn:hover,
+    .download-btn:focus{
+      color: #af1b3f;
+    }
+    .remark-box {
+        width: 85%;
+        margin: 25px auto;
+        display: block;
+        border: 1px solid #af1b3f;
+    }
+
+    .request-notification .qr-codeimg{
+      width: 50px;
+    }
+    .request-notification .download-btn{
+      margin-top: 0;
+    }
+
+
+    /*assign parking setting*/
+    .total-parking-area{
+        background: #fff;
+        padding: 30px 0px;
+        margin: 57px 0px 0px;
+        position: relative;
+        -webkit-box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        -moz-box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+        border-radius: 6px;
+    }
+    .total-date--icon{
+        position: absolute;
+        top: -28px;
+        left: 20px;
+        background: #fff;
+        padding: 8px 5px;
+        font-weight: 600;
+        width: 90px;
+        text-align: center;
+        border-radius: 5px;
+        filter: drop-shadow(4px 6px 5px rgba(0,0,0,.2));
+        color: #af1b3f;
+    }
+    .total-parking-area .date-span{
+        text-align: center;
+        font-size: 40px;
+    }
+    .assign-v-select.vechicle-select .form-control, .assign-v-select.vechicle-select .btn-default{
+      background: transparent;
+      color: #000 !important;
+      text-transform: uppercase;
+      border-bottom: 1px solid #000;
+    }
+    .assign-v-select.vechicle-select .btn-default.active,
+    .assign-v-select.vechicle-select .btn-default:active,
+    .assign-v-select.vechicle-select .open>.dropdown-toggle.btn-default {
+        background: transparent;
+    }
+    .assign-v-select.vechicle-select .btn-default.active.focus,
+    .assign-v-select.vechicle-select .btn-default.active:focus,
+    .assign-v-select.vechicle-select .btn-default.active:hover, 
+    .assign-v-select.vechicle-select .btn-default:active.focus, 
+    .assign-v-select.vechicle-select .btn-default:active:focus, 
+    .assign-v-select.vechicle-select .btn-default:active:hover, 
+    .assign-v-select.vechicle-select .open>.dropdown-toggle.btn-default.focus, 
+    .assign-v-select.vechicle-select .open>.dropdown-toggle.btn-default:focus, 
+    .assign-v-select.vechicle-select .open>.dropdown-toggle.btn-default:hover {
+        background: transparent;
+    }
+
+    .assign-create .btn.btn-login {
+        display: inline;
+        color: #ffffff;
+        background: #af1b3f;
+        border-color: #af1b3f;
+    }
+    .assign-create .btn.btn-login:hover {
+      opacity: .5;
+    }
+
+
+    /*Exampted hour time*/
+
+    .exampted-time-area{
+      background: #f2f2f2;
+      -webkit-box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+      -moz-box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+      box-shadow: 2px 8px 24px rgba(0,0,0,.1);
+      border-radius: 6px;
+      margin:50px;
+      padding: 20px;
+    }
+    .exampted-time-area label {
+        text-align: center;
+        display: block;
+        margin-bottom: 25px;
+        font-size: 17px;
+    }
+    .exampted-time-area .form-exampted{
+      width: 46%;
+      float: left;
+      margin-right: 10px;
+    }
+    .exampted-time-area .form-exampted:last-child{
+      margin-right: 0;
+    }
+
+    .exampted-time-area .btn-login:hover{
+      color: #af1b3f;
+      border-color: #af1b3f;
+      background: transparent;
+    }
+
+    .bootstrap-pagination .pagination{
+      display: table;
+      margin:0 auto;
+    }
+    .bootstrap-pagination .pagination>li>a{
+      font-size: 18px;
+    }
+    .bootstrap-pagination .pagination>li:first-child>a,  .bootstrap-pagination .pagination>li:first-child>span,
+    .bootstrap-pagination .pagination>li:last-child>a,  .bootstrap-pagination .pagination>li:last-child>span{
+      color: #af1b3f;
+    }
+
+
+    /*manage bill*/
+
+    .manage-bill-name{
+        font-size: 17px;
+        width: 320px;
+        font-weight: 600;
+    }
+    .manage-bill-name span{
+        margin-top: 3px;
+        display: block;
+        font-weight: 400;
+        font-size: 17px;
+    }
+    .report-advert-sale{
+      margin-top: 40px;
+      display: block;
+    }
+    #comment_body{
+      padding-left: 0px;
+      text-transform: capitalize;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*responsive css*/
+    @media (max-width: 1300px){
+      .fluid-padding {
+          margin: 0px 2%;
+      }
+    }
+
+    @media(max-width: 992px){
+      .edit-icon {
+        display: block;
+        float: none;
+        margin-bottom: 15px;  
+      }
+      .edit-icon.icon-ed {
+          width: 25px;
+          display: block;
+          margin:0 auto;
+      }
+      .calender-area-date{
+        margin:20px 0px;
+      }
+      .exampted-time-area {
+        margin: 40px 30px;
+      }
+      .exampted-time-area .form-exampted{
+        width: 45%;
+      }
+      .fluid-padding {
+        margin: 0px 2%;
+      }
+    }
+
+    @media (min-width: 768px){
+
+    }
+
+    @media (max-width: 767px){
+      .calender-area-date{
+        margin:40px 0px;
+      }
+      .modal-dialog {
+          width: 90%;
+          margin: 8% auto;
+      }
+      .or-vechicle {
+        width: 100%;
+        float: none;
+        text-align: center;
+        margin: 30px 0px;
+      }
+      .vechicle-select.optional-or{
+        width: 100%;
+        float: none;
+      }
+      .vechicle-select.optional-or .form-control{
+        width: 47%;
+      }
+      .form-control{
+        width: 290px;
+      }
+      .download-btn{
+        margin-top: 57px;
+      }
+      .request-notification .download-btn{
+        margin-top: 0;
+      }
+      
+
+    }
+
+
+    @media (max-width: 420px){
+      .dashboard-header{
+        height: 65px;
+      }
+      .dashboard-sidebar{
+        top:66px;
+      }
+      .parking-kori-dash-logo img {
+        width: 100%;
+      }
+      .user-icon img{
+        padding: 12px 0px;
+      }
+      .slide-drawer-menu {
+          padding: 17px 0px;
+          cursor: pointer;
+      }
+     
+      .submit-forget-password .btn.btn-login {
+          display: table;
+      }
+      .user-icon{
+        float: none;
+        width: 100%;
+        padding: 0px;
+      }
+      .user-dropdown{
+        top:57px;
+      }
+      .modal-content form {
+          display: block;
+          margin: 20px auto;
+      }
+      .exampted-time-area {
+        margin: 40px 15px;
+      }
+      .exampted-time-area .form-exampted{
+        width: 45%;
+      }
+      .manage-bill-name{
+        width: 300px;
+      }
+      #example_filter .form-control, #example2_filter .form-control{
+        width: 190px;
+      }
+      .alert.alert-success, .alert.alert-danger {
+          width: 100%;
+      }
+
+
+    }
+
+
+
+
+
+

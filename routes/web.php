@@ -12,5 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages.owner.dashboard');
 });
+
+Route::get('/create-client', 'Owner@createClient');
+Route::post('/create-client', 'Owner@createClient');
