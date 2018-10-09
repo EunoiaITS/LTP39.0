@@ -18,28 +18,28 @@
                 </div>
                 <div class="col-sm-12">
                     <div class="employee-form form-employee-center clearfix">
-                        <form method="post" action="{{ url('/create-client') }}">
+                        <form method="post" action="{{ url('/create-client') }}" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <div class="form-group">
                                 <label for="user-id" class="usr-lock"><i class="fas fa-id-badge"></i></label>
-                                <input type="text" name="client_id" placeholder="ID" class="form-control" id="user-id" required>
+                                <input type="text" name="client_id" placeholder="ID" class="form-control" id="user-id" value="{{ old('client_id') }}" required>
                             </div>
                             <div class="vechicle-select">
                                 <div class="form-group">
                                     <label for="exampleFormControlSelect1">Client Type</label>
                                     <select class="form-control get-select-picker" name="client_type" id="exampleFormControlSelect1" title="Cleint Category">
-                                        <option value="park">Parking Client</option>
-                                        <option value="ad">Advertisement Client</option>
+                                        <option value="park" @if(old('client_type') == 'park') {{ 'selected' }} @endif>Parking Client</option>
+                                        <option value="ad" @if(old('client_type') == 'ad') {{ 'selected' }} @endif>Advertisement Client</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="user-name" class="usr-lock"><i class="fas fa-user"></i></label>
-                                <input type="text" name="name" placeholder="name" class="form-control" id="user-name" required>
+                                <input type="text" name="name" placeholder="name" class="form-control" id="user-name" value="{{ old('name') }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="user-email" class="usr-lock"><i class="far fa-envelope"></i></label>
-                                <input type="email" name="email" placeholder="Email" class="form-control" id="user-email" required>
+                                <input type="email" name="email" placeholder="Email" class="form-control" id="user-email" value="{{ old('email') }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="user-password" class="usr-lock"><i class="fas fa-lock"></i></label>
@@ -51,7 +51,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="clint-phone" class="usr-lock"><i class="fas fa-phone"></i></label>
-                                <input type="text" name="phone" placeholder="Phone" class="form-control" id="clint-phone" required>
+                                <input type="text" name="phone" placeholder="Phone" class="form-control" id="clint-phone" value="{{ old('phone') }}" required>
                             </div>
 
                             <div class="form-group clearfix">
@@ -63,7 +63,7 @@
                                 </div>
                             </div>
 
-                            <input type="hidden" name="role" value="dev">
+                            <input type="hidden" name="role" value="client">
                             <div class="submit-forget-password">
                                 <button class="btn-info btn btn-login" type="submit">Create</button>
                                 <button class="btn-info btn btn-login" type="button" onclick="window.location.reload();">Cancel</button>

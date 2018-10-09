@@ -5,6 +5,10 @@
 </div>
 </div>
 
+@if(isset($modal))
+    @include($modal)
+    @endif
+
 
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <!-- main js file -->
@@ -29,5 +33,8 @@
 <script src="{{ asset('public/assets/js/niceScroll.min.js') }}"></script>
 <!-- main js file -->
 <script src="{{ asset('public/assets/js/custom.js') }}"></script>
+@if(isset($js))
+    @include($js)
+    @endif
 </body>
 </html>
