@@ -43,8 +43,8 @@
             <div id="dropdown-lvl3" class="panel-collapse collapse">
                 <div class="panel-body">
                     <ul class="nav navbar-nav">
-                        <li><a href="create-billing.html">Create Billing</a></li>
-                        <li><a href="manage-bill.html">Manage Bill</a></li>
+                        <li><a href="{{ url('/create-billing') }}">Create Billing</a></li>
+                        <li><a href="{{ url('/manage-billing') }}">Manage Bill</a></li>
                     </ul>
                 </div>
             </div>

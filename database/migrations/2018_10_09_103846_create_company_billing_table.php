@@ -15,7 +15,7 @@ class CreateCompanyBillingTable extends Migration
     {
         Schema::create('company_billing', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('billing_id');
+            $table->string('billing_id');
             $table->integer('client_id');
             $table->string('billing_term');
             $table->string('billing_amount');

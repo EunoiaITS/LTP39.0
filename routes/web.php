@@ -18,6 +18,7 @@ Route::get('/', function () {
 /**
  * client routes
  **/
+
 Route::get('/create-client', 'Owner@createClient');
 Route::post('/create-client', 'Owner@createClient');
 Route::get('/clients-list', 'Owner@allClients');
@@ -28,8 +29,25 @@ Route::post('/client-details', 'Owner@clientDetails');
 /**
    *device routes
  **/
+
 Route::get('/create-device', 'Owner@createDevice');
 Route::post('/create-device', 'Owner@createDevice');
 Route::get('/manage-device', 'Owner@manageDevice');
 Route::post('/manage-device', 'Owner@manageDevice');
 Route::post('/delete-device', 'Owner@deleteDevice');
+
+/**
+ *billing routes
+ **/
+
+Route::get('/create-billing','Owner@createBilling');
+Route::post('/create-billing','Owner@createBilling');
+Route::get('/manage-billing','Owner@manageBilling');
+Route::post('/manage-billing','Owner@manageBilling');
+Route::get('/manage-billing-details','Owner@manageBillingDetails');
+
+/**
+ *payment routes
+ **/
+
+Route::post('/payment','Owner@payment');

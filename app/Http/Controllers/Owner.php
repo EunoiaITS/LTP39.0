@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Clients;
 use App\CompanyDevice;
+use App\CompanyBilling;
+use App\CompanyPayment;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -271,5 +273,122 @@ class Owner extends Controller
         }
     }
 
+    /**
+     * Billing Create - function for Create billing
+     * param - request - takes all the post request data
+     */
+    public function createBilling(Request $request){
+        $clients = Clients::all();
+        foreach ($clients as $c){
+            $user = User::find($c->user_id);
+            $c->name = $user->name;
+        }
+        if($request->isMethod('post')){
+            $errors = array();
+            $cb = new CompanyBilling();
+            if(!$cb->validate($request->all())){
+                $cb_e = $cb->errors();
+                foreach ($cb_e->messages() as $k => $v){
+                    foreach ($v as $e){
+                        $errors[] = $e;
+                    }
+                }
+            }
+            if(empty($errors)){
+                $cb->client_id = $request->client_id;
+                $cb->billing_id = 'BILL-01';
+                $cb->billing_term = $request->billing_term;
+                $cb->billing_amount = $request->billing_amount;
+                $cb->bill_start_date = date('Y-m-d',strtotime($request->bill_start_date));
+                $cb->created_by = 'PIC';
+                $cb->modified_by = 'MOD';
+                $cb->auto_renew = $request->auto_renew;
+                if($cb->save()){
+                    $last_id = CompanyBilling::orderBy('id', 'desc')->first();
+                    $cp = new CompanyPayment();
+                    if(!$cp->validate($request->all())){
+                        $cp_e = $cp->errors();
+                        foreach ($cp_e->messages() as $k => $v){
+                            foreach ($v as $e){
+                                $errors[] = $e;
+                            }
+                        }
+                    }
+                    $cp->billing_id = $last_id->id;
+                    $cp->bill_due_date = date('Y-m-d',strtotime($request->bill_start_date . ' + 90 days'));
+                    $cp->paid = 'unpaid';
+                    $cp->save();
+                    return redirect()
+                        ->to('/create-billing')
+                        ->with('success', 'The Billing was created successfully!!');
+                }else{
+                    return redirect()
+                        ->to('/create-billing')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
+            }else{
+                return redirect()
+                    ->to('/create-billing')
+                    ->with('errors', $errors)
+                    ->withInput();
+            }
+        }
+        return view('pages.owner.create-billing',[
+            'modal' => 'pages.owner.modals.create-billing-modal',
+            'clients' => $clients,
+            'js' => 'pages.owner.js.create-billing-js'
+        ]);
+    }
 
+    /**
+     * Manage Billing view,edit - function for manage billing
+     * param - request - takes all the post request data
+     */
+
+    public function manageBilling(){
+        $billing = CompanyBilling::all();
+        foreach ($billing as $b){
+            $client = Clients::where('client_id',$b->client_id)->first();
+            $user = User::find($client->user_id);
+            $b->client = $user->name;
+        }
+        return view('pages.owner.manage-billing',[
+            'modal' => 'pages.owner.modals.manage-billing-modal',
+            'billing' => $billing
+        ]);
+    }
+
+    /**
+     * Manage Billing details - function for manage billing details
+     * param - request - takes all the post request data
+     */
+    public function manageBillingDetails(Request $request){
+        if(!isset($request->client_id)){
+            abort(404);
+        }
+        $client = Clients::where('client_id', $request->client_id)->first();
+        if(empty($client)){
+            abort(404);
+        }
+        $data = new \stdClass();
+        $user = User::find($client->user_id);
+        $data->name = $user->name;
+        $billing = CompanyBilling::where('client_id',$request->client_id)->first();
+        $data->time = $billing->billing_term;
+        $data->amount = $billing->billing_amount;
+
+        $bill = CompanyBilling::all();
+
+
+        return view('pages.owner.manage-billing-details',[
+            'modal' => 'pages.owner.modals.manage-billing-details-modal',
+            'data' => $data,
+            'billing' => $bill
+        ]);
+    }
+    public function payment(Request $request){
+        if($request->isMethod('post')){
+            dd($request->all());
+        }
+    }
 }
