@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Clients;
 use App\CompanyDevice;
+use App\Managers;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -50,7 +51,6 @@ class Owner extends Controller
                 $user->password = bcrypt($request->password);
                 $user->role = 'client';
                 $user->status = 'dev';
-                $user->save();
 
                 if($user->save()){
                     $client->user_id = $user->id;
@@ -117,18 +117,28 @@ class Owner extends Controller
         ]);
     }
 
-    /**
+    /*******************************************************
      * client details - function to show details of a client
-     */
+     ******************************************************/
     public function clientDetails(Request $request){
         if(!isset($request->client_id)){
             abort(404);
         }
 
         $client = Clients::where('client_id', $request->client_id)->first();
+        if(empty($client)){
+            abort(404);
+        }
         $client->data = User::find($client->user_id);
+        $managers = Managers::where('client_id', $client->user_id)->get();
+        foreach($managers as $manager){
+            $manager->data = User::find($manager->user_id);
+        }
 
         if($request->isMethod('post')){
+            /**
+             * password reset section
+            */
             if($request->action == 'pass'){
                 $pass_e = array();
                 if($request->password != $request->repass){
@@ -153,6 +163,9 @@ class Owner extends Controller
                         ->with('errors', $pass_e);
                 }
             }
+            /**
+             * edit client info section
+             */
             if($request->action == 'edit-data'){
                 $client = Clients::where('client_id', $request->client_id)->first();
                 $client->phone = $request->phone;
@@ -173,10 +186,138 @@ class Owner extends Controller
                         ->with('error', 'Something went wrong! Please try again!');
                 }
             }
+            /**
+             * create managers section
+             */
+            if($request->action == 'crt-mngr'){
+                $mngr = new User();
+                $mngr_data = new Managers();
+                $errors_m = array();
+
+                if($request->password != $request->repass){
+                    $errors_m[] = 'Password didn\'t match.';
+                }
+
+                if(!$mngr->validate($request->all())){
+                    $mngr_e = $mngr->errors();
+                    foreach ($mngr_e->messages() as $k => $v){
+                        foreach ($v as $e){
+                            $errors_m[] = $e;
+                        }
+                    }
+                }
+
+                if(!$mngr_data->validate($request->all())){
+                    $mngr_data_e = $mngr_data->errors();
+                    foreach ($mngr_data_e->messages() as $k => $v){
+                        foreach ($v as $e){
+                            $errors_m[] = $e;
+                        }
+                    }
+                }
+
+                if(empty($errors_m)){
+                    $mngr->name = $request->name;
+                    $mngr->email = $request->email;
+                    $mngr->password = bcrypt($request->password);
+                    $mngr->role = $request->role;
+                    $mngr->status = 'active';
+                    if($mngr->save()){
+                        $mngr_data->user_id = $mngr->id;
+                        $mngr_data->client_id = $client->user_id;
+                        $mngr_data->manager_id = $request->manager_id;
+                        $mngr_data->phone = $request->phone;
+                        if($mngr_data->save()){
+                            return redirect()
+                                ->to('/client-details?client_id='.$client->client_id)
+                                ->with('success_m', 'Manager created successfully!');
+                        }else{
+                            User::destroy($mngr->id);
+                            return redirect()
+                                ->to('/client-details?client_id='.$client->client_id)
+                                ->with('error_m', 'Something went wrong! Please try again!');
+                        }
+                    }else{
+                        return redirect()
+                            ->to('/client-details?client_id='.$client->client_id)
+                            ->with('error_m', 'Something went wrong! Please try again!');
+                    }
+                }else{
+                    return redirect()
+                        ->to('/client-details?client_id='.$client->client_id)
+                        ->with('errors', $errors_m)
+                        ->withInput();
+                }
+            }
+            /**
+             * edit managers section
+             */
+            if($request->action == 'edit-mngr'){
+                $edit_e = array();
+                if($request->password != $request->repass){
+                    $edit_e[] = 'Password didn\'t match!';
+                }
+                if($request->password != null && strlen($request->password) < 6){
+                    $edit_e[] = 'Password has to be at least 6 digits long!';
+                }
+                if(empty($edit_e)){
+                    $edit_m = Managers::find($request->manager_id);
+                    $edit_m->phone = $request->phone;
+                    $edit_m->save();
+                    $edit_u = User::find($edit_m->user_id);
+                    $edit_u->name = $request->name;
+                    if($request->password != null){
+                        $edit_u->password = bcrypt($request->password);
+                    }
+                    $edit_u->save();
+                    return redirect()
+                        ->to('/client-details?client_id='.$client->client_id)
+                        ->with('success_m', 'Manager edited successfully!');
+                }else{
+                    return redirect()
+                        ->to('/client-details?client_id='.$client->client_id)
+                        ->with('errors', $edit_e)
+                        ->withInput();
+                }
+            }
+            /**
+             * delete managers section
+             */
+            if($request->action == 'delete-mngr'){
+                $delete_m = Managers::find($request->manager_id);
+                if(User::destroy($delete_m->user_id)){
+                    Managers::destroy($request->manager_id);
+                    return redirect()
+                        ->to('/client-details?client_id='.$client->client_id)
+                        ->with('success_m', 'Manager deleted successfully!');
+                }else{
+                    return redirect()
+                        ->to('/client-details?client_id='.$client->client_id)
+                        ->with('error_m', 'Something went wrong! Please try again!');
+                }
+            }
+            /**
+             * block managers section
+             */
+            if($request->action == 'stat-mngr'){
+                $stat_m = Managers::find($request->manager_id);
+                $stat = User::find($stat_m->user_id);
+                $stat->status = $request->status;
+                if($stat->save()){
+                    return redirect()
+                        ->to('/client-details?client_id='.$client->client_id)
+                        ->with('success_m', 'The manager was '.$request->status.'ed successfully!');
+                }else{
+                    return redirect()
+                        ->to('/client-details?client_id='.$client->client_id)
+                        ->with('error_m', 'Something went wrong! Please try again!');
+                }
+            }
         }
 
         return view('pages.owner.client-details', [
             'client' => $client,
+            'managers' => $managers,
             'js' => 'pages.owner.js.client-details-js',
             'modal' => 'pages.owner.modals.client-details-modal'
         ]);
