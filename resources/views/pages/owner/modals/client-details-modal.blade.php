@@ -175,70 +175,17 @@ Assign device modal
                     </tr>
                     </thead>
                     <tbody>
+                    <?php $d = 1; ?>
+                    @foreach($devices as $device)
                     <tr>
-                        <td>1</td>
-                        <td>Dev0001</td>
-                        <td>S/N04956679</td>
+                        <td>{{ $d++ }}</td>
+                        <td>{{ $device->device_id }}</td>
+                        <td>{{ $device->factory_id }}</td>
                         <td>
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                            <input type="checkbox" class="form-check-input dev-in" name="dev_in" id="exampleCheck1" value="{{ $device->device_id }}">
                         </td>
                     </tr>
-                    <tr>
-                        <td>02</td>
-                        <td>Dev0002</td>
-                        <td>S/N04956679</td>
-                        <td>
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>03</td>
-                        <td>Dev0003</td>
-                        <td>S/N04956679</td>
-                        <td>
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>04</td>
-                        <td>Dev0004</td>
-                        <td>S/N04956679</td>
-                        <td>
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>05</td>
-                        <td>Dev0005</td>
-                        <td>S/N04956679</td>
-                        <td>
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>06</td>
-                        <td>Dev0006</td>
-                        <td>S/N04956679</td>
-                        <td>
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>07</td>
-                        <td>Dev0007</td>
-                        <td>S/N04956679</td>
-                        <td>
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>08</td>
-                        <td>Dev0008</td>
-                        <td>S/N04956679</td>
-                        <td>
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        </td>
-                    </tr>
+                    @endforeach
                 </table>
                 <button type="button" class="btn btn-default" id="modal-hide" data-toggle="modal" data-target="#assignmodal">Assign</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -253,32 +200,41 @@ assign device modal
 <div class="modal fade" id="assignmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div  class="modal-dialog" role="document">
         <div class="modal-content modal-form">
-            <div class="modal-body text-center modal-padding">
+            <form method="post" id="devs" action="{{ url('/client-details?client_id='.$client->client_id) }}">
+            {{ csrf_field() }}
+                <div class="modal-body text-center modal-padding">
                 <p>Are you sure you want to ADD
-                <ol>
-                    <li>Device 2</li>
-                    <li>Device 3</li>
+                <ol id="devices">
                 </ol>
                 </p>
-                <button type="button" class="btn btn-default">Yes</button>
+                <input type="hidden" name="action" value="dev">
+                <button type="submit" form="devs" class="btn btn-default">Yes</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
 
+@foreach($assigned as $ass)
 <!--
 delete device modal
 -->
-<div class="modal fade" id="myModal5" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="device-{{ $ass->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div  class="modal-dialog" role="document">
         <div class="modal-content modal-form">
+            <form method="post" id="devs" action="{{ url('/client-details?client_id='.$client->client_id) }}">
+                {{ csrf_field() }}
             <div class="modal-body text-center modal-padding">
-                <p>Are you sure you want to delete <strong>Device</strong> ?
+                <p>Are you sure you want to delete <strong>{{ $ass->device_id }}</strong> ?
                 </p>
-                <button type="button" class="btn btn-default">Yes</button>
+                <input type="hidden" name="action" value="remove">
+                <input type="hidden" name="device_id" value="{{ $ass->id }}">
+                <button type="submit" class="btn btn-default">Yes</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
             </div>
+                </form>
         </div>
     </div>
 </div>
+    @endforeach

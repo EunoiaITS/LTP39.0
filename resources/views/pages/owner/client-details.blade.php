@@ -96,9 +96,17 @@
                 </div>
                 <div class="col-sm-12 dashboad-title">
                     <h2>Device List <div class="plus-icon" data-toggle="modal" data-target="#myModaltable"><i class="fas fa-plus-circle"></i></div></h2>
-                    <div class="alert alert-success" role="alert">
-                        Devices Added
-                    </div>
+                    @if(session()->has('success_d'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session()->get('success_d') }}
+                        </div>
+                    @endif
+
+                    @if(session()->has('error_d'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session()->get('error_d') }}
+                        </div>
+                    @endif
                 </div>
                 <div class="col-sm-10 col-sm-offset-1">
                     <div class="employee-table-center clearfix">
@@ -112,86 +120,17 @@
                             </tr>
                             </thead>
                             <tbody>
+                            <?php $ad = 1; ?>
+                            @foreach($assigned as $ass)
                             <tr>
-                                <td>1</td>
-                                <td>Dev0001</td>
-                                <td>S/N04956679</td>
+                                <td>{{ $ad++ }}</td>
+                                <td>{{ $ass->device_id }}</td>
+                                <td>{{ $ass->factory_id }}</td>
                                 <td>
-                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal5">Remove</button>
+                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#device-{{ $ass->id }}">Remove</button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>02</td>
-                                <td>Dev0002</td>
-                                <td>S/N04956679</td>
-                                <td>
-                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal5">Remove</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>03</td>
-                                <td>Dev0003</td>
-                                <td>S/N04956679</td>
-                                <td>
-                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal5">Remove</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>04</td>
-                                <td>Dev0004</td>
-                                <td>S/N04956679</td>
-                                <td>
-                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal5">Remove</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>05</td>
-                                <td>Dev0005</td>
-                                <td>S/N04956679</td>
-                                <td>
-                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal5">Remove</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>06</td>
-                                <td>Dev0006</td>
-                                <td>S/N04956679</td>
-                                <td>
-                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal5">Remove</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>07</td>
-                                <td>Dev0007</td>
-                                <td>S/N04956679</td>
-                                <td>
-                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal5">Remove</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>08</td>
-                                <td>Dev0008</td>
-                                <td>S/N04956679</td>
-                                <td>
-                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal5">Remove</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>09</td>
-                                <td>Dev0009</td>
-                                <td>S/N04956679</td>
-                                <td>
-                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal5">Remove</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>10</td>
-                                <td>Dev0010</td>
-                                <td>S/N04956679</td>
-                                <td>
-                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal5">Remove</button>
-                                </td>
-                            </tr>
+                            @endforeach
                         </table>
                     </div>
                 </div>
