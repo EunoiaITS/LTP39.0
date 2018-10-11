@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Clients;
 use App\CompanyDevice;
-use App\CompanyBilling;
+use App\CompanyBillingSettings;
 use App\CompanyPayment;
 use App\Managers;
 use App\User;
@@ -454,12 +454,16 @@ class Owner extends Controller
     public function createBilling(Request $request){
         $clients = Clients::all();
         foreach ($clients as $c){
-            $user = User::find($c->user_id);
-            $c->name = $user->name;
+            $cbs = CompanyBillingSettings::where('client_id',$c->client_id)->first();
+            if(!$cbs){
+                $user = User::find($c->user_id);
+                $c->name = $user->name;
+                $c->check = 'yes';
+            }
         }
         if($request->isMethod('post')){
             $errors = array();
-            $cb = new CompanyBilling();
+            $cb = new CompanyBillingSettings();
             if(!$cb->validate($request->all())){
                 $cb_e = $cb->errors();
                 foreach ($cb_e->messages() as $k => $v){
@@ -470,7 +474,7 @@ class Owner extends Controller
             }
             if(empty($errors)){
                 $cb->client_id = $request->client_id;
-                $cb->billing_id = 'BILL-01';
+                $cb->billing_id = 'Bill-'.$request->client_id;
                 $cb->billing_term = $request->billing_term;
                 $cb->billing_amount = $request->billing_amount;
                 $cb->bill_start_date = date('Y-m-d',strtotime($request->bill_start_date));
@@ -478,7 +482,7 @@ class Owner extends Controller
                 $cb->modified_by = 'MOD';
                 $cb->auto_renew = $request->auto_renew;
                 if($cb->save()){
-                    $last_id = CompanyBilling::orderBy('id', 'desc')->first();
+                    $last_id = CompanyBillingSettings::orderBy('id', 'desc')->first();
                     $cp = new CompanyPayment();
                     if(!$cp->validate($request->all())){
                         $cp_e = $cp->errors();
@@ -520,7 +524,7 @@ class Owner extends Controller
      */
 
     public function manageBilling(){
-        $billing = CompanyBilling::all();
+        $billing = CompanyBillingSettings::all();
         foreach ($billing as $b){
             $client = Clients::where('client_id',$b->client_id)->first();
             $user = User::find($client->user_id);
@@ -547,17 +551,29 @@ class Owner extends Controller
         $data = new \stdClass();
         $user = User::find($client->user_id);
         $data->name = $user->name;
-        $billing = CompanyBilling::where('client_id',$request->client_id)->first();
+        $billing = CompanyBillingSettings::where('client_id',$request->client_id)->first();
         $data->time = $billing->billing_term;
         $data->amount = $billing->billing_amount;
+        $data->auto_renew = $billing->auto_renew;
+        $data->start_date = $billing->bill_start_date;
 
-        $bill = CompanyBilling::all();
+        $payment = CompanyPayment::all();
+        foreach ($payment as $p){
+            $cbs = CompanyBillingSettings::where('id',$p->billing_id)
+                ->where('client_id',$request->client_id)->get();
+            if($p->status == 'unpaid'){
+                foreach ($cbs as $c){
+                    $p->billing_id = $c->billing_id;
+                    $p->start_date = $c->bill_start_date;
+                }
+            }
+        }
 
 
         return view('pages.owner.manage-billing-details',[
             'modal' => 'pages.owner.modals.manage-billing-details-modal',
             'data' => $data,
-            'billing' => $bill
+            'billing' => $payment
         ]);
     }
     public function payment(Request $request){

@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 
-class CompanyBilling extends Model
+class CompanyBillingSettings extends Model
 {
     protected $rules = array(
         'billing_term'  => 'required',
@@ -15,7 +15,7 @@ class CompanyBilling extends Model
 
     protected $errors;
 
-    protected $table = 'company_billing';
+    protected $table = 'company_billing_settings';
 
     public function validate($data)
     {

@@ -1,9 +1,9 @@
 @foreach($billing as $b)
-<div class="modal fade model-that-hide" id="myModal-{{ $b->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade model-that-hide" id="myModal-" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div  class="modal-dialog" role="document">
         <div class="modal-content modal-form">
             <div class="modal-body text-center modal-padding">
-                <form id="bill{{ $b->id }}" action="{{ url('/payment') }}" method="post">
+                <form id="bill" action="{{ url('/payment') }}" method="post">
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label for="transaction-id">Transaction ID</label>
@@ -18,12 +18,12 @@
 @endforeach
 
 @foreach($billing as $b)
-<div class="modal fade" id="myModalCon-{{ $b->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="myModalCon-" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div  class="modal-dialog" role="document">
         <div class="modal-content modal-form">
             <div class="modal-body text-center modal-padding">
                 <p>Are you sure The Transaction is Done?</p>
-                <button type="submit" form="bill{{ $b->id }}" class="btn btn-default">Yes</button>
+                <button type="submit" form="bill" class="btn btn-default">Yes</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
