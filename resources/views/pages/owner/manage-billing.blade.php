@@ -5,6 +5,14 @@
         <div class="row">
             <div class="col-sm-12 dashboad-title">
                 <h2>Manage Billing</h2>
+                @include('includes.messages')
+                @if(isset($errors))
+                    @foreach($errors as $error)
+                        <div class="alert alert-danger" role="alert">
+                            {{ $error }}
+                        </div>
+                    @endforeach
+                @endif
             </div>
             <div class="col-sm-12">
                 <div class="employee-table-center clearfix">
@@ -32,7 +40,7 @@
                             <td>{{ $b->client }}</td>
                             <td>{{ $b->billing_term }}</td>
                             <td>{{ $b->billing_amount }}</td>
-                            <td>{{ date('Y-m-d',strtotime($b->bill_start_date)) }}</td>
+                            <td>{{ date('Y-m-d',strtotime($b->due_date)) }}</td>
                             <td>
                                 <a href="{{ url('/manage-billing-details?client_id='.$b->client_id) }}"><button class="edit-icon btn btn-login">Details</button></a>
                             </td>

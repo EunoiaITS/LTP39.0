@@ -10,6 +10,7 @@ use App\CompanyBillingSettings;
 use App\CompanyPayment;
 use App\Managers;
 use App\User;
+use Faker\Provider\Company;
 use Illuminate\Http\Request;
 
 class Owner extends Controller
@@ -493,8 +494,16 @@ class Owner extends Controller
                         }
                     }
                     $cp->billing_id = $last_id->id;
-                    $cp->bill_due_date = date('Y-m-d',strtotime($request->bill_start_date . ' + 90 days'));
-                    $cp->paid = 'unpaid';
+                    if($request->billing_term == '1'){
+                        $cp->bill_due_date = date('Y-m-d',strtotime($request->bill_start_date . ' + 30 days'));
+                    }elseif($request->billing_term == '2'){
+                        $cp->bill_due_date = date('Y-m-d',strtotime($request->bill_start_date . ' + 60 days'));
+                    }elseif($request->billing_term == '3'){
+                        $cp->bill_due_date = date('Y-m-d',strtotime($request->bill_start_date . ' + 90 days'));
+                    }elseif($request->billing_term == '4'){
+                        $cp->bill_due_date = date('Y-m-d',strtotime($request->bill_start_date . ' + 120 days'));
+                    }
+                    $cp->status = 'unpaid';
                     $cp->save();
                     return redirect()
                         ->to('/create-billing')
@@ -529,6 +538,10 @@ class Owner extends Controller
             $client = Clients::where('client_id',$b->client_id)->first();
             $user = User::find($client->user_id);
             $b->client = $user->name;
+            $cbs = CompanyPayment::where('billing_id',$b->id)->get();
+            foreach ($cbs as $c){
+                $b->due_date = $c->bill_due_date;
+            }
         }
         return view('pages.owner.manage-billing',[
             'modal' => 'pages.owner.modals.manage-billing-modal',
@@ -563,8 +576,15 @@ class Owner extends Controller
                 ->where('client_id',$request->client_id)->get();
             if($p->status == 'unpaid'){
                 foreach ($cbs as $c){
-                    $p->billing_id = $c->billing_id;
+                    $p->check = 'unpaid';
+                    $p->bill_id = $c->billing_id;
                     $p->start_date = $c->bill_start_date;
+                }
+            }
+            if($p->status == 'paid'){
+                foreach ($cbs as $c){
+                    $p->check = 'paid';
+                    $p->bill_id = $c->billing_id;;
                 }
             }
         }
@@ -578,7 +598,18 @@ class Owner extends Controller
     }
     public function payment(Request $request){
         if($request->isMethod('post')){
-            dd($request->all());
+            $pay = CompanyPayment::find($request->payment_id);
+            $pay->transaction_id = $request->transaction_id;
+            $pay->status = 'paid';
+            if($pay->save()){
+                return redirect()
+                    ->to('/manage-billing')
+                    ->with('success', 'The Transaction was added successfully!!');
+            }else{
+                return redirect()
+                    ->to('/manage-billing')
+                    ->with('error', 'The Transaction Can not be added!!');
+            }
         }
     }
 }
