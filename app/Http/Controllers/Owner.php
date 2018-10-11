@@ -137,6 +137,11 @@ class Owner extends Controller
             $manager->data = User::find($manager->user_id);
         }
 
+        $devices = CompanyDevice::where('status', 'unassigned')->get();
+        $assigned_devices = CompanyDevice::where('status', 'assigned')
+            ->where('client_id', $client->id)
+            ->get();
+
         if($request->isMethod('post')){
             /**
              * password reset section
@@ -315,11 +320,39 @@ class Owner extends Controller
                         ->with('error_m', 'Something went wrong! Please try again!');
                 }
             }
+            /**
+             * assign devices section
+             */
+            if($request->action == 'dev'){
+                foreach($request->devices as $dev){
+                    $assign = CompanyDevice::where('device_id', $dev)->first();
+                    $assign->client_id = $client->id;
+                    $assign->status = 'assigned';
+                    $assign->save();
+                }
+                return redirect()
+                    ->to('/client-details?client_id='.$client->client_id)
+                    ->with('success_d', 'Devices were added successfully!');
+            }
+            /**
+             * unassign devices section
+             */
+            if($request->action == 'remove'){
+                $unassign = CompanyDevice::find($request->device_id);
+                $unassign->client_id = null;
+                $unassign->status = 'unassigned';
+                $unassign->save();
+                return redirect()
+                    ->to('/client-details?client_id='.$client->client_id)
+                    ->with('success_d', 'Device was removed successfully!');
+            }
         }
 
         return view('pages.owner.client-details', [
             'client' => $client,
             'managers' => $managers,
+            'devices' => $devices,
+            'assigned' => $assigned_devices,
             'js' => 'pages.owner.js.client-details-js',
             'modal' => 'pages.owner.modals.client-details-modal'
         ]);
