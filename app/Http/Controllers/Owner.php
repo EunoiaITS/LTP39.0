@@ -16,6 +16,9 @@ use Illuminate\Http\Request;
 class Owner extends Controller
 {
 
+    public function dashboard(){
+        return view('pages.owner.dashboard');
+    }
     /**
      * CreateClient - function for creating clients
      * param - request - takes all the post request data

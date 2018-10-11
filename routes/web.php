@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('pages.owner.dashboard');
-});
+Route::get('/','Owner@dashboard');
 
 /**
  * client routes
