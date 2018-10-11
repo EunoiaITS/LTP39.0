@@ -51,3 +51,10 @@ Route::get('/manage-billing-details','Owner@manageBillingDetails');
  **/
 
 Route::post('/payment','Owner@payment');
+
+/**
+ * settings
+ * parking settings
+*/
+Route::get('/settings/vehicle-types', 'Client@vehicleType');
+Route::post('/settings/vehicle-types', 'Client@vehicleType');
