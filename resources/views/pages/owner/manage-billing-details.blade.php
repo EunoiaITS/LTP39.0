@@ -9,7 +9,9 @@
                     <div class="employee-form form-employee-center clearfix">
                         <h3 class="manage-bill-name">Client :<br><span>{{ $data->name }}</span></h3>
                         <h3 class="manage-bill-name">Billing Time :<br><span>Every {{ $data->time }} Months</span></h3>
+                        <h3 class="manage-bill-name">Start Date : <br><span>{{ date('Y-m-d',strtotime($data->start_date)) }}</span></h3>
                         <h3 class="manage-bill-name">Amount : <br><span>BDT {{ $data->amount }}</span></h3>
+                        <h3 class="manage-bill-name">Auto Renew : <br><span>@if($data->auto_renew != null) {{ 'On' }} @else {{ 'Off' }} @endif</span></h3>
                     </div>
                 </div>
                 <div class="col-sm-12 dashboad-title">
@@ -28,17 +30,15 @@
                                 <tbody>
                                 @php $count = 0; @endphp
                                 @foreach($billing as $b)
-                                    @if(isset($b->check) && $b->check == 'yes')
-                                @php $count++; @endphp
+                                    @php $count++; @endphp
                                 <tr>
                                     <td>{{ $count }}</td>
                                     <td>{{ $b->billing_id }}</td>
-                                    <td>{{ date('Y-m-d',strtotime($b->bill_start_date)) }}</td>
+                                    <td>{{ date('Y-m-d',strtotime($b->start_date)) }}</td>
                                     <td>
-                                        <button class="edit-icon btn btn-login"  data-toggle="modal" data-target="#myModal-{{ $b->id }}">Paid</button>
+                                        <button class="edit-icon btn btn-login"  data-toggle="modal" data-target="#myModal-">Paid</button>
                                     </td>
                                 </tr>
-                                @endif
                                 @endforeach
                             </table>
                         </div>
@@ -58,66 +58,18 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>01</td>
-                                    <td>BL00001</td>
-                                    <td>232458723642</td>
-                                    <td>02/12/2018</td>
-                                </tr>
-                                <tr>
-                                    <td>02</td>
-                                    <td>BL00001</td>
-                                    <td>232458723642</td>
-                                    <td>02/12/2018</td>
-                                </tr>
-                                <tr>
-                                    <td>03</td>
-                                    <td>BL00001</td>
-                                    <td>232458723642</td>
-                                    <td>02/12/2018</td>
-                                </tr>
-                                <tr>
-                                    <td>04</td>
-                                    <td>BL00001</td>
-                                    <td>232458723642</td>
-                                    <td>02/12/2018</td>
-                                </tr>
-                                <tr>
-                                    <td>05</td>
-                                    <td>BL00001</td>
-                                    <td>232458723642</td>
-                                    <td>02/12/2018</td>
-                                </tr>
-                                <tr>
-                                    <td>06</td>
-                                    <td>BL00001</td>
-                                    <td>232458723642</td>
-                                    <td>02/12/2018</td>
-                                </tr>
-                                <tr>
-                                    <td>07</td>
-                                    <td>BL00001</td>
-                                    <td>232458723642</td>
-                                    <td>02/12/2018</td>
-                                </tr>
-                                <tr>
-                                    <td>08</td>
-                                    <td>BL00001</td>
-                                    <td>232458723642</td>
-                                    <td>02/12/2018</td>
-                                </tr>
-                                <tr>
-                                    <td>09</td>
-                                    <td>BL00001</td>
-                                    <td>232458723642</td>
-                                    <td>02/12/2018</td>
-                                </tr>
-                                <tr>
-                                    <td>10</td>
-                                    <td>BL00001</td>
-                                    <td>232458723642</td>
-                                    <td>02/12/2018</td>
-                                </tr>
+                                @php $count = 0; @endphp
+                                @foreach($billing as $b)
+                                    @if(isset($b->check) && $b->check = 'paid')
+                                        @php $count++; @endphp
+                                        <tr>
+                                            <td>{{ $count }}</td>
+                                            <td>{{ $b->billing_id }}</td>
+                                            <td>{{ date('Y-m-d',strtotime($b->bill_start_date)) }}</td>
+                                            <td>{{ 'date' }}</td>
+                                        </tr>
+                                    @endif
+                                @endforeach
                             </table>
                         </div>
                     </div>

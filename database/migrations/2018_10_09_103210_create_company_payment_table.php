@@ -17,11 +17,9 @@ class CreateCompanyPaymentTable extends Migration
             $table->increments('id');
             $table->integer('billing_id');
             $table->dateTime('bill_due_date');
-            $table->string('paid');
-            $table->string('transaction_id');
-            $table->string('paid_date');
-            $table->string('created_by');
-            $table->string('modified_by');
+            $table->string('status')->nullable();
+            $table->string('transaction_id')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

@@ -23,7 +23,9 @@
                                     <label for="client">Client's Name</label>
                                     <select class="form-control get-select-picker" id="client" title="Client's Category">
                                         @foreach($clients as $c)
-                                            <option value="{{ $c->client_id }}">{{ $c->name }}</option>
+                                            @if(isset($c->check) && $c->check == 'yes')
+                                                <option value="{{ $c->client_id }}">{{ $c->name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>

@@ -10,7 +10,7 @@ class CompanyPayment extends Model
     protected $rules = array(
     'billing_id'  => 'required',
     'bill_due_date'  => 'required',
-    'paid' => 'required'
+    'status' => 'required'
 );
 
     protected $errors;

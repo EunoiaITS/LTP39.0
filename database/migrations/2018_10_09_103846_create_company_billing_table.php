@@ -13,16 +13,16 @@ class CreateCompanyBillingTable extends Migration
      */
     public function up()
     {
-        Schema::create('company_billing', function (Blueprint $table) {
+        Schema::create('company_billing_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->string('billing_id');
-            $table->integer('client_id');
+            $table->string('client_id');
             $table->string('billing_term');
             $table->string('billing_amount');
             $table->dateTime('bill_start_date');
-            $table->string('auto_renew');
-            $table->string('created_by');
-            $table->string('modified_by');
+            $table->string('auto_renew')->nullable();
+            $table->string('created_by')->nullable();
+            $table->string('modified_by')->nullable();
             $table->timestamps();
         });
     }
