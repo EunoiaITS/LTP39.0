@@ -23,11 +23,11 @@
                             {{ csrf_field() }}
                             <div class="form-group">
                                 <label for="user-id" class="usr-lock"><i class="fas fa-id-badge"></i></label>
-                                <input type="text" name="type_id" placeholder="ID" class="form-control" required>
+                                <input type="text" name="type_id" placeholder="ID" class="form-control" value="{{ old('type_id') }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="user-crname" class="usr-lock"><i class="fas fa-car"></i></label>
-                                <input type="text" name="type_name" placeholder="Vehicle Type" class="form-control" required>
+                                <input type="text" name="type_name" placeholder="Vehicle Type" class="form-control" value="{{ old('type_name') }}" required>
                             </div>
                             <div class="submit-forget-password">
                                 <input type="hidden" name="action" value="create">
@@ -55,7 +55,7 @@
                                 <td>{{ $d->type_id }}</td>
                                 <td>{{ $d->type_name }}</td>
                                 <td>
-                                    <button class="edit-icon btn btn-login">Edit</button>
+                                    <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#edit-{{ $d->id }}">Edit</button>
                                     <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#delete-{{ $d->id }}">Delete</button>
                                 </td>
                             </tr>
