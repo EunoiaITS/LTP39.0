@@ -74,7 +74,7 @@
                                         <li><a class="active" href="{{ url('/settings/vehicle-types') }}">Vehicle Category</a></li>
                                         <li><a href="{{ url('/settings/assign-parking') }}">Assign Parking</a></li>
                                         <li><a href="{{ url('/settings/assign-rate') }}">Assign Hour Rate</a></li>
-                                        <li><a href="exampted-duration.html">Exampted Duration/Time</a></li>
+                                        <li><a href="{{ url('/settings/exempted-setting') }}">Exampted Duration/Time</a></li>
                                     </ul>
                                 </div>
                             </div>

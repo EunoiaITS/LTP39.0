@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\ExemptedDuration;
+use App\ExemptedTime;
 use App\ParkingRate;
 use App\ParkingSetting;
 use App\VehicleCategory;
@@ -151,7 +153,7 @@ class Client extends Controller
     }
 
     /**
-     * assignParking - function to assign parking for each vehicle category
+     * assignRate - function to assign rate for each vehicle category
      */
     public function assignRate(Request $request){
         $vt = VehicleCategory::all();
@@ -173,44 +175,48 @@ class Client extends Controller
                 }
                 if(empty($errors)){
                     $assign->vehicle_id = $request->vehicle_id;
-                    $assign->amount = $request->amount;
+                    $assign->base_hour = $request->base_hour;
+                    $assign->base_rate = $request->base_rate;
+                    $assign->sub_rate = $request->sub_rate;
                     if($assign->save()){
                         return redirect()
-                            ->to('/settings/assign-parking')
-                            ->with('success', 'Parking setting was assigned!');
+                            ->to('/settings/assign-rate')
+                            ->with('success', 'Parking rate setting was assigned!');
                     }else{
                         return redirect()
-                            ->to('/settings/assign-parking')
+                            ->to('/settings/assign-rate')
                             ->with('error', 'Something went wrong! Please try again!');
                     }
                 }else{
                     return redirect()
-                        ->to('/settings/assign-parking')
+                        ->to('/settings/assign-rate')
                         ->with('errors', $errors)
                         ->withInput();
                 }
             }
             if($request->action == 'edit'){
-                $type = ParkingSetting::find($request->setting_id);
-                $type->amount = $request->amount;
-                if($type->save()){
+                $assign = ParkingRate::find($request->rate_id);
+                $assign->base_hour = $request->base_hour;
+                $assign->base_rate = $request->base_rate;
+                $assign->sub_rate = $request->sub_rate;
+                if($assign->save()){
                     return redirect()
-                        ->to('/settings/assign-parking')
-                        ->with('success', 'Assign setting was updated successfully!');
+                        ->to('/settings/assign-rate')
+                        ->with('success', 'Rate setting was updated successfully!');
                 }else{
                     return redirect()
-                        ->to('/settings/assign-parking')
+                        ->to('/settings/assign-rate')
                         ->with('error', 'Something went wrong! Please try again!');
                 }
             }
             if($request->action == 'delete'){
-                if(ParkingSetting::destroy($request->setting_id)){
+                if(ParkingRate::destroy($request->rate_id)){
                     return redirect()
-                        ->to('/settings/assign-parking')
-                        ->with('success', 'Assign setting was deleted successfully!');
+                        ->to('/settings/assign-rate')
+                        ->with('success', 'Rate setting was deleted successfully!');
                 }else{
                     return redirect()
-                        ->to('/settings/assign-parking')
+                        ->to('/settings/assign-rate')
                         ->with('error', 'Something went wrong! Please try again!');
                 }
             }
@@ -219,6 +225,110 @@ class Client extends Controller
             'vt' => $vt,
             'pr' => $pr,
             'modal' => 'pages.client.modals.assign-rate-modals'
+        ]);
+    }
+
+    /**
+     * exemptedDuration - function to assign exampted duration
+     */
+    public function exemptedDuration(Request $request){
+        $exTime = ExemptedTime::where('client_id', 5)->first();
+        $exDuration = ExemptedDuration::where('client_id', 5)->first();
+        if($request->isMethod('post')){
+            if($request->action == 'time'){
+                $errors = array();
+                $time = new ExemptedTime();
+                if(!$time->validate($request->all())){
+                    $time_e = $time->errors();
+                    foreach ($time_e->messages() as $k => $v){
+                        foreach ($v as $e){
+                            $errors[] = $e;
+                        }
+                    }
+                }
+                if(empty($errors)){
+                    $time->client_id = 5;
+                    $time->from = $request->from;
+                    $time->to = $request->to;
+                    if($time->save()){
+                        return redirect()
+                            ->to('/settings/exempted-setting')
+                            ->with('success', 'Exempted time was saved!');
+                    }else{
+                        return redirect()
+                            ->to('/settings/exempted-setting')
+                            ->with('error', 'Something went wrong! Please try again!');
+                    }
+                }else{
+                    return redirect()
+                        ->to('/settings/exempted-setting')
+                        ->with('errors', $errors)
+                        ->withInput();
+                }
+            }
+            if($request->action == 'ex-time'){
+                $time = ExemptedTime::find($request->time_id);
+                $time->from = $request->from;
+                $time->to = $request->to;
+                if($time->save()){
+                    return redirect()
+                        ->to('/settings/exempted-setting')
+                        ->with('success', 'Exempted time was saved!');
+                }else{
+                    return redirect()
+                        ->to('/settings/exempted-setting')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
+            }
+            if($request->action == 'duration'){
+                $errors = array();
+                $time = new ExemptedDuration();
+                if(!$time->validate($request->all())){
+                    $time_e = $time->errors();
+                    foreach ($time_e->messages() as $k => $v){
+                        foreach ($v as $e){
+                            $errors[] = $e;
+                        }
+                    }
+                }
+                if(empty($errors)){
+                    $time->client_id = 5;
+                    $time->duration = $request->duration;
+                    if($time->save()){
+                        return redirect()
+                            ->to('/settings/exempted-setting')
+                            ->with('success', 'Exempted duration was saved!');
+                    }else{
+                        return redirect()
+                            ->to('/settings/exempted-setting')
+                            ->with('error', 'Something went wrong! Please try again!');
+                    }
+                }else{
+                    return redirect()
+                        ->to('/settings/exempted-setting')
+                        ->with('errors', $errors)
+                        ->withInput();
+                }
+            }
+            if($request->action == 'ex-duration'){
+                $duration = ExemptedDuration::find($request->duration_id);
+                $duration->duration = $request->duration;
+                if($duration->save()){
+                    return redirect()
+                        ->to('/settings/exempted-setting')
+                        ->with('success', 'Exempted duration was saved!');
+                }else{
+                    return redirect()
+                        ->to('/settings/exempted-setting')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
+            }
+        }
+        return view('pages.client.exempted-duration', [
+            'exTime' => $exTime,
+            'exDuration' => $exDuration,
+            'js' => 'pages.client.js.exempted-duration-js',
+            'modal' => 'pages.client.modals.exempted-duration-modals'
         ]);
     }
 

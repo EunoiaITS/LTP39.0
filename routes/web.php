@@ -62,3 +62,5 @@ Route::get('/settings/assign-parking', 'Client@assignParking');
 Route::post('/settings/assign-parking', 'Client@assignParking');
 Route::get('/settings/assign-rate', 'Client@assignRate');
 Route::post('/settings/assign-rate', 'Client@assignRate');
+Route::get('/settings/exempted-setting', 'Client@exemptedDuration');
+Route::post('/settings/exempted-setting', 'Client@exemptedDuration');
