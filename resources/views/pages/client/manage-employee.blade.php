@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12 dashboad-title">
-                <h2>Manage Billing</h2>
+                <h2>Manage Employees</h2>
                 @include('includes.messages')
                 @if(isset($errors))
                     @foreach($errors as $error)
@@ -20,29 +20,27 @@
                         <thead>
                         <tr>
                             <th>Serial</th>
-                            <th>Bill ID</th>
-                            <th>Client ID</th>
-                            <th>Client Name</th>
-                            <th>Bill Term</th>
-                            <th>Amount</th>
-                            <th>Due Date</th>
-                            <th>Details</th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Name</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         @php $count = 0; @endphp
-                        @foreach($billing as $b)
+                        @foreach($employees as $e)
                         @php $count++; @endphp
                         <tr>
                             <td>{{ $count }}</td>
-                            <td>{{ $b->billing_id }}</td>
-                            <th>{{ $b->client_id }}</th>
-                            <td>{{ $b->client }}</td>
-                            <td>{{ $b->billing_term }}</td>
-                            <td>{{ $b->billing_amount }}</td>
-                            <td>{{ date('Y-m-d',strtotime($b->due_date)) }}</td>
+                            <td>{{ $e->employee_id }}</td>
+                            <td>{{ $e->name }}</td>
+                            <td>{{ $e->phone }}</td>
+                            <td>{{ $e->email }}</td>
                             <td>
-                                <a href="{{ url('/manage-billing-details?client_id='.$b->client_id) }}"><button class="edit-icon btn btn-login">Details</button></a>
+                                <div class="edit-icon icon-ed" data-toggle="modal" data-target="#myModalEmp-{{ $e->id }}"><img src="{{ asset('/public/assets/img/edit-image.png') }}" alt=""></div>
+                                <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModalPass-{{ $e->id }}">Edit Password</button>
+                                <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModalBlock-{{ $e->id }}">@if($e->status == 'unblock') {{ 'Block' }} @else {{ 'Unblock' }} @endif</button>
                             </td>
                         </tr>
                         @endforeach

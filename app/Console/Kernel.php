@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\CompanyBillingSettings;
+use App\CompanyPayment;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,8 +26,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->call(function(){
+//            $cp = CompanyPayment::all();
+//            foreach ($cp as $c){
+//                $cbs = CompanyBillingSettings::where('id',$c->billing_id)->get();
+//                if(date('Y-m-d') > date('Y-m-d',strtotime($c->bill_due_date))){
+//
+//                }
+//            }
+        })->daily();
     }
 
     /**

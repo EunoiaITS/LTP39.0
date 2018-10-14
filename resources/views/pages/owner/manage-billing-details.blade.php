@@ -30,15 +30,17 @@
                                 <tbody>
                                 @php $count = 0; @endphp
                                 @foreach($billing as $b)
+                                    @if(isset($b->check) && $b->check == 'unpaid')
                                     @php $count++; @endphp
                                 <tr>
                                     <td>{{ $count }}</td>
-                                    <td>{{ $b->billing_id }}</td>
+                                    <td>{{ $b->bill_id }}</td>
                                     <td>{{ date('Y-m-d',strtotime($b->start_date)) }}</td>
                                     <td>
-                                        <button class="edit-icon btn btn-login"  data-toggle="modal" data-target="#myModal-">Paid</button>
+                                        <button class="edit-icon btn btn-login"  data-toggle="modal" data-target="#myModal-{{$b->id}}">Paid</button>
                                     </td>
                                 </tr>
+                                    @endif
                                 @endforeach
                             </table>
                         </div>
@@ -60,13 +62,13 @@
                                 <tbody>
                                 @php $count = 0; @endphp
                                 @foreach($billing as $b)
-                                    @if(isset($b->check) && $b->check = 'paid')
+                                    @if(isset($b->check) && $b->check == 'paid')
                                         @php $count++; @endphp
                                         <tr>
                                             <td>{{ $count }}</td>
-                                            <td>{{ $b->billing_id }}</td>
-                                            <td>{{ date('Y-m-d',strtotime($b->bill_start_date)) }}</td>
-                                            <td>{{ 'date' }}</td>
+                                            <td>{{ $b->bill_id }}</td>
+                                            <td>{{ $b->transaction_id }}</td>
+                                            <td>{{ date('Y-m-d',strtotime($b->updated_at)) }}</td>
                                         </tr>
                                     @endif
                                 @endforeach

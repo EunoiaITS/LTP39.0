@@ -64,7 +64,8 @@
 	      down: 'fa fa-angle-down',
 	      previous: 'fa fa-angle-left',
 	      next: 'fa fa-angle-right',
-	    }
+	    },
+		minDate: moment()
 	});
 
   	/*======================
