@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\ParkingRate;
 use App\ParkingSetting;
 use App\VehicleCategory;
+use App\User;
+use App\Employee;
 use Illuminate\Http\Request;
 
 class Client extends Controller
@@ -222,4 +224,128 @@ class Client extends Controller
         ]);
     }
 
+    /**
+     * createEmployee - function to create employee
+     */
+
+
+    public function createEmployee(Request $request){
+        if($request->isMethod('post')){
+            $errors = array();
+            if($request->password != $request->repass){
+                $errors[] = 'Password didn\'t match.';
+            }
+            $emp = new Employee();
+
+            if(!$emp->validate($request->all())){
+                $emp_e = $emp->errors();
+                foreach ($emp_e->messages() as $k => $v){
+                    foreach ($v as $e){
+                        $errors[] = $e;
+                    }
+                }
+            }
+
+            if(empty($errors)){
+                $emp->client_id = 2;
+                $emp->employee_id = $request->employee_id;
+                $emp->password = bcrypt($request->password);
+                $emp->phone = $request->phone;
+                $emp->name = $request->name;
+                $emp->email = $request->email;
+                $emp->status = 'unblock';
+                if($emp->save()){
+                    return redirect()
+                        ->to('/create-employee')
+                        ->with('success', 'The employee was created successfully!!');
+                }else{
+                    return redirect()
+                        ->to('/create-employee')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
+            }else{
+                return redirect()
+                    ->to('/create-employee')
+                    ->with('errors', $errors)
+                    ->withInput();
+            }
+        }
+        return view('pages.client.create-employee');
+    }
+
+    /**
+     * manageEmployee - function to manage employee
+     */
+
+    public function manageEmployee(){
+        $emp = Employee::all();
+        return view('pages.client.manage-employee',[
+            'employees' => $emp,
+            'modal' => 'pages.client.modals.manage-employee-modal',
+        ]);
+    }
+
+    /**
+     * editEmployee - function to edit employee
+     */
+
+    public function editEmployee(Request $request){
+        if($request->isMethod('post')){
+            $emp = Employee::find($request->emp_id);
+            $emp->name = $request->name;
+            $emp->phone = $request->phone;
+            if($emp->save()){
+                return redirect()
+                    ->to('/manage-employee')
+                    ->with('success', 'The details was changed successfully!!');
+            }else{
+                return redirect()
+                    ->to('/manage-employee')
+                    ->with('error', 'Something went wrong! Please try again!');
+            }
+        }
+    }
+
+    /**
+     * editPassword - function to edit employee password
+     */
+
+    public function editPassword(Request $request){
+        if($request->isMethod('post')){
+            if($request->password != $request->repass){
+                $errors[] = 'Password didn\'t match.';
+            }
+            $emp = Employee::find($request->emp_id);
+            $emp->password = bcrypt($request->password);
+            if($emp->save()){
+                return redirect()
+                    ->to('/manage-employee')
+                    ->with('success', 'The password was changed successfully!!');
+            }else{
+                return redirect()
+                    ->to('/manage-employee')
+                    ->with('error', 'Something went wrong! Please try again!');
+            }
+        }
+    }
+
+    /**
+     * blocking - function to block/unblock employee
+     */
+
+    public function blocking(Request $request){
+        if($request->isMethod('post')){
+            $emp = Employee::find($request->emp_id);
+            $emp->status = $request->status;
+            if($emp->save()){
+                return redirect()
+                    ->to('/manage-employee')
+                    ->with('success', 'The password was changed successfully!!');
+            }else{
+                return redirect()
+                    ->to('/manage-employee')
+                    ->with('error', 'Something went wrong! Please try again!');
+            }
+        }
+    }
 }

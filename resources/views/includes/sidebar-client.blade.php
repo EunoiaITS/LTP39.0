@@ -13,8 +13,8 @@
             <div id="dropdown-lvl1" class="panel-collapse collapse">
                 <div class="panel-body">
                     <ul class="nav navbar-nav">
-                        <li><a href="create-employee.html">Create Employee</a></li>
-                        <li><a href="manage-employee.html">Manage Employee</a></li>
+                        <li><a href="{{ url('/create-employee') }}">Create Employee</a></li>
+                        <li><a href="{{ url('/manage-employee') }}">Manage Employee</a></li>
                     </ul>
                 </div>
             </div>
