@@ -63,6 +63,8 @@ Route::get('/settings/assign-rate', 'Client@assignRate');
 Route::post('/settings/assign-rate', 'Client@assignRate');
 Route::get('/settings/exempted-setting', 'Client@exemptedDuration');
 Route::post('/settings/exempted-setting', 'Client@exemptedDuration');
+Route::get('/settings/vat', 'Client@vat');
+Route::post('/settings/vat', 'Client@vat');
 
 /**
  * Employee Routes

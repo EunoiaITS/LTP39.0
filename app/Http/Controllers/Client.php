@@ -6,6 +6,7 @@ use App\ExemptedDuration;
 use App\ExemptedTime;
 use App\ParkingRate;
 use App\ParkingSetting;
+use App\VAT;
 use App\VehicleCategory;
 use App\User;
 use App\Employee;
@@ -457,6 +458,61 @@ class Client extends Controller
                     ->with('error', 'Something went wrong! Please try again!');
             }
         }
+    }
+
+    /**
+     * vat - function to save VAT settings
+    */
+    public function vat(Request $request){
+        $vat = VAT::where('client_id', 5)->first();
+        if($request->isMethod('post')){
+            if($request->action == 'create'){
+                $errors = array();
+                $vc = new VAT();
+                if(!$vc->validate($request->all())){
+                    $vc_e = $vc->errors();
+                    foreach ($vc_e->messages() as $k => $v){
+                        foreach ($v as $e){
+                            $errors[] = $e;
+                        }
+                    }
+                }
+                if(empty($errors)){
+                    $vc->client_id = 5;
+                    $vc->vat = $request->vat;
+                    if($vc->save()){
+                        return redirect()
+                            ->to('/settings/vat')
+                            ->with('success', 'VAT settings was saved!');
+                    }else{
+                        return redirect()
+                            ->to('/settings/vat')
+                            ->with('error', 'Something went wrong! Please try again!');
+                    }
+                }else{
+                    return redirect()
+                        ->to('/settings/vat')
+                        ->with('errors', $errors)
+                        ->withInput();
+                }
+            }
+            if($request->action == 'edit'){
+                $ve = VAT::find($request->vat_id);
+                $ve->vat = $request->vat;
+                if($ve->save()){
+                    return redirect()
+                        ->to('/settings/vat')
+                        ->with('success', 'VAT settings was saved!');
+                }else{
+                    return redirect()
+                        ->to('/settings/vat')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
+            }
+        }
+        return view('pages.client.vat', [
+            'vat' => $vat
+        ]);
     }
 
 }
