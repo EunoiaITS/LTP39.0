@@ -458,5 +458,5 @@ class Client extends Controller
             }
         }
     }
-    
+
 }

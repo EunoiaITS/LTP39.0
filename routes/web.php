@@ -61,10 +61,8 @@ Route::get('/settings/assign-parking', 'Client@assignParking');
 Route::post('/settings/assign-parking', 'Client@assignParking');
 Route::get('/settings/assign-rate', 'Client@assignRate');
 Route::post('/settings/assign-rate', 'Client@assignRate');
-<<<<<<< HEAD
 Route::get('/settings/exempted-setting', 'Client@exemptedDuration');
 Route::post('/settings/exempted-setting', 'Client@exemptedDuration');
-=======
 
 /**
  * Employee Routes
@@ -76,4 +74,3 @@ Route::get('/manage-employee', 'Client@manageEmployee');
 Route::post('/edit-password', 'Client@editPassword');
 Route::post('/edit-employee', 'Client@editEmployee');
 Route::post('/blocking', 'Client@blocking');
->>>>>>> 4b6317bbf78af8f4ebc58e6463c63c98954fdc19
