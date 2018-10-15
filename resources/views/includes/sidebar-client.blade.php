@@ -46,9 +46,9 @@
             <div id="dropdown-lvl3" class="panel-collapse collapse">
                 <div class="panel-body">
                     <ul class="nav navbar-nav">
-                        <li><a href="new-request-notification.html">New Request Notification</a></li>
-                        <li><a href="vip-user-list.html">VIP user List</a></li>
-                        <li><a href="vip-reject-list.html">VIP rejct List</a></li>
+                        <li><a href="{{ url('/vip-requests') }}">New Request Notification</a></li>
+                        <li><a href="{{ url('/vip-list') }}">VIP user List</a></li>
+                        <li><a href="{{ url('/vip-reject-list') }}">VIP rejct List</a></li>
                     </ul>
                 </div>
             </div>

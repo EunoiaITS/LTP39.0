@@ -76,3 +76,13 @@ Route::get('/manage-employee', 'Client@manageEmployee');
 Route::post('/edit-password', 'Client@editPassword');
 Route::post('/edit-employee', 'Client@editEmployee');
 Route::post('/blocking', 'Client@blocking');
+
+
+/**
+ * Vip Routes
+ **/
+
+Route::get('/vip-requests', 'Client@vipRequests');
+Route::post('/create-vip', 'Client@createVip');
+Route::get('/vip-list', 'Client@vipList');
+Route::get('/vip-reject-list', 'Client@vipRejectList');

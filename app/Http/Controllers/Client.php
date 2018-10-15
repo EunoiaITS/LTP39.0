@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Clients;
 use App\ExemptedDuration;
 use App\ExemptedTime;
 use App\ParkingRate;
@@ -10,6 +11,7 @@ use App\VAT;
 use App\VehicleCategory;
 use App\User;
 use App\Employee;
+use App\Vip;
 use Illuminate\Http\Request;
 
 class Client extends Controller
@@ -513,6 +515,72 @@ class Client extends Controller
         return view('pages.client.vat', [
             'vat' => $vat
         ]);
+    }
+
+    public function vipRequests(){
+        $users = User::all();
+        foreach ($users as $u){
+            $clients = Clients::where('user_id',$u->id)->get();
+            foreach ($clients as $client){
+                $u->phone = $client->phone;
+                $u->client_id = $client->client_id;
+            }
+        }
+
+        return view('pages.client.vip-requests',[
+            'users' => $users,
+            'modal' => 'pages.client.modals.vip-requests-modal',
+            'js' => 'pages.client.js.vip-requests-js'
+        ]);
+    }
+
+    public function createVip(Request $request){
+        if($request->isMethod('post')){
+            $errors = array();
+            $vip = new Vip();
+                if(!$vip->validate($request->all())){
+                    $vip_e = $vip->errors();
+                    foreach ($vip_e->messages() as $k => $v){
+                        foreach ($v as $e){
+                            $errors[] = $e;
+                        }
+                    }
+                }
+                if(empty($errors)){
+                    $vip->vip_id = $request->vip_id;
+                    $vip->client_id = $request->client_id;
+                    $vip->phone = $request->phone;
+                    $vip->vehicle_type = $request->vehicle_type;
+                    $vip->time_duration = $request->time_duration;
+                    $vip->price = $request->price;
+                    $vip->purpose = $request->purpose;
+                    $vip->car_reg = $request->car_reg;
+                    $vip->status = 'accepted';
+                    if($vip->save()){
+                        return redirect()
+                            ->to('/vip-requests')
+                            ->with('success', 'VIP Created Successfully!');
+                    }else{
+                        return redirect()
+                            ->to('/vip-requests')
+                            ->with('error', 'Something went wrong! Please try again!');
+                    }
+                }else{
+                    return redirect()
+                        ->to('/vip-requests')
+                        ->with('errors', $errors)
+                        ->withInput();
+                }
+            }
+    }
+
+    public function vipList(){
+        return view('pages.client.vip-list');
+    }
+
+
+    public function vipRejectList(){
+        return view('pages.client.vip-reject-list');
     }
 
 }
