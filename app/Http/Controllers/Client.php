@@ -519,7 +519,82 @@ class Client extends Controller
     }
 
     /**
-     * vipRequests - all clients requested to get vio
+     * vipParking - function to assign VIP parking settings
+     */
+    public function vipParking(Request $request){
+        $vip = VipParking::where('client_id', 5)->get();
+        foreach($vip as $v){
+            $v->category = VehicleCategory::find($v->vehicle_id);
+        }
+        $vc = VehicleCategory::all();
+        if($request->isMethod('post')){
+            $errors = array();
+            if($request->action == 'create'){
+                $assign = new VipParking();
+                if(!$assign->validate($request->all())){
+                    $assign_e = $assign->errors();
+                    foreach ($assign_e->messages() as $k => $v){
+                        foreach ($v as $e){
+                            $errors[] = $e;
+                        }
+                    }
+                }
+                if(empty($errors)){
+                    $assign->vehicle_id = $request->vehicle_id;
+                    $assign->client_id = 5;
+                    $assign->duration = $request->duration;
+                    $assign->fair = $request->fair;
+                    if($assign->save()){
+                        return redirect()
+                            ->to('/settings/vip-parking')
+                            ->with('success', 'VIP parking rate setting was assigned!');
+                    }else{
+                        return redirect()
+                            ->to('/settings/vip-parking')
+                            ->with('error', 'Something went wrong! Please try again!');
+                    }
+                }else{
+                    return redirect()
+                        ->to('/settings/vip-parking')
+                        ->with('errors', $errors)
+                        ->withInput();
+                }
+            }
+            if($request->action == 'edit'){
+                $assign = VipParking::find($request->vip_id);
+                $assign->duration = $request->duration;
+                $assign->fair = $request->fair;
+                if($assign->save()){
+                    return redirect()
+                        ->to('/settings/vip-parking')
+                        ->with('success', 'VIP parking setting was updated successfully!');
+                }else{
+                    return redirect()
+                        ->to('/settings/vip-parking')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
+            }
+            if($request->action == 'delete'){
+                if(VipParking::destroy($request->vip_id)){
+                    return redirect()
+                        ->to('/settings/vip-parking')
+                        ->with('success', 'VIP parking setting was deleted successfully!');
+                }else{
+                    return redirect()
+                        ->to('/settings/vip-parking')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
+            }
+        }
+        return view('pages.client.vip-parking', [
+            'vip' => $vip,
+            'vc' => $vc,
+            'modal' => 'pages.client.modals.vip-parking-modals'
+        ]);
+    }
+
+    /**
+     * vipRequests - all clients requested to get vip
      */
 
     public function vipRequests(){
@@ -538,6 +613,11 @@ class Client extends Controller
             'js' => 'pages.client.js.vip-requests-js'
         ]);
     }
+
+    /**
+     * vipCreate - vip clients create
+     */
+
 
     public function createVip(Request $request){
         if($request->isMethod('post')){
@@ -579,12 +659,17 @@ class Client extends Controller
         }
     }
 
-
+    /**
+     * vipList - all vip clients
+     */
 
     public function vipList(){
         return view('pages.client.vip-list');
     }
 
+    /**
+     * vipRejectList - all rejected vip clients list
+     */
     public function vipRejectList(){
         return view('pages.client.vip-reject-list');
     }
