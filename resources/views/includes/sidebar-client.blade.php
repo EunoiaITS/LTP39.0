@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                         </li>
-                        <li><a href="assign-vip-parking.html">Assign VIP Parking Rate</a></li>
+                        <li><a href="{{ url('/settings/vip-parking') }}">Assign VIP Parking Rate</a></li>
                         <li><a href="{{ url('/settings/vat') }}">VAT</a></li>
                     </ul>
                 </div>
