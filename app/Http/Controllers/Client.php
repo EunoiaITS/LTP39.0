@@ -552,7 +552,29 @@ class Client extends Controller
                     }
                 }
                 if(empty($errors)){
-                    
+                    $vip->vip_id = $request->vip_id;
+                    $vip->client_id = $request->client_id;
+                    $vip->phone = $request->phone;
+                    $vip->vehicle_type = $request->vehicle_type;
+                    $vip->time_duration = $request->time_duration;
+                    $vip->price = $request->price;
+                    $vip->purpose = $request->purpose;
+                    $vip->car_reg = $request->car_reg;
+                    $vip->status = 'accepted';
+                    if($vip->save()){
+                        return redirect()
+                            ->to('/vip-requests')
+                            ->with('success', 'VIP Created Successfully!');
+                    }else{
+                        return redirect()
+                            ->to('/vip-requests')
+                            ->with('error', 'Something went wrong! Please try again!');
+                    }
+                }else{
+                    return redirect()
+                        ->to('/vip-requests')
+                        ->with('errors', $errors)
+                        ->withInput();
                 }
         }
     }
