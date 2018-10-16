@@ -79,6 +79,9 @@ Route::post('/edit-password', 'Client@editPassword');
 Route::post('/edit-employee', 'Client@editEmployee');
 Route::post('/blocking', 'Client@blocking');
 
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 /**
  * Vip Routes
