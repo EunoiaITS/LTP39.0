@@ -79,6 +79,18 @@ Route::post('/edit-password', 'Client@editPassword');
 Route::post('/edit-employee', 'Client@editEmployee');
 Route::post('/blocking', 'Client@blocking');
 
+<<<<<<< HEAD
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+=======
+
+/**
+ * Vip Routes
+ **/
+
+Route::get('/vip-requests', 'Client@vipRequests');
+Route::post('/create-vip', 'Client@createVip');
+Route::get('/vip-list', 'Client@vipList');
+Route::get('/vip-reject-list', 'Client@vipRejectList');
+>>>>>>> cec0690705e0f00946b57bc0ff34a8bdd1133bcb
