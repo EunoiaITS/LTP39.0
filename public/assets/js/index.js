@@ -27,15 +27,3 @@ var config = {
     }
 };
 
-
-
-window.onload = function() {
-    var ctx = document.getElementById("chart-area").getContext("2d");
-    window.myPie = new Chart(ctx, config);
-
-    var ctx = document.getElementById("chart-area-2").getContext("2d");
-    window.myPie = new Chart(ctx, config);
-
-    var ctx = document.getElementById("chart-area-3").getContext("2d");
-    window.myPie = new Chart(ctx, config);
-};

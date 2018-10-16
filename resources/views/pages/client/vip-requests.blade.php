@@ -50,7 +50,7 @@
                             <td>Emp 1</td>
                             <td>{{ date('Y-m-d') }}</td>
                             <td>
-                                <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal-{{ $u->id }}">Approve</button>
+                                <button class="edit-icon btn btn-login approve" rel="{{ $u->id }}" data-toggle="modal" data-target="#myModal-{{ $u->id }}">Approve</button>
                                 <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal3">Reject</button>
                             </td>
                         </tr>

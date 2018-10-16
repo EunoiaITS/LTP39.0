@@ -11,15 +11,15 @@
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="far fa-id-badge"></i></label>
-                        <input name="vip_id" id="vip-id" type="text" class="form-control" value="{{ 'VIP-' .$u->id }}" required>
+                        <input name="vip_id" id="vip-id{{ $u->id }}" type="text" class="form-control" value="{{ 'VIP-' .$u->id }}" required>
                     </div>
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-user"></i></label>
-                        <input name="name" id="name" type="text" class="form-control" value="{{ $u->name }}" required>
+                        <input name="name" id="name{{ $u->id }}" type="text" class="form-control" value="{{ $u->name }}" required>
                     </div>
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-phone"></i></label>
-                        <input name="phone" id="phone" type="text" class="form-control" value="{{ $u->phone }}" required>
+                        <input name="phone" id="phone{{ $u->id }}" type="text" class="form-control" value="{{ $u->phone }}" required>
                     </div>
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-user"></i></label>
@@ -48,13 +48,13 @@
                     </div>
                     <div class="form-group">
                         <label class="model-label" for="exampleFormControlSelect2">QR/BAR Code</label>
-                        <button id="generate" type="button" class="btn btn-default btn-genarate">Generate QR</button>
+                        <button id="generate{{ $u->id }}" type="button" class="btn btn-default btn-genarate">Generate QR</button>
                         <div class="qr-code-option">
-                            <div id="qr-code"></div>
+                            <div id="qr-code{{ $u->id }}"></div>
                         </div>
                     </div>
                 <input type="hidden" name="client_id" value="{{ $u->client_id }}">
-                <input type="hidden" id="qr-image" name="qr_image" value="">
+                <input type="hidden" id="qr-image{{ $u->id }}" name="qr_image">
                 <button type="submit" class="btn btn-default">Confirm</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </form>
