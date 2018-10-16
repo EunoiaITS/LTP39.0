@@ -10,10 +10,7 @@
             var canvas = document.querySelector("#qr-code canvas");
             var img = canvas.toDataURL("image/png");
             var anc = '<a href="'+img+'" class="download-btn" target="_blank" download="qrcode.png"><i class="fas fa-arrow-alt-circle-down"></i></a>';
-            //var dl = document.createElement('a');
-            //dl.setAttribute('href', img);
-            //dl.setAttribute('download', 'qrcode.png');
-            //dl.class('download-btn');
+            $('#qr-image').val(img);
             $('#qr-code').append(anc);
         });
     });

@@ -30,7 +30,9 @@
                         </tr>
                         </thead>
                         <tbody>
-
+                        @php $count = 0; @endphp
+                        @foreach($vips as $v)
+                        @php $count++; @endphp
                         <tr>
                             <td>01</td>
                             <td>VIP001</td>
@@ -43,7 +45,7 @@
                             <td>Manager 1</td>
                             <td>Not intersted</td>
                         </tr>
-
+                        @endforeach
                     </table>
                 </div>
             </div>

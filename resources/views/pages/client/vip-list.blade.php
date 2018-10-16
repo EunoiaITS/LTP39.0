@@ -32,10 +32,12 @@
                         </tr>
                         </thead>
                         <tbody>
-
+                        @php $count = 0; @endphp
+                        @foreach($vips as $v)
+                        @php $count++; @endphp
                         <tr>
-                            <td>01</td>
-                            <td>VIP001</td>
+                            <td>{{ $count }}</td>
+                            <td>VIP-{{ $v->id }}</td>
                             <td>Driver1</td>
                             <td>+01717012457</td>
                             <td>Shop Owner</td>
@@ -52,7 +54,7 @@
                                 </div>
                             </td>
                         </tr>
-
+                        @endforeach
                     </table>
                 </div>
             </div>

@@ -664,13 +664,19 @@ class Client extends Controller
      */
 
     public function vipList(){
-        return view('pages.client.vip-list');
+        $vips = Vip::where('status','accepted')->get();
+        return view('pages.client.vip-list',[
+            'vips' => $vips
+        ]);
     }
 
     /**
      * vipRejectList - all rejected vip clients list
      */
     public function vipRejectList(){
-        return view('pages.client.vip-reject-list');
+        $vips = Vip::where('status','rejected')->get();
+        return view('pages.client.vip-reject-list',[
+            'vips' => $vips
+        ]);
     }
 }
