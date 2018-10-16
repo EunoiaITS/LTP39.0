@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Auth;
 
 class Client
 {
@@ -15,6 +16,9 @@ class Client
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+        if(Auth::check() && Auth::user()->role == 'client' || Auth::user()->role == 'manager'){
+            return $next($request);
+        }
+        abort(404);
     }
 }
