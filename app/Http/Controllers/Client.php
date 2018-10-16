@@ -350,6 +350,16 @@ class Client extends Controller
                 $errors[] = 'Password didn\'t match.';
             }
             $emp = new Employee();
+            $user = new User();
+
+            if(!$user->validate($request->all())){
+                $user_e = $user->errors();
+                foreach ($user_e->messages() as $k => $v){
+                    foreach ($v as $e){
+                        $errors[] = $e;
+                    }
+                }
+            }
 
             if(!$emp->validate($request->all())){
                 $emp_e = $emp->errors();
@@ -361,21 +371,28 @@ class Client extends Controller
             }
 
             if(empty($errors)){
-                $emp->client_id = 2;
-                $emp->employee_id = $request->employee_id;
-                $emp->password = bcrypt($request->password);
-                $emp->phone = $request->phone;
-                $emp->name = $request->name;
-                $emp->email = $request->email;
-                $emp->status = 'unblock';
-                if($emp->save()){
-                    return redirect()
-                        ->to('/create-employee')
-                        ->with('success', 'The employee was created successfully!!');
-                }else{
-                    return redirect()
-                        ->to('/create-employee')
-                        ->with('error', 'Something went wrong! Please try again!');
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->password = bcrypt($request->password);
+                $user->role = $request->role;
+                $user->status = $request->status;
+                if($user->save()){
+                    $emp->client_id = $user->id;
+                    $emp->employee_id = $request->employee_id;
+                    $emp->password = bcrypt($request->password);
+                    $emp->phone = $request->phone;
+                    $emp->name = $request->name;
+                    $emp->email = $request->email;
+                    $emp->status = 'unblock';
+                    if($emp->save()){
+                        return redirect()
+                            ->to('/create-employee')
+                            ->with('success', 'The employee was created successfully!!');
+                    }else{
+                        return redirect()
+                            ->to('/create-employee')
+                            ->with('error', 'Something went wrong! Please try again!');
+                    }
                 }
             }else{
                 return redirect()

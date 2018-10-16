@@ -44,6 +44,8 @@
                             <input name="phone" type="text" placeholder="Phone" class="form-control" required>
                         </div>
                         <div class="submit-forget-password">
+                            <input type="hidden" name="role" value="emp">
+                            <input type="hidden" name="status" value="dev">
                             <button type="submit" class="btn-info btn btn-login">Create</button>
                             <button type="button" class="btn-info btn btn-login">Cancel</button>
                         </div>
