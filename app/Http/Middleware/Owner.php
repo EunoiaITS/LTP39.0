@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Auth;
 
 class Owner
 {
@@ -15,6 +16,9 @@ class Owner
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+        if(Auth::check() && Auth::user()->role == 'owner' || Auth::user()->role == 'dev'){
+            return $next($request);
+        }
+        abort(404);
     }
 }
