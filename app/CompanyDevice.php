@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Validator;
 class CompanyDevice extends Model
 {
     protected $rules = array(
-        'factory_id'  => 'required',
-        'charger_id'  => 'required'
+        'device_id'  => 'required|unique:company_device',
+        'factory_id'  => 'required|unique:company_device',
+        'charger_id'  => 'required|unique:company_device'
     );
 
     protected $errors;

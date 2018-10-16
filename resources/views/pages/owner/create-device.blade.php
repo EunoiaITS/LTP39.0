@@ -32,8 +32,8 @@
                             <input type="text" name="charger_id" placeholder="S/N849484859389484" class="form-control" id="charger-serial" required>
                         </div>
                         <div class="submit-forget-password">
-                            <button class="btn-info btn btn-login" data-toggle="modal" data-target="#myModal">Create</button>
-                            <button class="btn-info btn btn-login">Cancel</button>
+                            <button type="submit" class="btn-info btn btn-login">Create</button>
+                            <button type="button" class="btn-info btn btn-login">Cancel</button>
                         </div>
                     </form>
                 </div>

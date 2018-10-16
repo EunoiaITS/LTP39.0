@@ -10,6 +10,7 @@ use App\CompanyBillingSettings;
 use App\CompanyPayment;
 use App\Managers;
 use App\User;
+use Auth;
 use Faker\Provider\Company;
 use Illuminate\Http\Request;
 
@@ -367,9 +368,10 @@ class Owner extends Controller
      * param - request - takes all the post request data
      */
     public function createDevice(Request $request){
+        $id = Auth::user()->id;
+        $cd = new CompanyDevice();
         if($request->isMethod('post')){
             $errors = array();
-            $cd = new CompanyDevice();
             if(!$cd->validate($request->all())){
                 $cd_e = $cd->errors();
                 foreach ($cd_e->messages() as $k => $v){
@@ -378,12 +380,12 @@ class Owner extends Controller
                     }
                 }
             }
-
             if(empty($errors)){
+                //dd($request->all());
                 $cd->device_id = $request->device_id;
                 $cd->factory_id = $request->factory_id;
                 $cd->charger_id = $request->charger_id;
-                $cd->created_by = 'PIC';
+                $cd->created_by = $id;
                 $cd->modified_by = 'MOD';
                 $cd->status = 'unassigned';
                 if($cd->save()){
@@ -402,9 +404,7 @@ class Owner extends Controller
                     ->withInput();
             }
         }
-        return view('pages.owner.create-device',[
-            'modal' => 'pages.owner.modals.create-device-modal'
-        ]);
+        return view('pages.owner.create-device');
     }
 
 
