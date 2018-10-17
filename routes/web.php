@@ -101,3 +101,9 @@ Route::group(['middleware' => ['auth', 'client']], function(){
 Auth::routes();
 
 
+/**
+ * Api Routes
+ **/
+
+Route::post('/check-in', 'Api@checkIn');
+Route::post('/check-out', 'Api@checkOut');

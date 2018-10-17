@@ -5,17 +5,21 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 
-class CompanyDevice extends Model
+class CheckOut extends Model
 {
+    protected $fillable = [
+        'receipt_id', 'ticket_id', 'total_charge'
+    ];
+
     protected $rules = array(
-        'device_id'  => 'required|unique:company_device',
-        'factory_id'  => 'required|unique:company_device',
-        'charger_id'  => 'required|unique:company_device'
+        'receipt_id'  => 'required',
+        'ticket_id' => 'required',
+        'total_charge' => 'required'
     );
 
     protected $errors;
 
-    protected $table = 'company_device';
+    protected $table = 'check_out';
 
     public function validate($data)
     {

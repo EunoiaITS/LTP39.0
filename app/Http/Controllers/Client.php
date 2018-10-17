@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Clients;
 use App\ExemptedDuration;
 use App\ExemptedTime;
@@ -14,6 +15,7 @@ use App\Employee;
 use App\Vip;
 use App\VipParking;
 use Illuminate\Http\Request;
+use App\Managers;
 
 class Client extends Controller
 {
@@ -349,6 +351,13 @@ class Client extends Controller
 
 
     public function createEmployee(Request $request){
+        $id = '';
+        if(Auth::user()->role == 'client'){
+            $id = Auth::user()->id;
+        }else{
+            $mngr = Managers::where('user_id',Auth::user()->id)->first();
+            $id = $mngr->client_id;
+        }
         if($request->isMethod('post')){
             $errors = array();
             if($request->password != $request->repass){
@@ -382,7 +391,7 @@ class Client extends Controller
                 $user->role = $request->role;
                 $user->status = $request->status;
                 if($user->save()){
-                    $emp->client_id = $user->id;
+                    $emp->client_id = $id;
                     $emp->employee_id = $request->employee_id;
                     $emp->password = bcrypt($request->password);
                     $emp->phone = $request->phone;
