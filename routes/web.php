@@ -101,3 +101,9 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
+/**
+ * Api Routes
+ **/
+
+Route::post('/check-in', 'Api@checkIn');
+Route::post('/check-out', 'Api@checkOut');
