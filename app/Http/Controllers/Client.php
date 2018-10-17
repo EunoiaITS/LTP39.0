@@ -17,6 +17,11 @@ use Illuminate\Http\Request;
 
 class Client extends Controller
 {
+
+    public function dashboard(){
+        return view('pages.owner.dashboard');
+    }
+
     /**
      * vehicleType - function for adding vehicle types
     */

@@ -13,7 +13,7 @@
 
 Route::group(['middleware' => ['auth', 'owner']], function(){
 
-    Route::get('/','Owner@dashboard');
+    Route::get('/','Owner@dashboard')->name('home');
 
     /**
      * client routes
@@ -56,6 +56,8 @@ Route::group(['middleware' => ['auth', 'owner']], function(){
 
 Route::group(['middleware' => ['auth', 'client']], function(){
 
+    Route::get('/','Client@dashboard')->name('home');
+
     /**
      * settings
      * parking settings
@@ -97,7 +99,5 @@ Route::group(['middleware' => ['auth', 'client']], function(){
 });
 
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
 
 
