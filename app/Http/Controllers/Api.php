@@ -4,11 +4,50 @@ namespace App\Http\Controllers;
 
 use App\CheckIn;
 use App\CheckOut;
+use App\Employee;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
 class Api extends Controller
 {
+
+    /**
+     * Handles Login Request
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function login(Request $request){
+        $credentials = [
+            'email' => $request->email,
+            'password' => $request->password,
+            'role' => 'emp',
+            'status' => ['unblock', 'active', 'dev']
+        ];
+
+        if (auth()->attempt($credentials)) {
+            $token = auth()->user()->createToken('ParkingKori')->accessToken;
+            return response()->json(['token' => $token], 200);
+        } else {
+            return response()->json(['error' => 'UnAuthorised'], 401);
+        }
+    }
+
+    /**
+     * Returns Authenticated User Details
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function details()
+    {
+        $user = auth()->user();
+        $details = Employee::where('email', $user->email)->first();
+        $user->details = $details;
+        $user->client = User::find($details->client_id);
+        return response()->json(['user' => auth()->user()], 200);
+    }
+
     /**
         Check In api : Check in data coming from android
      **/
