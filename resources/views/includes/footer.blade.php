@@ -5,6 +5,22 @@
 </div>
 </div>
 
+<div class="modal fade" id="logout-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div  class="modal-dialog" role="document">
+        <div class="modal-content modal-form">
+            <form method="post" action="{{ url('/logout') }}">
+                {{ csrf_field() }}
+                <div class="modal-body text-center modal-padding">
+                    <div class="icon-delete text-center"><i class="fas fa-sign-out-alt"></i></div>
+                    <p>Are you sure you want to logout?</p>
+                    <button type="submit" class="btn btn-default">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @if(isset($modal))
     @include($modal)
     @endif

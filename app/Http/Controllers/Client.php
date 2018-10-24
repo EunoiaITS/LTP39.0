@@ -14,6 +14,7 @@ use App\User;
 use App\Employee;
 use App\Vip;
 use App\VipParking;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Managers;
 
@@ -21,14 +22,23 @@ class Client extends Controller
 {
 
     public function dashboard(){
-        return view('pages.owner.dashboard');
+        $page = 'pages.client.dashboard';
+        if(Auth::user()->role == 'owner' || Auth::user()->role == 'dev'){
+            $page = 'pages.owner.dashboard';
+        }
+        return view($page);
     }
 
     /**
      * vehicleType - function for adding vehicle types
     */
     public function vehicleType(Request $request){
-        $vehicle_types = VehicleCategory::all();
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $vehicle_types = VehicleCategory::where('client_id', $id)->get();
         if($request->isMethod('post')){
             if($request->action == 'create'){
                 $errors = array();
@@ -42,7 +52,7 @@ class Client extends Controller
                     }
                 }
                 if(empty($errors)){
-                    $vt->client_id = 5;
+                    $vt->client_id = $id;
                     $vt->type_id = $request->type_id;
                     $vt->type_name = $request->type_name;
                     if($vt->save()){
@@ -97,8 +107,19 @@ class Client extends Controller
      * assignParking - function to assign parking for each vehicle category
     */
     public function assignParking(Request $request){
-        $vt = VehicleCategory::all();
-        $ps = ParkingSetting::all();
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $vt = VehicleCategory::where('client_id', $id)->get();
+        $ps = new Collection();
+        foreach($vt as $v){
+            $vps = ParkingSetting::where('vehicle_id', $v->id)->get();
+            foreach($vps as $vp){
+                $ps->push($vp);
+            }
+        }
         foreach($ps as $p){
             $p->vehicle = VehicleCategory::find($p->vehicle_id);
         }
@@ -169,8 +190,19 @@ class Client extends Controller
      * assignRate - function to assign rate for each vehicle category
      */
     public function assignRate(Request $request){
-        $vt = VehicleCategory::all();
-        $pr = ParkingRate::all();
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $vt = VehicleCategory::where('client_id', $id)->get();
+        $pr = new Collection();
+        foreach($vt as $v){
+            $vpr = ParkingRate::where('vehicle_id', $v->id)->get();
+            foreach($vpr as $vp){
+                $pr->push($vp);
+            }
+        }
         foreach($pr as $p){
             $p->vehicle = VehicleCategory::find($p->vehicle_id);
         }
@@ -245,8 +277,13 @@ class Client extends Controller
      * exemptedDuration - function to assign exampted duration
      */
     public function exemptedDuration(Request $request){
-        $exTime = ExemptedTime::where('client_id', 5)->first();
-        $exDuration = ExemptedDuration::where('client_id', 5)->first();
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $exTime = ExemptedTime::where('client_id', $id)->first();
+        $exDuration = ExemptedDuration::where('client_id', $id)->first();
         if($request->isMethod('post')){
             if($request->action == 'time'){
                 $errors = array();
@@ -260,7 +297,7 @@ class Client extends Controller
                     }
                 }
                 if(empty($errors)){
-                    $time->client_id = 5;
+                    $time->client_id = $id;
                     $time->from = $request->from;
                     $time->to = $request->to;
                     if($time->save()){
@@ -305,7 +342,7 @@ class Client extends Controller
                     }
                 }
                 if(empty($errors)){
-                    $time->client_id = 5;
+                    $time->client_id = $id;
                     $time->duration = $request->duration;
                     if($time->save()){
                         return redirect()
@@ -351,11 +388,9 @@ class Client extends Controller
 
 
     public function createEmployee(Request $request){
-        $id = '';
-        if(Auth::user()->role == 'client'){
-            $id = Auth::user()->id;
-        }else{
-            $mngr = Managers::where('user_id',Auth::user()->id)->first();
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
         }
         if($request->isMethod('post')){
@@ -423,7 +458,12 @@ class Client extends Controller
      */
 
     public function manageEmployee(){
-        $emp = Employee::all();
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $emp = Employee::where('client_id', $id)->get();
         return view('pages.client.manage-employee',[
             'employees' => $emp,
             'modal' => 'pages.client.modals.manage-employee-modal',
@@ -498,7 +538,12 @@ class Client extends Controller
      * vat - function to save VAT settings
     */
     public function vat(Request $request){
-        $vat = VAT::where('client_id', 5)->first();
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $vat = VAT::where('client_id', $id)->first();
         if($request->isMethod('post')){
             if($request->action == 'create'){
                 $errors = array();
@@ -512,7 +557,7 @@ class Client extends Controller
                     }
                 }
                 if(empty($errors)){
-                    $vc->client_id = 5;
+                    $vc->client_id = $id;
                     $vc->vat = $request->vat;
                     if($vc->save()){
                         return redirect()
@@ -553,7 +598,12 @@ class Client extends Controller
      * vipParking - function to assign VIP parking settings
      */
     public function vipParking(Request $request){
-        $vip = VipParking::where('client_id', 5)->get();
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $vip = VipParking::where('client_id', $id)->get();
         foreach($vip as $v){
             $v->category = VehicleCategory::find($v->vehicle_id);
         }
@@ -572,7 +622,7 @@ class Client extends Controller
                 }
                 if(empty($errors)){
                     $assign->vehicle_id = $request->vehicle_id;
-                    $assign->client_id = 5;
+                    $assign->client_id = $id;
                     $assign->duration = $request->duration;
                     $assign->fair = $request->fair;
                     if($assign->save()){

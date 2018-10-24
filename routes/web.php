@@ -11,9 +11,9 @@
 |
 */
 
-Route::group(['middleware' => ['auth', 'owner']], function(){
+Route::get('/', 'HomeController@index')->name('home');
 
-    Route::get('/','Owner@dashboard')->name('home');
+Route::group(['middleware' => ['auth', 'owner']], function(){
 
     /**
      * client routes
@@ -55,8 +55,6 @@ Route::group(['middleware' => ['auth', 'owner']], function(){
 });
 
 Route::group(['middleware' => ['auth', 'client']], function(){
-
-    Route::get('/','Client@dashboard')->name('home');
 
     /**
      * settings

@@ -11,14 +11,17 @@ use App\CompanyPayment;
 use App\Managers;
 use App\User;
 use Auth;
-use Faker\Provider\Company;
 use Illuminate\Http\Request;
 
 class Owner extends Controller
 {
 
     public function dashboard(){
-        return view('pages.owner.dashboard');
+        $page = 'pages.client.dashboard';
+        if(Auth::user()->role == 'owner' || Auth::user()->role == 'dev'){
+            $page = 'pages.owner.dashboard';
+        }
+        return view($page);
     }
     /**
      * CreateClient - function for creating clients
