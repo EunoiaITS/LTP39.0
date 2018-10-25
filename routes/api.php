@@ -16,4 +16,5 @@ Route::post('login', 'Api@login');
 
 Route::middleware('auth:api')->group(function () {
     Route::get('user', 'Api@details');
+    Route::post('check-in', 'Api@checkIn');
 });
