@@ -20,6 +20,7 @@ class CreateCheckInOutsTable extends Migration
             $table->string('receipt_id');
             $table->string('vehicle_type');
             $table->string('vehicle_reg');
+            $table->string('fair')->nullable();
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
             $table->timestamps();

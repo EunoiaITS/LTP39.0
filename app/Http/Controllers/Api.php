@@ -84,7 +84,8 @@ class Api extends Controller
             if($checkIn->save()){
                 return Response::json([
                     'status' => 'true',
-                    'message' => 'Check In successfully added!'
+                    'message' => 'Check In successfully added!',
+                    'data' => $checkIn
                 ], 200);
             }else{
                 return Response::json([
@@ -106,35 +107,39 @@ class Api extends Controller
      **/
 
     public function checkOut(Request $request){
-        $checkOut = new CheckOut();
-        $errors = array();
         if($request->isMethod('post')){
-            if(!$checkOut->validate($request->all())){
-                $checkOut_e = $checkOut->errors();
-                foreach ($checkOut_e->messages() as $k => $v){
-                    foreach ($v as $e){
-                        $errors[] = $e;
+            $checkOut = CheckInOut::where('ticket_id', $request->ticket_id)->first();
+            if(isset($request->vehicle_reg)){
+                $checkOut = CheckInOut::where('vehicle_reg', $request->vehicle_reg)->last();
+            }
+            if(!empty($checkOut)){
+                $checkOut->updated_at = $request->check_out_time;
+                $checkOut->updated_by = $request->employee;
+                $check_in = new \DateTime($checkOut->created_at);
+                $check_out = new \DateTime($request->check_out_time);
+                $diff = $check_in->diff($check_out);
+
+                $duration = $diff->h;
+                $rate = ParkingRate::where('vehicle_id', $checkOut->vehicle_type)->first();
+                $fair = 0;
+                if($duration > $rate->base_hour){
+                    $sub = ($duration - $rate->base_hour) * $rate->sub_rate;
+                    if($diff->i != 0){
+                        $sub = $sub + $rate->sub_rate;
+                    }
+                    $fair = $sub + $rate->base_rate;
+                }else{
+                    $fair = $rate->base_rate;
+                    if($diff->i != 0){
+                        $fair = $fair + $rate->sub_rate;
                     }
                 }
-            }
-        }
-        if(empty($errors)){
-            $checkOut->receipt_id = $request->receipt_id;
-            $checkOut->ticket_id = $request->ticket_id;
-            $checkOut->total_charge = $request->total_charge;
-            $checkOut->created_by = $request->created_by;
-
-            $checkIn = CheckIn::where('ticket_id',$request->ticket_id)->first();
-            if(empty($checkIn)){
-                return Response::json([
-                    'status' => 'false',
-                    'message' => 'Ticket Not Matched!'
-                ], 422);
-            }else{
+                $checkOut->fair = $fair;
                 if($checkOut->save()){
                     return Response::json([
                         'status' => 'true',
-                        'message' => 'Check Out successfully added!'
+                        'message' => 'Checked out successfully!',
+                        'data' => $checkOut
                     ], 200);
                 }else{
                     return Response::json([
@@ -142,6 +147,11 @@ class Api extends Controller
                         'message' => 'Please Provide enough information!'
                     ], 422);
                 }
+            }else{
+                return Response::json([
+                    'status' => 'false',
+                    'message' => 'Please Provide enough information!'
+                ], 422);
             }
         }
     }
