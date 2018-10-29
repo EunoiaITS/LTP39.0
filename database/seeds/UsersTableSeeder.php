@@ -15,10 +15,10 @@ class UsersTableSeeder extends Seeder
     {
         $user = new User();
         $user->name = 'PK owner';
-        $user->email = 'owner1@gmail.com';
+        $user->email = 'owner@gmail.com';
         $user->password = bcrypt('123456');
         $user->role = 'owner';
-        $user->status = 'verified';
+        $user->status = 'active';
         $user->save();
     }
 }

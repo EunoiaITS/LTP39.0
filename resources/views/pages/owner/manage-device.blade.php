@@ -16,7 +16,8 @@
                             <th>ID</th>
                             <th>Factory Serial</th>
                             <th>Charger Serial</th>
-                            <th>Client Name <i class="fas fa-arrow-alt-circle-down"></i></th>
+                            <th>Client Id</th>
+                            <th>Client Name</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -29,7 +30,8 @@
                             <td>{{ $dv->device_id }}</td>
                             <td>{{ $dv->factory_id }}</td>
                             <td>{{ $dv->charger_id }}</td>
-                            <td></td>
+                            <td>{{ $dv->client }}</td>
+                            <td>{{ $dv->name }}</td>
                             <td>
                                 <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal-{{ $dv->id }}">Edit</button>
                                 <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModaldel-{{ $dv->id }}">Delete</button>
