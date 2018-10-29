@@ -27,7 +27,7 @@
     font-weight: normal;
     font-style: normal;
 }
-  
+
 
 
   /* ==========================================================================
@@ -62,7 +62,7 @@
         padding: 0;
     }
 
-   
+
 
     audio,
     canvas,
@@ -73,7 +73,7 @@
         vertical-align: middle;
     }
 
-  
+
     fieldset {
         border: 0;
         margin: 0;
@@ -134,7 +134,7 @@
     }
 
 
-    html, body { 
+    html, body {
       margin: 0;
       font-family: 'Lato', sans-serif;
       font-size: 15px;
@@ -143,7 +143,7 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    .btn, .menu-icon, .menu-icon-small, .icon-right:before, 
+    .btn, .menu-icon, .menu-icon-small, .icon-right:before,
     .user-dropdown ul li a, .user-dropdown, .download-btn, a, .dashboad-title .plus-icon, .form-control:focus::placeholder{
       transition: all 0.5s ease;
        -webkit-transition:all 0.5s ease;
@@ -160,7 +160,7 @@
     .nicescroll-rails {
        background-color:#fff;
      }
-     
+
      .nicescroll-cursors {
        border: none !important;
        background:#efc59b !important;
@@ -263,18 +263,18 @@
         font-size: 18px;
     }
     .parking-login a:hover{
-      opacity: .7;  
+      opacity: .7;
     }
     .footer-content p{
       color: #fff;
-      font-size: 16px;  
+      font-size: 16px;
       line-height: 18px;
     }
     .footer-content p a{
       color: #fff;
     }
     .footer-content p a:hover{
-       opacity: .7; 
+       opacity: .7;
     }
 
     .forget-passwrod-text{
@@ -316,7 +316,6 @@
     }
     .modal-padding .btn-default {
         background: #af1b3f;
-        border-radius: 0px;
         color: #fff;
         text-transform: uppercase;
         padding: 2px 30px;
@@ -344,7 +343,7 @@
     }
     .modal-content .usr-lock{
       color:#af1b3f;
-      left: 0; 
+      left: 0;
     }
     .modal-content.modal-form .modal-padding .btn-default {
         padding: 6px 30px;
@@ -583,7 +582,7 @@
         font-size: 16px;
         margin-bottom: 3px;
       }
-     
+
       .panel-collapse .panel-body{
          border-bottom: 1px solid #9e2d47;
       }
@@ -603,12 +602,12 @@
       }
 
       .click-color .icon-right:before {
-        transform: rotate(90deg); 
+        transform: rotate(90deg);
         -webkit-transform: rotate(90deg);
         -moz-transform: rotate(90deg);
       }
-    
-          
+
+
     /*main content css*/
 
     .dashboard-main-content{
@@ -871,8 +870,8 @@
         text-transform: capitalize;
     }
     .table>tbody>tr>td,
-    .table>tbody>tr>th, 
-    .table>tfoot>tr>td, 
+    .table>tbody>tr>th,
+    .table>tfoot>tr>td,
     .table>tfoot>tr>th,
     .table>thead>tr>td, .table>thead>tr>th {
       padding: 8px 20px;
@@ -922,7 +921,7 @@
       border-color: transparent;
       color: #000;
     }
-    .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, 
+    .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover,
     .pagination>.disabled>span,
     .pagination>.disabled>span:focus, .pagination>.disabled>span:hover{
       background: transparent;
@@ -934,11 +933,11 @@
       z-index: 3;
       color: #be4357;
       cursor: default;
-      background-color: transparent; 
+      background-color: transparent;
       border-color: transparent;
       font-weight: bold;
     }
-    .pagination li a:hover, 
+    .pagination li a:hover,
     .pagination li a:focus{
       background: transparent;
       color: #be4357;
@@ -1030,7 +1029,7 @@
         text-transform: capitalize;
         height: 37px;
     }
-    .vechicle-select .form-control:focus, .vechicle-select .form-control:hover, 
+    .vechicle-select .form-control:focus, .vechicle-select .form-control:hover,
     .btn-default:hover , .btn-default:focus{
        background: #af1b3f;
        color: #fff !important;
@@ -1085,7 +1084,7 @@
     }
 
     /*request notification page*/
-    .bootstrap-datetimepicker-widget table td.active, 
+    .bootstrap-datetimepicker-widget table td.active,
     .bootstrap-datetimepicker-widget table td.active:hover {
         background: #af1b3f;
     }
@@ -1187,12 +1186,12 @@
     }
     .assign-v-select.vechicle-select .btn-default.active.focus,
     .assign-v-select.vechicle-select .btn-default.active:focus,
-    .assign-v-select.vechicle-select .btn-default.active:hover, 
-    .assign-v-select.vechicle-select .btn-default:active.focus, 
-    .assign-v-select.vechicle-select .btn-default:active:focus, 
-    .assign-v-select.vechicle-select .btn-default:active:hover, 
-    .assign-v-select.vechicle-select .open>.dropdown-toggle.btn-default.focus, 
-    .assign-v-select.vechicle-select .open>.dropdown-toggle.btn-default:focus, 
+    .assign-v-select.vechicle-select .btn-default.active:hover,
+    .assign-v-select.vechicle-select .btn-default:active.focus,
+    .assign-v-select.vechicle-select .btn-default:active:focus,
+    .assign-v-select.vechicle-select .btn-default:active:hover,
+    .assign-v-select.vechicle-select .open>.dropdown-toggle.btn-default.focus,
+    .assign-v-select.vechicle-select .open>.dropdown-toggle.btn-default:focus,
     .assign-v-select.vechicle-select .open>.dropdown-toggle.btn-default:hover {
         background: transparent;
     }
@@ -1302,7 +1301,7 @@
       .edit-icon {
         display: block;
         float: none;
-        margin-bottom: 15px;  
+        margin-bottom: 15px;
       }
       .edit-icon.icon-ed {
           width: 25px;
@@ -1357,7 +1356,7 @@
       .request-notification .download-btn{
         margin-top: 0;
       }
-      
+
 
     }
 
@@ -1379,7 +1378,7 @@
           padding: 17px 0px;
           cursor: pointer;
       }
-     
+
       .submit-forget-password .btn.btn-login {
           display: table;
       }
