@@ -201,7 +201,6 @@
       border-radius: 0px;
       box-shadow: none;
       font-size: 20px;
-      text-transform: uppercase;
       color: #fff;
       padding-left: 25px;
       height: 40px;
@@ -220,13 +219,18 @@
       color: #fff;
     }
 
-    .form-control:focus::placeholder{
+    .form-control:focus::-webkit-input-placeholder {
       color: transparent;
     }
-    .form-control:focus::-webkit-placeholder{
-      color:transparent;
+    .form-control:focus:-moz-placeholder {
+      /* Firefox 18- */
+      color: white;
     }
-    .form-control:focus::-moz-placeholder{
+    .form-control:focus::-moz-placeholder {
+      /* Firefox 19+ */
+      color: transparent;
+    }
+    .form-control:focus:-ms-input-placeholder {
       color: transparent;
     }
 
@@ -342,6 +346,23 @@
     .modal-content .form-control::-moz-placeholder{
      color:#af1b3f;
     }
+
+    .modal-content .form-control:focus::-webkit-input-placeholder {
+      color: transparent;
+    }
+    .modal-content  .form-control:focus:-moz-placeholder {
+      /* Firefox 18- */
+      color: white;
+    }
+    .modal-content  .form-control:focus::-moz-placeholder {
+      /* Firefox 19+ */
+      color: transparent;
+    }
+    .modal-content .form-control:focus:-ms-input-placeholder {
+      color: transparent;
+    }
+
+
     .modal-content .usr-lock{
       color:#af1b3f;
       left: 0; 
@@ -744,6 +765,23 @@
     .employee-form .form-control::-moz-placeholder{
       color: #000;
     }
+
+    .employee-form .form-control:focus::-webkit-input-placeholder {
+      color: transparent;
+    }
+    .employee-form  .form-control:focus:-moz-placeholder {
+      /* Firefox 18- */
+      color: white;
+    }
+    .employee-form  .form-control:focus::-moz-placeholder {
+      /* Firefox 19+ */
+      color: transparent;
+    }
+    .employee-form .form-control:focus:-ms-input-placeholder {
+      color: transparent;
+    }
+
+
     .employee-form .form-control:focus,
     .employee-form .form-control:hover{
       outline: none;
@@ -870,6 +908,23 @@
         color: #be4357;
         text-transform: capitalize;
     }
+
+    #example_filter .form-control:focus::-webkit-input-placeholder {
+      color: transparent;
+    }
+    #example_filter .form-control:focus:-moz-placeholder {
+      /* Firefox 18- */
+      color: white;
+    }
+    #example_filter .form-control:focus::-moz-placeholder {
+      /* Firefox 19+ */
+      color: transparent;
+    }
+    #example_filter .form-control:focus:-ms-input-placeholder {
+      color: transparent;
+    }
+
+
     .table>tbody>tr>td,
     .table>tbody>tr>th, 
     .table>tfoot>tr>td, 
