@@ -417,6 +417,14 @@ class Owner extends Controller
      */
     public function manageDevice(Request $request){
         $devices = CompanyDevice::all();
+        foreach($devices as $dv){
+            $clients = Clients::where('id', $dv->client_id)->get();
+            foreach ($clients as $client){
+                $dv->client = $client->client_id;
+                $user = User::find($client->user_id);
+                $dv->name = $user->name;
+            }
+        }
         if($request->isMethod('post')){
             $cd = CompanyDevice::find($request->device_id);
             $cd->charger_id = $request->charger_id;
