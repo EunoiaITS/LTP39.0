@@ -17,7 +17,7 @@ class CreateCheckInOutsTable extends Migration
             $table->increments('id');
             $table->string('client_id');
             $table->string('ticket_id');
-            $table->string('receipt_id');
+            $table->string('receipt_id')->nullable();
             $table->string('vehicle_type');
             $table->string('vehicle_reg');
             $table->string('fair')->nullable();

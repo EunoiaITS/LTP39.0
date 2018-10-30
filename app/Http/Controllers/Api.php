@@ -75,9 +75,8 @@ class Api extends Controller
             }
         }
         if(empty($errors)){
-            $checkIn->ticket_id = $request->ticket_id;
+            $checkIn->ticket_id = $request->client_id.$this->generateRandomString(16);
             $checkIn->client_id = $request->client_id;
-            $checkIn->receipt_id = $request->receipt_id;
             $checkIn->vehicle_reg = $request->vehicle_reg;
             $checkIn->vehicle_type = $request->vehicle_type;
             $checkIn->created_by = $request->created_by;
@@ -105,7 +104,6 @@ class Api extends Controller
     /**
     Check out api : Check out data coming from android
      **/
-
     public function checkOut(Request $request){
         if($request->isMethod('post')){
             $checkOut = CheckInOut::where('ticket_id', $request->ticket_id)->first();
@@ -115,6 +113,7 @@ class Api extends Controller
             if(!empty($checkOut)){
                 $checkOut->updated_at = $request->check_out_time;
                 $checkOut->updated_by = $request->employee;
+                $checkOut->receipt_id = $checkOut->client_id.$this->generateRandomString(16);
                 $check_in = new \DateTime($checkOut->created_at);
                 $check_out = new \DateTime($request->check_out_time);
                 $diff = $check_in->diff($check_out);
@@ -154,5 +153,18 @@ class Api extends Controller
                 ], 422);
             }
         }
+    }
+
+    /**
+     * random string generator - ALPHA-NUMERIC
+    */
+    function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }
