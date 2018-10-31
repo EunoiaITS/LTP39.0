@@ -15,7 +15,7 @@ class CompanyBillingSettings extends Model
 
     protected $errors;
 
-    protected $table = 'company_billing';
+    protected $table = 'company_billing_settings';
 
     public function validate($data)
     {

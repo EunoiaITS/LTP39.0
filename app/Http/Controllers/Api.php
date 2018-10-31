@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\CheckIn;
+
 use App\CheckInOut;
-use App\CheckOut;
 use App\Employee;
 use App\ParkingRate;
 use App\ParkingSetting;

@@ -26,7 +26,7 @@ class Owner extends Controller
     /**
      * CreateClient - function for creating clients
      * param - request - takes all the post request data
-    */
+     */
     public function createClient(Request $request){
         if($request->isMethod('post')){
             $errors = array();
@@ -153,7 +153,7 @@ class Owner extends Controller
         if($request->isMethod('post')){
             /**
              * password reset section
-            */
+             */
             if($request->action == 'pass'){
                 $pass_e = array();
                 if($request->password != $request->repass){

@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
+use App\Clients;
+use App\CompanyBillingSettings;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +27,14 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with(compact('controller', 'action'));
         });
+        $clients = Clients::all()->count();
+        View::share('clients',$clients);
+        $bill = 0;
+        $cbs = CompanyBillingSettings::all();
+        foreach ($cbs as $c){
+            $bill += $c->billing_amount;
+        }
+        View::share('bill',$bill);
     }
 
     /**

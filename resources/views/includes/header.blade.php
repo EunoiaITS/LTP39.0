@@ -22,7 +22,7 @@
                 </div>
                 <div class="user-dropdown">
                     <ul>
-                        <li><a href="#" class="name">Jhon</a></li>
+                        <li><a href="{{ url('/') }}" class="name">{{ Auth::user()->name}}</a></li>
                         <li><a href="#" class="logout" data-toggle="modal" data-target="#logout-modal">Log Out</a></li>
                     </ul>
                 </div>
