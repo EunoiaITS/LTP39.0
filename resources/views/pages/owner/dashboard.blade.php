@@ -37,25 +37,20 @@
                     <div class="col-sm-4">
                         <div class="vechicle-select">
                             <div class="form-group">
-                                <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Vechile Category" multiple data-size="6">
-                                    <option value="">All</option>
-                                    <option value="">Client 01</option>
-                                    <option value="">Client 02</option>
-                                    <option value="">Client 03</option>
-                                    <option value="">Client 04</option>
-                                    <option value="">Client 05</option>
-                                    <option value="">Client 06</option>
-                                    <option value="">Client 07</option>
-                                    <option value="">Client 08</option>
+                                <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Clients List" multiple data-size="6">
+                                    @foreach($users as $u)
+                                        <option value="{{ $u->name }}">{{ $u->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                     </div>
+                    @foreach($users as $u)
                     <!-- pie chart -->
                     <div class="col-sm-12 padding-0">
                         <div class="col-sm-6 col-md-4">
                             <div class="dashboard-total clearfix">
-                                <h3 class="total-dash"> Client One </h3>
+                                <h3 class="total-dash"> {{ $u->name }} </h3>
                                 <div class="money-icon">
                                     <h4>Current Parking Status</h4>
                                 </div>
@@ -64,30 +59,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-4">
-                            <div class="dashboard-total clearfix">
-                                <h3 class="total-dash"> Client Two </h3>
-                                <div class="money-icon">
-                                    <h4>Current Parking Status</h4>
-                                </div>
-                                <div class="total-cost parking-pie-chart">
-                                    <canvas id="chart-area-2" width="200px" height="200px"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-sm-offset-3 col-md-offset-0 col-md-4">
-                            <div class="dashboard-total clearfix">
-                                <h3 class="total-dash"> Client Three </h3>
-                                <div class="money-icon">
-                                    <h4>Current Parking Status</h4>
-                                </div>
-                                <div class="total-cost parking-pie-chart">
-                                    <canvas id="chart-area-3" width="200px" height="200px"/>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <!-- pagination -->
+                    @endforeach
                     <div class=" col-sm-12 bootstrap-pagination">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">

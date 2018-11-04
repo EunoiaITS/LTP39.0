@@ -3,13 +3,12 @@
 var randomScalingFactor = function() {
     return Math.round(Math.random() * 50);
 };
-
 var config = {
     type: 'pie',
     data: {
         labels: ["Free", "Occupied"],
         datasets: [{
-            data: [300, 600 ],
+            data: ['400', '800' ],
             backgroundColor: [
                 '#A049A7',
                 '#229ED2'

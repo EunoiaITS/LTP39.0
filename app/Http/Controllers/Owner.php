@@ -109,21 +109,37 @@ class Owner extends Controller
         }
 
         if($request->isMethod('post')){
-            $stat = User::find($request->client_id);
-            $stat->status = $request->status;
-            if($stat->save()){
-                return redirect()
-                    ->to('/clients-list')
-                    ->with('success', 'The client was '.$request->status.'ed successfully!');
-            }else{
-                return redirect()
-                    ->to('/clients-list')
-                    ->with('error', 'Something went wrong! Please try again!');
+            if($request->action == 'delete'){
+                $client = Clients::where('user_id',$request->client_id)->first();
+                if(User::destroy($client->user_id)){
+                    Clients::destroy($client->id);
+                    return redirect()
+                        ->to('/clients-list')
+                        ->with('success', 'The client was '.$request->action.'ed successfully!');
+                }else{
+                    return redirect()
+                        ->to('/clients-list')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
+            }
+            if($request->action == 'blocking'){
+                $stat = User::find($request->client_id);
+                $stat->status = $request->status;
+                if($stat->save()){
+                    return redirect()
+                        ->to('/clients-list')
+                        ->with('success', 'The client was '.$request->status.'ed successfully!');
+                }else{
+                    return redirect()
+                        ->to('/clients-list')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
             }
         }
 
         return view('pages.owner.clients-list', [
-            'clients' => $clients
+            'clients' => $clients,
+            'modal' => 'pages.owner.modals.client-list-modals'
         ]);
     }
 

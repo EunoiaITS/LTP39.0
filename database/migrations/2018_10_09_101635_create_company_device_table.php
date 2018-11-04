@@ -17,7 +17,7 @@ class CreateCompanyDeviceTable extends Migration
             $table->increments('id');
             $table->string('device_id');
             $table->string('factory_id');
-            $table->string('charger_id');
+            $table->string('charger_id')->nullable();
             $table->integer('client_id')->nullable();
             $table->string('created_by');
             $table->string('modified_by');

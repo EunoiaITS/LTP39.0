@@ -25,8 +25,8 @@
                                 <div class="vechicle-select">
                                     <div class="form-group">
                                         <label for="exampleFormControlSelect1">Exemted Time</label>
-                                        <input type="text" name="from" class="form-control form-exampted" id="datetimepicker3"	placeholder="Form" value="@if(!empty($exTime)){{ $exTime->from }}@endif">
-                                        <input type="text" name="to" class="form-control form-exampted" id="datetimepicker4" placeholder="To" value="@if(!empty($exTime)){{ $exTime->to }}@endif">
+                                        <input type="text" name="from" class="form-control form-exampted from" id="datetimepicker3"	placeholder="Form" value="@if(!empty($exTime)){{ $exTime->from }}@endif">
+                                        <input type="text" name="to" class="form-control form-exampted to" id="datetimepicker4" placeholder="To" value="@if(!empty($exTime)){{ $exTime->to }}@endif">
                                     </div>
                                 </div>
                                 <div class="clearfix" style="height: 20px"></div>
@@ -37,7 +37,7 @@
                                     <input type="hidden" name="action" value="time">
                                     @endif
                                 <div class="submit-forget-password clearfix">
-                                    <button type="button" class="btn-info btn btn-login" data-toggle="modal" data-target="#myModal1">Save</button>
+                                    <button type="button" class="btn-info btn btn-login time" data-toggle="modal" data-target="#myModal1">Save</button>
                                 </div>
                             </form>
                         </div>
@@ -49,7 +49,7 @@
                                 <div class="vechicle-select">
                                     <div class="form-group">
                                         <label for="exampleFormControlSelect1">Exemted Duration</label>
-                                        <input type="text" name="duration" class="form-control" placeholder="minutes" value="@if(!empty($exDuration)){{ $exDuration->duration }}@endif">
+                                        <input type="text" name="duration" class="form-control e-duration" placeholder="minutes" value="@if(!empty($exDuration)){{ $exDuration->duration }}@endif">
                                     </div>
                                 </div>
                                 @if(!empty($exDuration))
@@ -59,7 +59,7 @@
                                     <input type="hidden" name="action" value="duration">
                                 @endif
                                 <div class="submit-forget-password">
-                                    <button type="button" class="btn-info btn btn-login" data-toggle="modal" data-target="#myModal2">Save</button>
+                                    <button type="button" class="btn-info btn btn-login duration" data-toggle="modal" data-target="#myModal2">Save</button>
                                 </div>
                             </form>
                         </div>
