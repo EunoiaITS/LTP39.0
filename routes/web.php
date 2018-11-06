@@ -94,6 +94,20 @@ Route::group(['middleware' => ['auth', 'client']], function(){
     Route::get('/vip-list', 'Client@vipList');
     Route::get('/vip-reject-list', 'Client@vipRejectList');
 
+    /**
+     * Report pages
+    */
+    Route::get('/report/vehicle-category', 'Client@vhReport');
+    Route::post('/report/vehicle-category', 'Client@vhReport');
+    Route::get('/report/user-incomes', 'Client@uiReport');
+    Route::post('/report/user-incomes', 'Client@uiReport');
+    Route::get('/report/sales', 'Client@salesReport');
+    Route::post('/report/sales', 'Client@salesReport');
+    Route::get('/report/tickets', 'Client@ticketReport');
+    Route::post('/report/tickets', 'Client@ticketReport');
+    Route::get('/report/receipts', 'Client@receiptReport');
+    Route::post('/report/receipts', 'Client@receiptReport');
+
 });
 
 Auth::routes();
