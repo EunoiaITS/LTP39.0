@@ -389,6 +389,7 @@ class Client extends Controller
 
     public function createEmployee(Request $request){
         $id = Auth::id();
+        $client = Clients::where('user_id',$id)->first();
         if(Auth::user()->role == 'manager'){
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
@@ -450,7 +451,10 @@ class Client extends Controller
                     ->withInput();
             }
         }
-        return view('pages.client.create-employee');
+        return view('pages.client.create-employee',[
+            'client' => $client,
+            'js' => 'pages.client.js.create-employee-js'
+        ]);
     }
 
     /**
