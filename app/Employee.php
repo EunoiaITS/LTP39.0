@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Validator;
 class Employee extends Model
 {
     protected $rules = array(
-        'employee_id'  => 'required',
         'password' => 'required',
         'name' => 'required',
         'email' => 'required',

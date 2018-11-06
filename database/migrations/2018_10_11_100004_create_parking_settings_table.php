@@ -15,8 +15,10 @@ class CreateParkingSettingsTable extends Migration
     {
         Schema::create('parking_settings', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('client_id');
             $table->integer('vehicle_id');
             $table->integer('amount');
+            $table->string('assign_parking_id');
             $table->string('created_by')->nullable();
             $table->string('modified_by')->nullable();
             $table->timestamps();

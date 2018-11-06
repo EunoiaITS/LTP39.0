@@ -22,10 +22,6 @@
                         <form method="post" action="{{ url('/settings/vehicle-types') }}">
                             {{ csrf_field() }}
                             <div class="form-group">
-                                <label for="user-id" class="usr-lock"><i class="fas fa-id-badge"></i></label>
-                                <input type="text" name="type_id" placeholder="ID" class="form-control" value="{{ old('type_id') }}" required>
-                            </div>
-                            <div class="form-group">
                                 <label for="user-crname" class="usr-lock"><i class="fas fa-car"></i></label>
                                 <input type="text" name="type_name" placeholder="Vehicle Type" class="form-control" value="{{ old('type_name') }}" required>
                             </div>

@@ -34,6 +34,14 @@ class Client extends Controller
     */
     public function vehicleType(Request $request){
         $id = Auth::id();
+        $client = Clients::where('user_id',$id)->first();
+        $lastVehId = sprintf('%03d', 1);
+        $lastVeh = VehicleCategory::where('client_id', $id)
+            ->orderBy('id', 'DESC')
+            ->first();
+        if(!empty($lastVeh) && (int)(substr($lastVeh->type_id, -3)) >= 1){
+            $lastVehId = sprintf('%03d', (int)(substr($lastVeh->type_id, -3)) + 1);
+        }
         if(Auth::user()->role == 'manager'){
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
@@ -53,7 +61,7 @@ class Client extends Controller
                 }
                 if(empty($errors)){
                     $vt->client_id = $id;
-                    $vt->type_id = $request->type_id;
+                    $vt->type_id = $client->client_id.'VEH'.$lastVehId;
                     $vt->type_name = $request->type_name;
                     if($vt->save()){
                         return redirect()
@@ -108,6 +116,14 @@ class Client extends Controller
     */
     public function assignParking(Request $request){
         $id = Auth::id();
+        $client = Clients::where('user_id',$id)->first();
+        $lastApId = sprintf('%03d', 1);
+        $lastAp = ParkingSetting::where('client_id', $id)
+            ->orderBy('id', 'DESC')
+            ->first();
+        if(!empty($lastEmp) && (int)(substr($lastEmp->employee_id, -3)) >= 1){
+            $lastEmpId = sprintf('%03d', (int)(substr($lastEmp->employee_id, -3)) + 1);
+        }
         if(Auth::user()->role == 'manager'){
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
@@ -138,6 +154,7 @@ class Client extends Controller
                 if(empty($errors)){
                     $assign->vehicle_id = $request->vehicle_id;
                     $assign->amount = $request->amount;
+                    $assign->client_id = $id;
                     if($assign->save()){
                         return redirect()
                             ->to('/settings/assign-parking')
@@ -390,6 +407,13 @@ class Client extends Controller
     public function createEmployee(Request $request){
         $id = Auth::id();
         $client = Clients::where('user_id',$id)->first();
+        $lastEmpId = sprintf('%03d', 1);
+        $lastEmp = Employee::where('client_id', $id)
+            ->orderBy('id', 'DESC')
+            ->first();
+        if(!empty($lastEmp) && (int)(substr($lastEmp->employee_id, -3)) >= 1){
+            $lastEmpId = sprintf('%03d', (int)(substr($lastEmp->employee_id, -3)) + 1);
+        }
         if(Auth::user()->role == 'manager'){
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
@@ -428,7 +452,7 @@ class Client extends Controller
                 $user->status = $request->status;
                 if($user->save()){
                     $emp->client_id = $id;
-                    $emp->employee_id = $request->employee_id;
+                    $emp->employee_id = $client->client_id.'EMP'.$lastEmpId;
                     $emp->password = bcrypt($request->password);
                     $emp->phone = $request->phone;
                     $emp->name = $request->name;
@@ -452,8 +476,7 @@ class Client extends Controller
             }
         }
         return view('pages.client.create-employee',[
-            'client' => $client,
-            'js' => 'pages.client.js.create-employee-js'
+            'client' => $client
         ]);
     }
 

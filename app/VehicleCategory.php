@@ -13,11 +13,10 @@ class VehicleCategory extends Model
      * @var array
      */
     protected $fillable = [
-        'client_id', 'type_id', 'type_name', 'created_by', 'modified_by'
+        'client_id', 'type_name', 'created_by', 'modified_by'
     ];
 
     protected $rules = array(
-        'type_id'  => 'required|unique:vehicle_categories',
         'type_name'  => 'required',
     );
 
