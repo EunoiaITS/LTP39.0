@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\CheckIn;
+
 use App\CheckInOut;
 use App\CheckOut;
 use App\Clients;

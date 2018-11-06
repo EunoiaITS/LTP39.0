@@ -26,8 +26,9 @@ class Owner extends Controller
     /**
      * CreateClient - function for creating clients
      * param - request - takes all the post request data
-    */
+     */
     public function createClient(Request $request){
+        $clients = Clients::all();
         if($request->isMethod('post')){
             $errors = array();
             if($request->password != $request->repass){
@@ -96,7 +97,10 @@ class Owner extends Controller
                     ->withInput();
             }
         }
-        return view('pages.owner.create-client');
+        return view('pages.owner.create-client',[
+            'js' => 'pages.owner.js.create-client-js',
+            'ids' => json_encode($clients)
+        ]);
     }
 
     /**
@@ -109,21 +113,37 @@ class Owner extends Controller
         }
 
         if($request->isMethod('post')){
-            $stat = User::find($request->client_id);
-            $stat->status = $request->status;
-            if($stat->save()){
-                return redirect()
-                    ->to('/clients-list')
-                    ->with('success', 'The client was '.$request->status.'ed successfully!');
-            }else{
-                return redirect()
-                    ->to('/clients-list')
-                    ->with('error', 'Something went wrong! Please try again!');
+            if($request->action == 'delete'){
+                $client = Clients::where('user_id',$request->client_id)->first();
+                if(User::destroy($client->user_id)){
+                    Clients::destroy($client->id);
+                    return redirect()
+                        ->to('/clients-list')
+                        ->with('success', 'The client was '.$request->action.'ed successfully!');
+                }else{
+                    return redirect()
+                        ->to('/clients-list')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
+            }
+            if($request->action == 'blocking'){
+                $stat = User::find($request->client_id);
+                $stat->status = $request->status;
+                if($stat->save()){
+                    return redirect()
+                        ->to('/clients-list')
+                        ->with('success', 'The client was '.$request->status.'ed successfully!');
+                }else{
+                    return redirect()
+                        ->to('/clients-list')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
             }
         }
 
         return view('pages.owner.clients-list', [
-            'clients' => $clients
+            'clients' => $clients,
+            'modal' => 'pages.owner.modals.client-list-modals'
         ]);
     }
 
@@ -153,7 +173,7 @@ class Owner extends Controller
         if($request->isMethod('post')){
             /**
              * password reset section
-            */
+             */
             if($request->action == 'pass'){
                 $pass_e = array();
                 if($request->password != $request->repass){

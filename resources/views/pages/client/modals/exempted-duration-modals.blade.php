@@ -5,9 +5,9 @@
     <div  class="modal-dialog" role="document">
         <div class="modal-content modal-form">
             <div class="modal-body text-center modal-padding">
-                <p>No parking Fees Will be Charged Form <br>  <strong>9 PM</strong> to <strong>8 AM</strong></p>
+                <p>No parking Fees Will be Charged Form <br>  <strong><span class="from-time"></span></strong> to <strong><span class="to-time"></span></strong></p>
                 <button type="submit" form="time" class="btn btn-default">Save</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Delete</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
@@ -20,9 +20,9 @@ Duration time modal
     <div  class="modal-dialog" role="document">
         <div class="modal-content modal-form">
             <div class="modal-body text-center modal-padding">
-                <p>No parking Fees Will be Charged For First <br>  <strong>20 minutes</strong></p>
+                <p>No parking Fees Will be Charged For First <br>  <strong><span class="f-duration">20</span> minutes</strong></p>
                 <button type="submit" form="duration" class="btn btn-default">Save</button>
-                <button type="button" class="btn btn-default modal-hide" data-toggle="modal" data-target="#myModal3">Delete</button>
+                <button type="button" class="btn btn-default modal-hide" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>

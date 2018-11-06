@@ -25,9 +25,11 @@
                             <div class="form-group clearfix">
                                 <label for="payment-terms">Payment Term</label>
                                 <div class="clearfix"></div>
-                                <div class="file-picutre">
-                                    <img src="{{ asset('public/uploads/clients/payment_files/'.$client->payment_file) }}" alt="image">
-                                </div>
+                                @if(isset($client->payment_file))
+                                    <div class="file-picutre">
+                                        <img src="{{ asset('public/uploads/clients/payment_files/'.$client->payment_file) }}" alt="image">
+                                    </div>
+                                @endif
                                 <div class="file btn btn-sm btn-primary ">
                                     <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><span>Browse File</span>
                                     <input type="file" class="input-upload" name="file" id="file-up" disabled>

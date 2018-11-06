@@ -29,7 +29,7 @@
                         </div>
                         <div class="form-group">
                             <label for="charger-serial">Charger Serial</label>
-                            <input type="text" name="charger_id" placeholder="S/N849484859389484" class="form-control" id="charger-serial" required>
+                            <input type="text" name="charger_id" placeholder="S/N849484859389484" class="form-control" id="charger-serial">
                         </div>
                         <div class="submit-forget-password">
                             <button type="submit" class="btn-info btn btn-login">Create</button>

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 class CheckInOut extends Model
 {
     protected $fillable = [
-        'ticket_id', 'client_id','receipt_id', 'vehicle_reg', 'fair'
+        'ticket_id', 'client_id', 'vehicle_reg', 'fair'
     ];
 
     protected $rules = array(
