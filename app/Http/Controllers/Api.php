@@ -271,7 +271,7 @@ class Api extends Controller
     public function vipCheckIn(Request $request){
         if($request->isMethod('post')){
             $vip = VIPRequests::where('vipId', $request->vip_id)->first();
-            if(empty($vip) || strtotime($vip->time_duration) < strtotime('today midnight') || $vip->status == 'requested'){
+            if(empty($vip) || strtotime($vip->time_duration) < strtotime('today midnight') || $vip->status != 'accepted'){
                 return Response::json([
                     'status' => 'false',
                     'message' => 'Please Provide enough information!'
