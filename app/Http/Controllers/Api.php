@@ -270,6 +270,13 @@ class Api extends Controller
  */
     public function vipCheckIn(Request $request){
         if($request->isMethod('post')){
+            $vip = VIPRequests::where('vipId', $request->vip_id)->first();
+            if(empty($vip) || strtotime($vip->time_duration) < strtotime('today midnight') || $vip->status != 'accepted'){
+                return Response::json([
+                    'status' => 'false',
+                    'message' => 'Please Provide enough information!'
+                ], 422);
+            }
             $checkIn = new VIPCheckInOut();
             $errors = array();
             if(!$checkIn->validate($request->all())){
@@ -282,7 +289,7 @@ class Api extends Controller
             }
             if(empty($errors)){
                 $lastTicketId = sprintf('%08d', 1);
-                $lastTicket = CheckInOut::where('client_id', $request->client_id)
+                $lastTicket = VIPCheckInOut::where('client_id', $request->client_id)
                     ->orderBy('id', 'DESC')
                     ->first();
                 if(!empty($lastTicket) && (int)(substr($lastTicket->ticket_id, -8)) >= 1){
@@ -291,8 +298,7 @@ class Api extends Controller
                 $client = Clients::where('user_id', $request->client_id)->first();
                 $checkIn->ticket_id = $client->client_id.$lastTicketId;
                 $checkIn->client_id = $request->client_id;
-                $checkIn->vehicle_reg = $request->vehicle_reg;
-                $checkIn->vehicle_type = $request->vehicle_type;
+                $checkIn->vip_id = $request->vip_id;
                 $checkIn->created_by = $request->created_by;
                 if($checkIn->save()){
                     return Response::json([
@@ -319,6 +325,32 @@ class Api extends Controller
     /**
      * vipCheckOut - function for VIP check out entry
      */
-    public function vipCheckOut(Request $request){}
+    public function vipCheckOut(Request $request){
+        if($request->isMethod('post')){
+            $checkOut = VIPCheckInOut::where('ticket_id', $request->ticket_id)->first();
+            if(!empty($checkOut) && $checkOut->receipt_id == NULL){
+                $checkOut->updated_at = $request->check_out_time;
+                $checkOut->updated_by = $request->employee;
+                $checkOut->receipt_id = $checkOut->client_id.$this->generateRandomString(16);
+                if($checkOut->save()){
+                    return Response::json([
+                        'status' => 'true',
+                        'message' => 'Checked out successfully!',
+                        'data' => $checkOut
+                    ], 200);
+                }else{
+                    return Response::json([
+                        'status' => 'false',
+                        'message' => 'Please Provide enough information!'
+                    ], 422);
+                }
+            }else{
+                return Response::json([
+                    'status' => 'false',
+                    'message' => 'Please Provide enough information!'
+                ], 422);
+            }
+        }
+    }
 
 }

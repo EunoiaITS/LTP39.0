@@ -15,8 +15,10 @@ class CreateVIPCheckInOutsTable extends Migration
     {
         Schema::create('vip_check_in_outs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('vip_id');
+            $table->string('vip_id');
             $table->integer('client_id');
+            $table->string('ticket_id')->nullable();
+            $table->string('receipt_id')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();
