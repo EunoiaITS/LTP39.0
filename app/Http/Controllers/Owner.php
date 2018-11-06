@@ -28,6 +28,7 @@ class Owner extends Controller
      * param - request - takes all the post request data
      */
     public function createClient(Request $request){
+        $clients = Clients::all();
         if($request->isMethod('post')){
             $errors = array();
             if($request->password != $request->repass){
@@ -96,7 +97,10 @@ class Owner extends Controller
                     ->withInput();
             }
         }
-        return view('pages.owner.create-client');
+        return view('pages.owner.create-client',[
+            'js' => 'pages.owner.js.create-client-js',
+            'ids' => json_encode($clients)
+        ]);
     }
 
     /**

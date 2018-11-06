@@ -19,10 +19,7 @@
                 <div class="employee-form form-employee-center clearfix">
                     <form action="{{ url('/create-employee') }}" method="post">
                         {{ csrf_field() }}
-                        <div class="form-group">
-                            <label for="user-id" class="usr-lock"><i class="fas fa-id-badge"></i></label>
-                            <input name="employee_id" type="text" placeholder="ID" class="form-control" required>
-                        </div>
+                        <input name="employee_id" type="hidden" id="emp-id" class="form-control">
                         <div class="form-group">
                             <label for="user-crname" class="usr-lock"><i class="fas fa-user"></i></label>
                             <input name="name" type="text" placeholder="Name" class="form-control" required>

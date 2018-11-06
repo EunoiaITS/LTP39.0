@@ -20,14 +20,11 @@
                     <div class="employee-form form-employee-center clearfix">
                         <form method="post" action="{{ url('/create-client') }}" enctype="multipart/form-data">
                             {{ csrf_field() }}
-                            <div class="form-group">
-                                <label for="user-id" class="usr-lock"><i class="fas fa-id-badge"></i></label>
-                                <input type="text" name="client_id" placeholder="ID" class="form-control" id="user-id" value="{{ old('client_id') }}" required>
-                            </div>
+                            <input type="hidden" name="client_id" placeholder="ID" class="form-control" id="client-id">
                             <div class="vechicle-select">
                                 <div class="form-group">
-                                    <label for="exampleFormControlSelect1">Client Type</label>
-                                    <select class="form-control get-select-picker" name="client_type" id="exampleFormControlSelect1" title="Cleint Category">
+                                    <label for="client-type">Client Type</label>
+                                    <select class="form-control get-select-picker" name="client_type" id="client-type" title="Cleint Category">
                                         <option value="park" @if(old('client_type') == 'park') {{ 'selected' }} @endif>Parking Client</option>
                                         <option value="ad" @if(old('client_type') == 'ad') {{ 'selected' }} @endif>Advertisement Client</option>
                                     </select>
