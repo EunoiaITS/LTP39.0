@@ -4,11 +4,17 @@ namespace App\Http\Controllers;
 
 
 use App\CheckInOut;
+use App\CheckOut;
+use App\Clients;
 use App\Employee;
+use App\ExemptedDuration;
+use App\ExemptedTime;
 use App\ParkingRate;
 use App\ParkingSetting;
 use App\User;
 use App\VehicleCategory;
+use App\VIPCheckInOut;
+use App\VIPRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -61,9 +67,9 @@ class Api extends Controller
         Check In api : Check in data coming from android
      **/
     public function checkIn(Request $request){
-        $checkIn = new CheckInOut();
-        $errors = array();
         if($request->isMethod('post')){
+            $checkIn = new CheckInOut();
+            $errors = array();
             if(!$checkIn->validate($request->all())){
                 $checkIn_e = $checkIn->errors();
                 foreach ($checkIn_e->messages() as $k => $v){
@@ -72,31 +78,39 @@ class Api extends Controller
                     }
                 }
             }
-        }
-        if(empty($errors)){
-            $checkIn->ticket_id = $request->client_id.$this->generateRandomString(16);
-            $checkIn->client_id = $request->client_id;
-            $checkIn->vehicle_reg = $request->vehicle_reg;
-            $checkIn->vehicle_type = $request->vehicle_type;
-            $checkIn->created_by = $request->created_by;
-            if($checkIn->save()){
-                return Response::json([
-                    'status' => 'true',
-                    'message' => 'Check In successfully added!',
-                    'data' => $checkIn
-                ], 200);
+            if(empty($errors)){
+                $lastTicketId = sprintf('%08d', 1);
+                $lastTicket = CheckInOut::where('client_id', $request->client_id)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+                if(!empty($lastTicket) && (int)(substr($lastTicket->ticket_id, -8)) >= 1){
+                    $lastTicketId = sprintf('%08d', (int)(substr($lastTicket->ticket_id, -8)) + 1);
+                }
+                $client = Clients::where('user_id', $request->client_id)->first();
+                $checkIn->ticket_id = $client->client_id.$lastTicketId;
+                $checkIn->client_id = $request->client_id;
+                $checkIn->vehicle_reg = $request->vehicle_reg;
+                $checkIn->vehicle_type = $request->vehicle_type;
+                $checkIn->created_by = $request->created_by;
+                if($checkIn->save()){
+                    return Response::json([
+                        'status' => 'true',
+                        'message' => 'Check In successfully added!',
+                        'data' => $checkIn
+                    ], 200);
+                }else{
+                    return Response::json([
+                        'status' => 'false',
+                        'message' => 'Please Provide enough information!'
+                    ], 422);
+                }
             }else{
                 return Response::json([
                     'status' => 'false',
-                    'message' => 'Please Provide enough information!'
+                    'message' => 'Please Provide enough information!',
+                    'errors' => $errors
                 ], 422);
             }
-        }else{
-            return Response::json([
-                'status' => 'false',
-                'message' => 'Please Provide enough information!',
-                'errors' => $errors
-            ], 422);
         }
     }
 
@@ -107,9 +121,11 @@ class Api extends Controller
         if($request->isMethod('post')){
             $checkOut = CheckInOut::where('ticket_id', $request->ticket_id)->first();
             if(isset($request->vehicle_reg)){
-                $checkOut = CheckInOut::where('vehicle_reg', $request->vehicle_reg)->last();
+                $checkOut = CheckInOut::where('vehicle_reg', $request->vehicle_reg)
+                    ->orderBy('id', 'DESC')
+                    ->first();
             }
-            if(!empty($checkOut)){
+            if(!empty($checkOut) && $checkOut->fair == NULL){
                 $checkOut->updated_at = $request->check_out_time;
                 $checkOut->updated_by = $request->employee;
                 $checkOut->receipt_id = $checkOut->client_id.$this->generateRandomString(16);
@@ -119,7 +135,26 @@ class Api extends Controller
 
                 $duration = $diff->h;
                 $rate = ParkingRate::where('vehicle_id', $checkOut->vehicle_type)->first();
+                $exDuration = ExemptedDuration::where('client_id', $checkOut->client_id)->first();
+                $exTime = ExemptedTime::where('client_id', $checkOut->client_id)->first();
+                $exFrom = (int)$exTime->from;
+                $exTo = (int)$exTime->to;
+                if(substr($exTime->from, -2) == 'PM'){
+                    $exFrom += 12;
+                }
+                if(substr($exTime->to, -2) == 'PM'){
+                    $exTo += 12;
+                }
                 $fair = 0;
+                $ci_time = (int)date('H A', strtotime($checkOut->created_at));
+                $co_time = (int)date('H A', strtotime($request->check_out_time));
+                if($ci_time >= $exFrom && $co_time > $exTo){
+                    $exDiff = $exTo - $exFrom;
+                    if($exDiff < 0){
+                        $exDiff = $exDiff + 12;
+                    }
+                    $duration = $duration - $exDiff;
+                }
                 if($duration > $rate->base_hour){
                     $sub = ($duration - $rate->base_hour) * $rate->sub_rate;
                     if($diff->i != 0){
@@ -132,8 +167,18 @@ class Api extends Controller
                         $fair = $fair + $rate->sub_rate;
                     }
                 }
+                if($duration == 0 && $diff->i <= $exDuration->duration){
+                    $fair = 0;
+                }
+                if($ci_time >= $exFrom && $co_time <= $exTo){
+                    $fair = 0;
+                }
                 $checkOut->fair = $fair;
                 if($checkOut->save()){
+                    $checkOut->exFrom = $exFrom;
+                    $checkOut->exTo = $exTo;
+                    $checkOut->checkIn = $ci_time;
+                    $checkOut->checkOut = $co_time;
                     return Response::json([
                         'status' => 'true',
                         'message' => 'Checked out successfully!',
@@ -166,4 +211,114 @@ class Api extends Controller
         }
         return $randomString;
     }
+
+    /**
+     * vipRequest - function for VIP requests from mobile application
+    */
+    public function vipRequest(Request $request){
+        if($request->isMethod('post')){
+            $vip = new VIPRequests();
+            $errors = array();
+            if(!$vip->validate($request->all())){
+                $vip_e = $vip->errors();
+                foreach ($vip_e->messages() as $k => $v){
+                    foreach ($v as $e){
+                        $errors[] = $e;
+                    }
+                }
+            }
+            if(empty($errors)){
+                $lastvipId = sprintf('%08d', 1);
+                $lastvip = VIPRequests::where('client_id', $request->client_id)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+                if(!empty($lastvip) && (int)(substr($lastvip->vipId, -8)) >= 1){
+                    $lastvipId = sprintf('%08d', (int)(substr($lastvip->vipId, -8)) + 1);
+                }
+                $client = Clients::where('user_id', $request->client_id)->first();
+                $vip->vipId = 'VIP-'.$client->client_id.$lastvipId;
+                $vip->client_id = $request->client_id;
+                $vip->car_reg = $request->car_reg;
+                $vip->phone = $request->phone;
+                $vip->purpose = $request->purpose;
+                $vip->requested_by = $request->requested_by;
+                $vip->status = 'requested';
+                if($vip->save()){
+                    return Response::json([
+                        'status' => 'true',
+                        'message' => 'VIP registration was requested!',
+                        'data' => $vip
+                    ], 200);
+                }else{
+                    return Response::json([
+                        'status' => 'false',
+                        'message' => 'Please Provide enough information!'
+                    ], 422);
+                }
+            }else{
+                return Response::json([
+                    'status' => 'false',
+                    'message' => 'Please Provide enough information!',
+                    'errors' => $errors
+                ], 422);
+            }
+        }
+    }
+
+    /**
+ * vipCheckIn - function for VIP check in entry
+ */
+    public function vipCheckIn(Request $request){
+        if($request->isMethod('post')){
+            $checkIn = new VIPCheckInOut();
+            $errors = array();
+            if(!$checkIn->validate($request->all())){
+                $checkIn_e = $checkIn->errors();
+                foreach ($checkIn_e->messages() as $k => $v){
+                    foreach ($v as $e){
+                        $errors[] = $e;
+                    }
+                }
+            }
+            if(empty($errors)){
+                $lastTicketId = sprintf('%08d', 1);
+                $lastTicket = CheckInOut::where('client_id', $request->client_id)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+                if(!empty($lastTicket) && (int)(substr($lastTicket->ticket_id, -8)) >= 1){
+                    $lastTicketId = sprintf('%08d', (int)(substr($lastTicket->ticket_id, -8)) + 1);
+                }
+                $client = Clients::where('user_id', $request->client_id)->first();
+                $checkIn->ticket_id = $client->client_id.$lastTicketId;
+                $checkIn->client_id = $request->client_id;
+                $checkIn->vehicle_reg = $request->vehicle_reg;
+                $checkIn->vehicle_type = $request->vehicle_type;
+                $checkIn->created_by = $request->created_by;
+                if($checkIn->save()){
+                    return Response::json([
+                        'status' => 'true',
+                        'message' => 'Check In successfully added!',
+                        'data' => $checkIn
+                    ], 200);
+                }else{
+                    return Response::json([
+                        'status' => 'false',
+                        'message' => 'Please Provide enough information!'
+                    ], 422);
+                }
+            }else{
+                return Response::json([
+                    'status' => 'false',
+                    'message' => 'Please Provide enough information!',
+                    'errors' => $errors
+                ], 422);
+            }
+        }
+    }
+
+    /**
+     * vipCheckOut - function for VIP check out entry
+     */
+    public function vipCheckOut(Request $request){}
+
 }

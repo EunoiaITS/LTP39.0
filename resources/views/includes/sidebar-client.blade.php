@@ -28,7 +28,7 @@
             <div id="dropdown-lvl2" class="panel-collapse collapse">
                 <div class="panel-body">
                     <ul class="nav navbar-nav">
-                        <li><a href="vehicle-category.html">Vehicle Category</a></li>
+                        <li><a href="{{ url('/report/vehicle-category') }}">Vehicle Category</a></li>
                         <li><a href="user-income.html">Users income(check Out)</a></li>
                         <li><a href="sales-report.html">Sales</a></li>
                         <li><a href="ticket-report.html">Ticket</a></li>

@@ -18,4 +18,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user', 'Api@details');
     Route::post('check-in', 'Api@checkIn');
     Route::post('check-out', 'Api@checkOut');
+    Route::post('vip-request', 'Api@vipRequest');
+    Route::post('vip-check-in', 'Api@vipCheckIn');
+    Route::post('vip-check-out', 'Api@vipCheckOut');
 });

@@ -764,4 +764,39 @@ class Client extends Controller
             'vips' => $vips
         ]);
     }
+
+    /**
+ * vhReport - shows the reports based on vehicle categories
+ */
+    public function vhReport(Request $request){
+        return view('pages.client.vh-report');
+    }
+
+    /**
+     * vhReport - shows the reports based on vehicle categories
+     */
+    public function uiReport(Request $request){
+        return view('pages.client.ui-report');
+    }
+
+    /**
+     * vhReport - shows the reports based on vehicle categories
+     */
+    public function salesReport(Request $request){
+        return view('pages.client.sales-report');
+    }
+
+    /**
+     * vhReport - shows the reports based on vehicle categories
+     */
+    public function ticketReport(Request $request){
+        return view('pages.client.ticket-report');
+    }
+
+    /**
+     * vhReport - shows the reports based on vehicle categories
+     */
+    public function receiptReport(Request $request){
+        return view('pages.client.receipt-report');
+    }
 }
