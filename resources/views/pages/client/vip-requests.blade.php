@@ -27,7 +27,6 @@
                         <tr>
                             <th>Serial</th>
                             <th>ID</th>
-                            <th>Name</th>
                             <th>Phone</th>
                             <th>Purpose</th>
                             <th>Car Reg.</th>
@@ -42,16 +41,15 @@
                         @php $count++; @endphp
                         <tr>
                             <td>{{ $count }}</td>
-                            <td>VIP-{{ $u->id }}</td>
-                            <td>{{ $u->name }}</td>
+                            <td>{{ $u->vipId }}</td>
                             <td>{{ $u->phone }}</td>
-                            <td>Shop Owner</td>
-                            <td>GA11110</td>
-                            <td>Emp 1</td>
-                            <td>{{ date('Y-m-d') }}</td>
+                            <td>{{ $u->purpose }}</td>
+                            <td>{{ $u->car_reg }}</td>
+                            <td>{{ $u->req_by->name }}</td>
+                            <td>{{ date('Y-m-d', strtotime($u->created_at)) }}</td>
                             <td>
                                 <button class="edit-icon btn btn-login approve" rel="{{ $u->id }}" data-toggle="modal" data-target="#myModal-{{ $u->id }}">Approve</button>
-                                <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModal3">Reject</button>
+                                <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#reject{{ $u->id }}">Reject</button>
                             </td>
                         </tr>
                         @endforeach
