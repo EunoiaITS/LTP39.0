@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\CheckInOut;
+use App\VIPCheckInOut;
 use App\VIPRequests;
 use Auth;
 use App\Clients;
@@ -805,7 +807,67 @@ class Client extends Controller
  * vhReport - shows the reports based on vehicle categories
  */
     public function vhReport(Request $request){
-        return view('pages.client.vh-report');
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $vc = VehicleCategory::where('client_id', $id)->get();
+        $daily = $weekly = $monthly = $yearly = 0;
+        $data = CheckInOut::where('client_id', $id)->get();
+        $vipData = VIPCheckInOut::where('client_id', $id)->get();
+        foreach($data as $d){
+            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
+                $daily++;
+            }
+            if(date('W', strtotime($d->created_at)) == date('W')){
+                $weekly++;
+            }
+            if(date('m', strtotime($d->created_at)) == date('m')){
+                $monthly++;
+            }
+            if(date('Y', strtotime($d->created_at)) == date('Y')){
+                $yearly++;
+            }
+        }
+        foreach($vipData as $d){
+            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
+                $daily++;
+            }
+            if(date('W', strtotime($d->created_at)) == date('W')){
+                $weekly++;
+            }
+            if(date('m', strtotime($d->created_at)) == date('m')){
+                $monthly++;
+            }
+            if(date('Y', strtotime($d->created_at)) == date('Y')){
+                $yearly++;
+            }
+        }
+        $result = $vc_selected = $type = null;
+        if(isset($request->vc)){
+            $vc_selected = $request->vc;
+            $result = CheckInOut::where('client_id', $id)
+                ->where('vehicle_type', $request->vc)
+                ->get();
+        }
+        if(isset($request->type)){
+            $type = $request->type;
+            $result = CheckInOut::where('client_id', $id)
+                ->where('fair', '=', null)
+                ->get();
+        }
+        return view('pages.client.vh-report', [
+            'result' => $result,
+            'vc' => $vc,
+            'vc_selected' => $vc_selected,
+            'type' => $type,
+            'daily' => $daily,
+            'weekly' => $weekly,
+            'monthly' => $monthly,
+            'yearly' => $yearly,
+            'js' => 'pages.client.js.vh-report-js'
+        ]);
     }
 
     /**
