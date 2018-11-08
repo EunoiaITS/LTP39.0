@@ -19,6 +19,7 @@
                         <tr>
                             <th>Serial</th>
                             <th>ID</th>
+                            <th>Name</th>
                             <th>Phone</th>
                             <th>Purpose</th>
                             <th>Car Reg.</th>
@@ -36,15 +37,16 @@
                         @php $count++; @endphp
                         <tr>
                             <td>{{ $count }}</td>
-                            <td>{{ $v->vipId }}</td>
-                            <td>{{ $v->phone }}</td>
-                            <td>{{ $v->purpose }}</td>
-                            <td>{{ $v->car_reg }}</td>
-                            <td>{{ $v->req_by->name }}</td>
-                            <td>{{ date('d-M-Y', strtotime($v->created_at)) }}</td>
-                            <td>{{ $v->s_by->name }}</td>
-                            <td>{{ date('d-M-Y', strtotime($v->updated_at)) }}</td>
-                            <td>{{ $v->time_duration }}</td>
+                            <td>VIP-{{ $v->id }}</td>
+                            <td>Driver1</td>
+                            <td>+01717012457</td>
+                            <td>Shop Owner</td>
+                            <td>GA11110</td>
+                            <td>Emp 1</td>
+                            <td>01/01/01</td>
+                            <td>Manager 1</td>
+                            <td>01/01/01</td>
+                            <td>2 months</td>
                             <td>
                                 <div class="qr-code-accepted">
                                     <img src="img/qr-code.png" class="qr-codeimg" alt="">

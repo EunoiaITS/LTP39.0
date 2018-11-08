@@ -19,6 +19,7 @@
                         <tr>
                             <th>Serial</th>
                             <th>ID</th>
+                            <th>Name</th>
                             <th>Phone</th>
                             <th>Purpose</th>
                             <th>Car Reg.</th>
@@ -33,15 +34,16 @@
                         @foreach($vips as $v)
                         @php $count++; @endphp
                         <tr>
-                            <td>{{ $count }}</td>
-                            <td>{{ $v->vipId }}</td>
-                            <td>{{ $v->phone }}</td>
-                            <td>{{ $v->purpose }}</td>
-                            <td>{{ $v->car_reg }}</td>
-                            <td>{{ $v->req_by->name }}</td>
-                            <td>{{ date('d-M-Y', strtotime($v->created_at)) }}</td>
-                            <td>@if(isset($v->s_by->name)){{ $v->s_by->name }}@endif</td>
-                            <td>{{ $v->remark }}</td>
+                            <td>01</td>
+                            <td>VIP001</td>
+                            <td>Driver1</td>
+                            <td>+01717</td>
+                            <td>Shop Owner</td>
+                            <td>GA11110</td>
+                            <td>Emp 1</td>
+                            <td>01/01/01</td>
+                            <td>Manager 1</td>
+                            <td>Not intersted</td>
                         </tr>
                         @endforeach
                     </table>
