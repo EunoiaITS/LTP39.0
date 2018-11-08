@@ -15,6 +15,7 @@ class CreateExemptedTimesTable extends Migration
     {
         Schema::create('exempted_times', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('exemptedtime_id');
             $table->integer('client_id');
             $table->string('from');
             $table->string('to');

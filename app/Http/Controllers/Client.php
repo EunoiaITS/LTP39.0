@@ -116,14 +116,6 @@ class Client extends Controller
     */
     public function assignParking(Request $request){
         $id = Auth::id();
-        $client = Clients::where('user_id',$id)->first();
-        $lastApId = sprintf('%03d', 1);
-        $lastAp = ParkingSetting::where('client_id', $id)
-            ->orderBy('id', 'DESC')
-            ->first();
-        if(!empty($lastEmp) && (int)(substr($lastEmp->employee_id, -3)) >= 1){
-            $lastEmpId = sprintf('%03d', (int)(substr($lastEmp->employee_id, -3)) + 1);
-        }
         if(Auth::user()->role == 'manager'){
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
@@ -140,6 +132,14 @@ class Client extends Controller
             $p->vehicle = VehicleCategory::find($p->vehicle_id);
         }
         if($request->isMethod('post')){
+            $lastApId = sprintf('%03d', 1);
+            $lastAp = ParkingSetting::where('client_id', $id)
+                ->orderBy('id','desc')
+                ->first();
+            $vc = VehicleCategory::find($request->vehicle_id);
+            if(!empty($lastAp) && (int)(substr($lastAp->assign_parking_id, -3)) >= 1){
+                $lastApId = sprintf('%03d', (int)(substr($lastAp->assign_parking_id, -3)) + 1);
+            }
             $errors = array();
             if($request->action == 'assign'){
                 $assign = new ParkingSetting();
@@ -155,6 +155,7 @@ class Client extends Controller
                     $assign->vehicle_id = $request->vehicle_id;
                     $assign->amount = $request->amount;
                     $assign->client_id = $id;
+                    $assign->assign_parking_id = $vc->type_id.'API'.$lastApId;
                     if($assign->save()){
                         return redirect()
                             ->to('/settings/assign-parking')
@@ -225,6 +226,14 @@ class Client extends Controller
         }
         if($request->isMethod('post')){
             $errors = array();
+            $lastArId = sprintf('%03d', 1);
+            $lastAr = ParkingRate::where('client_id', $id)
+                ->orderBy('id','desc')
+                ->first();
+            $vc = VehicleCategory::find($request->vehicle_id);
+            if(!empty($lastAr) && (int)(substr($lastAr->parking_rate_id, -3)) >= 1){
+                $lastArId = sprintf('%03d', (int)(substr($lastAr->parking_rate_id, -3)) + 1);
+            }
             if($request->action == 'create'){
                 $assign = new ParkingRate();
                 if(!$assign->validate($request->all())){
@@ -236,6 +245,8 @@ class Client extends Controller
                     }
                 }
                 if(empty($errors)){
+                    $assign->client_id = $id;
+                    $assign->parking_rate_id = $vc->type_id.'PRI'.$lastArId;
                     $assign->vehicle_id = $request->vehicle_id;
                     $assign->base_hour = $request->base_hour;
                     $assign->base_rate = $request->base_rate;
@@ -295,6 +306,22 @@ class Client extends Controller
      */
     public function exemptedDuration(Request $request){
         $id = Auth::id();
+        $client = Clients::where('user_id',$id)->first();
+        $lastExdId = sprintf('%03d', 1);
+        $lastExd = ExemptedDuration::where('client_id', $id)
+            ->orderBy('id', 'DESC')
+            ->first();
+        if(!empty($lastExd) && (int)(substr($lastExd->exempteddur_id, -3)) >= 1){
+            $lastExdId = sprintf('%03d', (int)(substr($lastExd->exempteddur_id, -3)) + 1);
+        }
+
+        $lastExtId = sprintf('%03d', 1);
+        $lastExt = ExemptedTime::where('client_id', $id)
+            ->orderBy('id', 'DESC')
+            ->first();
+        if(!empty($lastExt) && (int)(substr($lastExt->exemptedtime_id, -3)) >= 1){
+            $lastExtId = sprintf('%03d', (int)(substr($lastExt->exemptedtime_id, -3)) + 1);
+        }
         if(Auth::user()->role == 'manager'){
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
@@ -337,6 +364,7 @@ class Client extends Controller
                 $time = ExemptedTime::find($request->time_id);
                 $time->from = $request->from;
                 $time->to = $request->to;
+                $time->exemptedtime_id = $client->client_id.'EXT'.$lastExtId;
                 if($time->save()){
                     return redirect()
                         ->to('/settings/exempted-setting')
@@ -361,6 +389,7 @@ class Client extends Controller
                 if(empty($errors)){
                     $time->client_id = $id;
                     $time->duration = $request->duration;
+                    $time->exempteddur_id = $client->client_id.'EXD'.$lastExdId;
                     if($time->save()){
                         return redirect()
                             ->to('/settings/exempted-setting')
@@ -566,6 +595,14 @@ class Client extends Controller
     */
     public function vat(Request $request){
         $id = Auth::id();
+        $client = Clients::where('user_id',$id)->first();
+        $lastVatId = sprintf('%03d', 1);
+        $lastVat = VAT::where('client_id', $id)
+            ->orderBy('id', 'DESC')
+            ->first();
+        if(!empty($lastVat) && (int)(substr($lastVat->vat_id, -3)) >= 1){
+            $lastVatId = sprintf('%03d', (int)(substr($lastVat->vat_id, -3)) + 1);
+        }
         if(Auth::user()->role == 'manager'){
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
@@ -586,6 +623,7 @@ class Client extends Controller
                 if(empty($errors)){
                     $vc->client_id = $id;
                     $vc->vat = $request->vat;
+                    $vc->vat_id = $client->client_id.'VAT'.$lastVatId;
                     if($vc->save()){
                         return redirect()
                             ->to('/settings/vat')
@@ -626,6 +664,14 @@ class Client extends Controller
      */
     public function vipParking(Request $request){
         $id = Auth::id();
+        $client = Clients::where('user_id',$id)->first();
+        $lastVpId = sprintf('%03d', 1);
+        $lastVp = VipParking::where('client_id', $id)
+            ->orderBy('id', 'DESC')
+            ->first();
+        if(!empty($lastVp) && (int)(substr($lastVp->vip_parking_rate_id, -3)) >= 1){
+            $lastVpId = sprintf('%03d', (int)(substr($lastVp->vip_parking_rate_id, -3)) + 1);
+        }
         if(Auth::user()->role == 'manager'){
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
@@ -652,6 +698,7 @@ class Client extends Controller
                     $assign->client_id = $id;
                     $assign->duration = $request->duration;
                     $assign->fair = $request->fair;
+                    $assign->vip_parking_rate_id = $client->client_id.'VPK'.$lastVpId;
                     if($assign->save()){
                         return redirect()
                             ->to('/settings/vip-parking')
@@ -728,8 +775,17 @@ class Client extends Controller
 
 
     public function createVip(Request $request){
+        $id = Auth::id();
         if($request->isMethod('post')){
             $errors = array();
+            $client = Clients::where('user_id',$id)->first();
+            $lastVipId = sprintf('%03d', 1);
+            $lastVip = Vip::where('client_id', $id)
+                ->orderBy('id', 'DESC')
+                ->first();
+            if(!empty($lastVip) && (int)(substr($lastVip->vip_id, -3)) >= 1){
+                $lastVipId = sprintf('%03d', (int)(substr($lastVip->vip_id, -3)) + 1);
+            }
             $vip = new Vip();
                 if(!$vip->validate($request->all())){
                     $vip_e = $vip->errors();
@@ -740,8 +796,8 @@ class Client extends Controller
                     }
                 }
                 if(empty($errors)){
-                    $vip->vip_id = $request->vip_id;
-                    $vip->client_id = $request->client_id;
+                    $vip->vip_id = $client->client_id.'VIP'.$lastVipId;
+                    $vip->client_id = $id;
                     $vip->phone = $request->phone;
                     $vip->vehicle_type = $request->vehicle_type;
                     $vip->time_duration = $request->time_duration;

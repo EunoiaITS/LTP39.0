@@ -15,6 +15,7 @@ class CreateVipParkingsTable extends Migration
     {
         Schema::create('vip_parkings', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('vip_parking_rate_id');
             $table->integer('client_id');
             $table->integer('vehicle_id');
             $table->integer('duration');
