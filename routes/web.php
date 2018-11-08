@@ -90,7 +90,7 @@ Route::group(['middleware' => ['auth', 'client']], function(){
      **/
 
     Route::get('/vip-requests', 'Client@vipRequests');
-    Route::post('/vip-requests', 'Client@vipRequests');
+    Route::post('/create-vip', 'Client@createVip');
     Route::get('/vip-list', 'Client@vipList');
     Route::get('/vip-reject-list', 'Client@vipRejectList');
 
