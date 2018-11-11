@@ -15,6 +15,7 @@ class CreateExemptedDurationsTable extends Migration
     {
         Schema::create('exempted_durations', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('exempteddur_id');
             $table->integer('client_id');
             $table->string('duration');
             $table->string('created_by')->nullable();

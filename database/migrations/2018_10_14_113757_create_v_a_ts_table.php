@@ -16,6 +16,7 @@ class CreateVATsTable extends Migration
         Schema::create('vat', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('client_id');
+            $table->string('vat_id');
             $table->string('vat');
             $table->string('created_by')->nullable();
             $table->string('modified_by')->nullable();

@@ -53,7 +53,7 @@
                             <div id="qr-code{{ $u->id }}"></div>
                         </div>
                     </div>
-                <input type="hidden" name="client_id" value="{{ $u->client_id }}">
+                <input type="hidden" name="client_id" value="{{ Auth::user()->id }}">
                 <input type="hidden" id="qr-image{{ $u->id }}" name="qr_image">
                 <button type="submit" class="btn btn-default">Confirm</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

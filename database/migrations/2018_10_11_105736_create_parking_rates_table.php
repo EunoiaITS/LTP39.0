@@ -15,6 +15,8 @@ class CreateParkingRatesTable extends Migration
     {
         Schema::create('parking_rates', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('client_id');
+            $table->string('parking_rate_id');
             $table->integer('vehicle_id');
             $table->string('base_hour');
             $table->string('base_rate');
