@@ -1,13 +1,12 @@
 @extends('layout')
 @section('content')
-
     <!-- main-content area -->
     <div class="dashboard-main-content clearfix">
         <div class="container">
             <div class="row">
                 <div class="col-sm-12 dashboad-title">
                     <h2>Dashboard</h2>
-                    <h4 class="date">Date: <span>19-09-2018</span></h4>
+                    <h4 class="date">Date: <span>{{ date('d-m-Y') }}</span></h4>
                 </div>
                 <div class="col-md-5 col-sm-6">
                     <div class="dashboard-total clearfix">
@@ -15,7 +14,7 @@
                             <img src="{{ asset('public/assets/img/taka.png') }}" alt="">
                         </div>
                         <div class="total-cost">
-                            <h3>23,000</h3>
+                            <h3>0</h3>
                             <p>Total Sales</p>
                         </div>
                     </div>

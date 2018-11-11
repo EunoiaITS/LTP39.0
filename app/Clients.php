@@ -20,8 +20,9 @@ class Clients extends Model
         'client_id'  => 'required|unique:clients',
         'client_type' => 'required|in:park,ad',
     );
-
     protected $errors;
+
+    protected $table = 'clients';
 
     public function validate($data)
     {
