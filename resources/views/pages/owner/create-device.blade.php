@@ -20,10 +20,6 @@
                     <form name="create_device" action="{{ url('/create-device') }}" method="post">
                         {{ csrf_field() }}
                         <div class="form-group">
-                            <label for="device-id" class="usr-lock"><i class="fas fa-id-badge"></i></label>
-                            <input type="text" name="device_id" placeholder="ID" class="form-control" id="device-id" required>
-                        </div>
-                        <div class="form-group">
                             <label for="factory-serial">Factory Serial</label>
                             <input type="text" name="factory_id" placeholder="S/N002948928393289" class="form-control" id="factory-serial" required>
                         </div>

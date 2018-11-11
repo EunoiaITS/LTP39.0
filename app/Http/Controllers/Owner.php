@@ -393,6 +393,12 @@ class Owner extends Controller
     public function createDevice(Request $request){
         $id = Auth::user()->id;
         $cd = new CompanyDevice();
+        $lastDevId = sprintf('%03d', 1);
+        $lastDev = CompanyDevice::orderBy('id', 'desc')
+            ->first();
+        if(!empty($lastDev) && (int)(substr($lastDev->device_id, -3)) >= 1){
+            $lastDevId = sprintf('%03d', (int)(substr($lastDev->device_id, -3)) + 1);
+        }
         if($request->isMethod('post')){
             $errors = array();
             if(!$cd->validate($request->all())){
@@ -405,7 +411,7 @@ class Owner extends Controller
             }
             if(empty($errors)){
                 //dd($request->all());
-                $cd->device_id = $request->device_id;
+                $cd->device_id = 'DEV'.$lastDevId;
                 $cd->factory_id = $request->factory_id;
                 $cd->charger_id = $request->charger_id;
                 $cd->created_by = $id;
@@ -488,6 +494,12 @@ class Owner extends Controller
      */
     public function createBilling(Request $request){
         $clients = Clients::all();
+        $lastBillId = sprintf('%03d', 1);
+        $lastBill = CompanyBillingSettings::orderBy('id', 'desc')
+            ->first();
+        if(!empty($lastBill) && (int)(substr($lastBill->billing_id, -3)) >= 1){
+            $lastBillId = sprintf('%03d', (int)(substr($lastBill->billing_id, -3)) + 1);
+        }
         foreach ($clients as $c){
             $cbs = CompanyBillingSettings::where('client_id',$c->client_id)->first();
             if(!$cbs){
@@ -509,7 +521,7 @@ class Owner extends Controller
             }
             if(empty($errors)){
                 $cb->client_id = $request->client_id;
-                $cb->billing_id = 'Bill-'.$request->client_id;
+                $cb->billing_id = 'BILL'.$lastBillId;
                 $cb->billing_term = $request->billing_term;
                 $cb->billing_amount = $request->billing_amount;
                 $cb->bill_start_date = date('Y-m-d',strtotime($request->bill_start_date));
