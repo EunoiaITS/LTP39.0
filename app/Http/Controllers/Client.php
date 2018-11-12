@@ -888,7 +888,8 @@ class Client extends Controller
                 $yearly++;
             }
         }
-        $result = $vc_selected = $type = null;
+        $result = new Collection();
+        $vc_selected = $type = null;
         if(isset($request->vc)){
             $vc_selected = $request->vc;
             $result = CheckInOut::where('client_id', $id)
@@ -897,9 +898,52 @@ class Client extends Controller
         }
         if(isset($request->type)){
             $type = $request->type;
-            $result = CheckInOut::where('client_id', $id)
-                ->where('fair', '=', null)
-                ->get();
+            if($type == 1){
+                $result = CheckInOut::where('client_id', $id)
+                    ->where('fair', '=', null)
+                    ->get();
+            }
+            if($type == 2){
+                $result = CheckInOut::where('client_id', $id)
+                    ->where('fair', '!=', null)
+                    ->get();
+            }
+            if($type == 3){
+                $result = VIPCheckInOut::where('client_id', $id)
+                    ->where('receipt_id', '=', null)
+                    ->get();
+            }
+            if($type == 4){
+                $result = VIPCheckInOut::where('client_id', $id)
+                    ->where('receipt_id', '!=', null)
+                    ->get();
+            }
+        }
+        if(isset($request->vc) && isset($request->type)){
+            $type = $request->type;
+            $vc_selected = $request->vc;
+            if($type == 1){
+                $result = CheckInOut::where('client_id', $id)
+                    ->where('vehicle_type', $request->vc)
+                    ->where('fair', '=', null)
+                    ->get();
+            }
+            if($type == 2){
+                $result = CheckInOut::where('client_id', $id)
+                    ->where('fair', '!=', null)
+                    ->where('vehicle_type', $request->vc)
+                    ->get();
+            }
+            if($type == 3){
+                $result = VIPCheckInOut::where('client_id', $id)
+                    ->where('receipt_id', '=', null)
+                    ->get();
+            }
+            if($type == 4){
+                $result = VIPCheckInOut::where('client_id', $id)
+                    ->where('receipt_id', '!=', null)
+                    ->get();
+            }
         }
         return view('pages.client.vh-report', [
             'result' => $result,

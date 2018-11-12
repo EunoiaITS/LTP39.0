@@ -3,7 +3,12 @@
         var link = '{{ url('/report/vehicle-category') }}';
         $('#exampleFormControlSelect1').on('change', function(e){
             e.preventDefault();
-            window.location.href = link+'?vc='+$(this).val();
+            @if($type != null)
+            link = link+'?type='+'{{ $type }}&vc='+$(this).val();
+            @else
+            link = link+'?vc='+$(this).val();
+            @endif
+            window.location.href = link;
         });
         $('#exampleFormControlSelect2').on('change', function(e){
             e.preventDefault();

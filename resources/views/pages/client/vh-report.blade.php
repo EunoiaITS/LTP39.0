@@ -74,10 +74,10 @@
                             <div class="form-group">
                                 <label for="exampleFormControlSelect2">(Optional)</label>
                                 <select class="form-control get-select-picker" id="exampleFormControlSelect2" title="Report Category">
-                                    <option value="1">Check In</option>
-                                    <option value="2">Check Out</option>
-                                    <option value="3">VIP Check In</option>
-                                    <option value="4">VIP Check Out</option>
+                                    <option value="1" @if($type != null && $type == 1){{ 'selected' }}@endif>Check In</option>
+                                    <option value="2" @if($type != null && $type == 2){{ 'selected' }}@endif>Check Out</option>
+                                    <option value="3" @if($type != null && $type == 3){{ 'selected' }}@endif>VIP Check In</option>
+                                    <option value="4" @if($type != null && $type == 4){{ 'selected' }}@endif>VIP Check Out</option>
                                 </select>
                             </div>
                         </div>

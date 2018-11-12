@@ -10,6 +10,8 @@ class VIPRequests extends Model
     protected $table = 'vip_requests';
 
     protected $rules = array(
+        'name' => 'required',
+        'vehicle_type' => 'required',
         'client_id' => 'required',
         'car_reg' => 'required',
         'vipId'  => 'unique:vip_requests'

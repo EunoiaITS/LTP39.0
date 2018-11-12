@@ -237,6 +237,8 @@ class Api extends Controller
                 }
                 $client = Clients::where('user_id', $request->client_id)->first();
                 $vip->vipId = 'VIP-'.$client->client_id.$lastvipId;
+                $vip->name = $request->name;
+                $vip->vehicle_type = $request->vehicle_type;
                 $vip->client_id = $request->client_id;
                 $vip->car_reg = $request->car_reg;
                 $vip->phone = $request->phone;

@@ -17,12 +17,13 @@ class CreateVIPRequestsTable extends Migration
             $table->increments('id');
             $table->string('vipId')->nullable();
             $table->integer('client_id');
+            $table->string('name');
+            $table->integer('vehicle_type');
             $table->string('phone')->nullable();
             $table->string('car_reg');
             $table->string('purpose')->nullable();
             $table->string('price')->nullable();
             $table->string('time_duration')->nullable();
-            $table->string('qr_number')->nullable();
             $table->string('status')->nullable();
             $table->string('remark')->nullable();
             $table->integer('requested_by')->nullable();
