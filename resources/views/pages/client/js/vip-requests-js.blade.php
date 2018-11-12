@@ -8,10 +8,7 @@
            rel = $(this).attr('rel');
             $('#generate'+rel).on('click',function (e) {
                 e.preventDefault();
-                alert(rel);
-                html = 'Id : '+$('#vip-id'+rel).val()+'<br/>' +
-                'Name : '+$('#name'+rel).val()+'<br/>'+
-                'Phone : '+$('#phone'+rel).val()+'<br/>';
+                html = $('#vip-id'+rel).val();
                 $('#qr-code'+rel).qrcode(html);
                 var canvas = document.querySelector("#qr-code canvas");
                 var img = canvas.toDataURL("image/png");
