@@ -783,7 +783,7 @@ class Client extends Controller
                 $req->status = 'accepted';
                 $req->time_duration = date('d-M-Y', strtotime('+' . $request->time_duration . ' days'));
                 $req->approved_by = $id;
-                $req->vip_id = $client->client_id.'VIP'.$lastVipId;
+                $req->vipId = $client->client_id.'VIP'.$lastVipId;
                 if ($req->save()) {
                     return redirect()
                         ->to('/vip-requests')
