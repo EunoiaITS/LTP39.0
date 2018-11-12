@@ -53,6 +53,7 @@
 <!--
 Reject VIP modal
 -->
+@foreach($users as $u)
 <div class="modal fade" id="reject{{ $u->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div  class="modal-dialog" role="document">
         <div class="modal-content modal-form">
@@ -71,10 +72,12 @@ Reject VIP modal
         </div>
     </div>
 </div>
+@endforeach
 
 <!--
 Reject VIP confirm modal
 -->
+@foreach($users as $u)
 <div class="modal fade" id="reject-confirm{{ $u->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div  class="modal-dialog" role="document">
         <div class="modal-content modal-form">
@@ -86,3 +89,4 @@ Reject VIP confirm modal
         </div>
     </div>
 </div>
+    @endforeach
