@@ -769,21 +769,12 @@ class Client extends Controller
             $u->req_by = User::find($u->requested_by);
         }
         if ($request->isMethod('post')) {
-            $client = Clients::where('user_id', $id)->first();
-            $lastVipId = sprintf('%03d', 1);
-            $lastVip = Vip::where('client_id', $id)
-                ->orderBy('id', 'DESC')
-                ->first();
-            if (!empty($lastVip) && (int)(substr($lastVip->vip_id, -3)) >= 1) {
-                $lastVipId = sprintf('%03d', (int)(substr($lastVip->vip_id, -3)) + 1);
-            }
             if ($request->action == 'accept') {
                 $req = VIPRequests::find($request->req_id);
                 $req->price = $request->price;
                 $req->status = 'accepted';
                 $req->time_duration = date('d-M-Y', strtotime('+' . $request->time_duration . ' days'));
                 $req->approved_by = $id;
-                $req->vipId = $client->client_id.'VIP'.$lastVipId;
                 if ($req->save()) {
                     return redirect()
                         ->to('/vip-requests')
