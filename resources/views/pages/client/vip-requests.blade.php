@@ -43,10 +43,6 @@
                             <td>{{ $count }}</td>
                             <td>{{ $u->vipId }}</td>
                             <td>{{ $u->phone }}</td>
-                            <td>Shop Owner</td>
-                            <td>GA11110</td>
-                            <td>Emp 1</td>
-                            <td>{{ date('Y-m-d') }}</td>
                             <td>{{ $u->purpose }}</td>
                             <td>{{ $u->car_reg }}</td>
                             <td>{{ $u->req_by->name }}</td>
