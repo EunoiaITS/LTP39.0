@@ -14,7 +14,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     /**
@@ -24,9 +24,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $page = 'pages.client.dashboard';
-        if(Auth::user()->role == 'owner' || Auth::user()->role == 'dev'){
-            $page = 'pages.owner.dashboard';
+        $page = 'pages.home.index';
+        if(Auth::user()){
+            if(Auth::user()->role == 'owner' || Auth::user()->role == 'dev'){
+                $page = 'pages.owner.dashboard';
+            }elseif(Auth::user()->role == 'client' || Auth::user()->role == 'manager'){
+                $page = 'pages.client.dashboard';
+            }
+        }else{
+            $page = 'pages.home.index';
         }
         return view($page);
     }
