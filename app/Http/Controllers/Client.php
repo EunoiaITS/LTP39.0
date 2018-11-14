@@ -893,60 +893,559 @@ class Client extends Controller
             }
         }
         $result = new Collection();
-        $vc_selected = $type = null;
-        if(isset($request->vc)){
+        $vc_selected = $type = $duration = $sDate = $eDate = null;
+        if(isset($request->duration)){
+            $duration = $request->duration;
+        }
+        $dates = array();
+        if(isset($request->sDate) && isset($request->eDate)){
+            $exS = explode('/', $request->sDate);
+            $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
+            $exE = explode('/', $request->eDate);
+            $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
+                $period = new \DatePeriod(
+                    new \DateTime($sDate),
+                    new \DateInterval('P1D'),
+                    new \DateTime($eDate)
+                );
+                $dates[] = $eDate;
+            }else{
+                $period = new \DatePeriod(
+                    new \DateTime($eDate),
+                    new \DateInterval('P1D'),
+                    new \DateTime($sDate)
+                );
+                $dates[] = $sDate;
+            }
+            foreach ($period as $key => $value) {
+                $dates[] = $value->format('Y-m-d');
+            }
+        }
+        if(isset($request->vc) && !isset($request->type)){
             $vc_selected = $request->vc;
-            $result = CheckInOut::where('client_id', $id)
+            $cio = CheckInOut::where('client_id', $id)
                 ->where('vehicle_type', $request->vc)
                 ->get();
+            foreach($cio as $cc){
+                $cc->v_type = VehicleCategory::find($vc_selected);
+                $cc->req_by = User::find($cc->created_by);
+                if($cc->updated_by != null){
+                    $cc->co_by = User::find($cc->updated_by);
+                }
+                if($duration != null){
+                    if($duration == 'd'){
+                        if(date('Y-m-d', strtotime($cc->created_at)) == date('Y-m-d')){
+                            $result->push($cc);
+                        }
+                    }
+                    if($duration == 'w'){
+                        if(date('W', strtotime($cc->created_at)) == date('W')){
+                            $result->push($cc);
+                        }
+                    }
+                    if($duration == 'm'){
+                        if(date('m', strtotime($cc->created_at)) == date('m')){
+                            $result->push($cc);
+                        }
+                    }
+                    if($duration == 'y'){
+                        if(date('Y', strtotime($cc->created_at)) == date('Y')){
+                            $result->push($cc);
+                        }
+                    }
+                }elseif(isset($request->sDate) && isset($request->eDate)){
+                    if(in_array(date('Y-m-d', strtotime($cc->created_at)), $dates) || in_array(date('Y-m-d', strtotime($cc->updated_at)), $dates)){
+                        $result->push($cc);
+                    }
+                }else{
+                    $result->push($cc);
+                }
+            }
+            $vcio = VIPCheckInOut::where('client_id', $id)
+                ->get();
+            foreach($vcio as $vcc){
+                $vip = VIPRequests::where('vipId', $vcc->vip_id)->first();
+                if($vip->vehicle_type == $vc_selected){
+                    $vcc->v_type = VehicleCategory::find($vc_selected);
+                    $vcc->req_by = User::find($vcc->created_by);
+                    $vcc->vehicle_reg = $vip->car_reg;
+                    if($vcc->updated_by != null){
+                        $vcc->co_by = User::find($vcc->updated_by);
+                    }
+                    if($duration != null){
+                        if($duration == 'd'){
+                            if(date('Y-m-d', strtotime($vcc->created_at)) == date('Y-m-d')){
+                                $result->push($vcc);
+                            }
+                        }
+                        if($duration == 'w'){
+                            if(date('W', strtotime($vcc->created_at)) == date('W')){
+                                $result->push($vcc);
+                            }
+                        }
+                        if($duration == 'm'){
+                            if(date('m', strtotime($vcc->created_at)) == date('m')){
+                                $result->push($vcc);
+                            }
+                        }
+                        if($duration == 'y'){
+                            if(date('Y', strtotime($vcc->created_at)) == date('Y')){
+                                $result->push($vcc);
+                            }
+                        }
+                    }elseif(isset($request->sDate) && isset($request->eDate)){
+                        if(in_array(date('Y-m-d', strtotime($vcc->created_at)), $dates) || in_array(date('Y-m-d', strtotime($vcc->updated_at)), $dates)){
+                            $result->push($vcc);
+                        }
+                    }else{
+                        $result->push($vcc);
+                    }
+                }
+            }
         }
-        if(isset($request->type)){
+        if(isset($request->type) && !isset($request->vc)){
             $type = $request->type;
             if($type == 1){
-                $result = CheckInOut::where('client_id', $id)
+                $results = CheckInOut::where('client_id', $id)
                     ->where('fair', '=', null)
                     ->get();
+                foreach($results as $r){
+                    $r->v_type = VehicleCategory::find($r->vehicle_type);
+                    $r->req_by = User::find($r->created_by);
+                    if($duration != null){
+                        if($duration == 'd'){
+                            if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'w'){
+                            if(date('W', strtotime($r->created_at)) == date('W')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'm'){
+                            if(date('m', strtotime($r->created_at)) == date('m')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'y'){
+                            if(date('Y', strtotime($r->created_at)) == date('Y')){
+                                $result->push($r);
+                            }
+                        }
+                    }elseif(isset($request->sDate) && isset($request->eDate)){
+                        if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
+                            $result->push($r);
+                        }
+                    }else{
+                        $result->push($r);
+                    }
+                }
             }
             if($type == 2){
-                $result = CheckInOut::where('client_id', $id)
+                $results = CheckInOut::where('client_id', $id)
                     ->where('fair', '!=', null)
                     ->get();
+                foreach($results as $r){
+                    $r->v_type = VehicleCategory::find($r->vehicle_type);
+                    $r->req_by = User::find($r->created_by);
+                    $r->co_by = User::find($r->updated_by);
+                    if($duration != null){
+                        if($duration == 'd'){
+                            if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'w'){
+                            if(date('W', strtotime($r->created_at)) == date('W')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'm'){
+                            if(date('m', strtotime($r->created_at)) == date('m')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'y'){
+                            if(date('Y', strtotime($r->created_at)) == date('Y')){
+                                $result->push($r);
+                            }
+                        }
+                    }elseif(isset($request->sDate) && isset($request->eDate)){
+                        if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
+                            $result->push($r);
+                        }
+                    }else{
+                        $result->push($r);
+                    }
+                }
             }
             if($type == 3){
-                $result = VIPCheckInOut::where('client_id', $id)
+                $results = VIPCheckInOut::where('client_id', $id)
                     ->where('receipt_id', '=', null)
                     ->get();
+                foreach($results as $r){
+                    $vip = VIPRequests::where('vipId', $r->vip_id)->first();
+                    $r->v_type = VehicleCategory::find($vip->vehicle_type);
+                    $r->req_by = User::find($r->created_by);
+                    $r->vehicle_reg = $vip->car_reg;
+                    if($duration != null){
+                        if($duration == 'd'){
+                            if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'w'){
+                            if(date('W', strtotime($r->created_at)) == date('W')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'm'){
+                            if(date('m', strtotime($r->created_at)) == date('m')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'y'){
+                            if(date('Y', strtotime($r->created_at)) == date('Y')){
+                                $result->push($r);
+                            }
+                        }
+                    }elseif(isset($request->sDate) && isset($request->eDate)){
+                        if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
+                            $result->push($r);
+                        }
+                    }else{
+                        $result->push($r);
+                    }
+                }
             }
             if($type == 4){
-                $result = VIPCheckInOut::where('client_id', $id)
+                $results = VIPCheckInOut::where('client_id', $id)
                     ->where('receipt_id', '!=', null)
                     ->get();
+                foreach($results as $r){
+                    $vip = VIPRequests::where('vipId', $r->vip_id)->first();
+                    $r->v_type = VehicleCategory::find($vip->vehicle_type);
+                    $r->req_by = User::find($r->created_by);
+                    $r->vehicle_reg = $vip->car_reg;
+                    $r->co_by = User::find($r->updated_by);
+                    if($duration != null){
+                        if($duration == 'd'){
+                            if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'w'){
+                            if(date('W', strtotime($r->created_at)) == date('W')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'm'){
+                            if(date('m', strtotime($r->created_at)) == date('m')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'y'){
+                            if(date('Y', strtotime($r->created_at)) == date('Y')){
+                                $result->push($r);
+                            }
+                        }
+                    }elseif(isset($request->sDate) && isset($request->eDate)){
+                        if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
+                            $result->push($r);
+                        }
+                    }else{
+                        $result->push($r);
+                    }
+                }
             }
         }
         if(isset($request->vc) && isset($request->type)){
             $type = $request->type;
             $vc_selected = $request->vc;
             if($type == 1){
-                $result = CheckInOut::where('client_id', $id)
+                $results = CheckInOut::where('client_id', $id)
                     ->where('vehicle_type', $request->vc)
                     ->where('fair', '=', null)
                     ->get();
+                foreach($results as $r){
+                    $r->v_type = VehicleCategory::find($r->vehicle_type);
+                    $r->req_by = User::find($r->created_by);
+                    if($duration != null){
+                        if($duration == 'd'){
+                            if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'w'){
+                            if(date('W', strtotime($r->created_at)) == date('W')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'm'){
+                            if(date('m', strtotime($r->created_at)) == date('m')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'y'){
+                            if(date('Y', strtotime($r->created_at)) == date('Y')){
+                                $result->push($r);
+                            }
+                        }
+                    }elseif(isset($request->sDate) && isset($request->eDate)){
+                        if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
+                            $result->push($r);
+                        }
+                    }else{
+                        $result->push($r);
+                    }
+                }
             }
             if($type == 2){
-                $result = CheckInOut::where('client_id', $id)
+                $results = CheckInOut::where('client_id', $id)
                     ->where('fair', '!=', null)
                     ->where('vehicle_type', $request->vc)
                     ->get();
+                foreach($results as $r){
+                    $r->v_type = VehicleCategory::find($r->vehicle_type);
+                    $r->req_by = User::find($r->created_by);
+                    $r->co_by = User::find($r->updated_by);
+                    if($duration != null){
+                        if($duration == 'd'){
+                            if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'w'){
+                            if(date('W', strtotime($r->created_at)) == date('W')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'm'){
+                            if(date('m', strtotime($r->created_at)) == date('m')){
+                                $result->push($r);
+                            }
+                        }
+                        if($duration == 'y'){
+                            if(date('Y', strtotime($r->created_at)) == date('Y')){
+                                $result->push($r);
+                            }
+                        }
+                    }elseif(isset($request->sDate) && isset($request->eDate)){
+                        if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
+                            $result->push($r);
+                        }
+                    }else{
+                        $result->push($r);
+                    }
+                }
             }
             if($type == 3){
-                $result = VIPCheckInOut::where('client_id', $id)
+                $results = VIPCheckInOut::where('client_id', $id)
                     ->where('receipt_id', '=', null)
                     ->get();
+                foreach($results as $r){
+                    $vip = VIPRequests::where('vipId', $r->vip_id)->first();
+                    $r->v_type = VehicleCategory::find($vip->vehicle_type);
+                    $r->req_by = User::find($r->created_by);
+                    $r->vehicle_reg = $vip->car_reg;
+                    if($vip->vehicle_type == $vc_selected){
+                        if($duration != null){
+                            if($duration == 'd'){
+                                if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'w'){
+                                if(date('W', strtotime($r->created_at)) == date('W')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'm'){
+                                if(date('m', strtotime($r->created_at)) == date('m')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'y'){
+                                if(date('Y', strtotime($r->created_at)) == date('Y')){
+                                    $result->push($r);
+                                }
+                            }
+                        }elseif(isset($request->sDate) && isset($request->eDate)){
+                            if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
+                                $result->push($r);
+                            }
+                        }else{
+                            $result->push($r);
+                        }
+                    }
+                }
             }
             if($type == 4){
-                $result = VIPCheckInOut::where('client_id', $id)
+                $results = VIPCheckInOut::where('client_id', $id)
                     ->where('receipt_id', '!=', null)
                     ->get();
+                foreach($results as $r){
+                    $vip = VIPRequests::where('vipId', $r->vip_id)->first();
+                    $r->v_type = VehicleCategory::find($vip->vehicle_type);
+                    $r->req_by = User::find($r->created_by);
+                    $r->vehicle_reg = $vip->car_reg;
+                    $r->co_by = User::find($r->updated_by);
+                    if($vip->vehicle_type == $vc_selected){
+                        if($duration != null){
+                            if($duration == 'd'){
+                                if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'w'){
+                                if(date('W', strtotime($r->created_at)) == date('W')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'm'){
+                                if(date('m', strtotime($r->created_at)) == date('m')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'y'){
+                                if(date('Y', strtotime($r->created_at)) == date('Y')){
+                                    $result->push($r);
+                                }
+                            }
+                        }elseif(isset($request->sDate) && isset($request->eDate)){
+                            if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
+                                $result->push($r);
+                            }
+                        }else{
+                            $result->push($r);
+                        }
+                    }
+                }
+            }
+        }
+        if(isset($request->duration) && !isset($request->vc) && !isset($request->type)){
+            $duration = $request->duration;
+            if($duration == 'd'){
+                foreach($data as $d){
+                    if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
+                        $d->v_type = VehicleCategory::find($d->vehicle_type);
+                        $d->req_by = User::find($d->created_by);
+                        if($d->updated_by != null){
+                            $d->co_by = User::find($d->updated_by);
+                        }
+                        $result->push($d);
+                    }
+                }
+                foreach($vipData as $d){
+                    if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
+                        $d->req_by = User::find($d->created_by);
+                        if($d->updated_by != null){
+                            $d->co_by = User::find($d->updated_by);
+                        }
+                        $vip = VIPRequests::where('vipId', $d->vip_id)->first();
+                        $d->v_type = VehicleCategory::find($vip->vehicle_type);
+                        $d->vehicle_reg = $vip->car_reg;
+                        $result->push($d);
+                    }
+                }
+            }
+            if($duration == 'w'){
+                foreach($data as $d){
+                    if(date('W', strtotime($d->created_at)) == date('W')){
+                        $d->v_type = VehicleCategory::find($d->vehicle_type);
+                        $d->req_by = User::find($d->created_by);
+                        if($d->updated_by != null){
+                            $d->co_by = User::find($d->updated_by);
+                        }
+                        $result->push($d);
+                    }
+                }
+                foreach($vipData as $d){
+                    if(date('W', strtotime($d->created_at)) == date('W')){
+                        $d->req_by = User::find($d->created_by);
+                        if($d->updated_by != null){
+                            $d->co_by = User::find($d->updated_by);
+                        }
+                        $vip = VIPRequests::where('vipId', $d->vip_id)->first();
+                        $d->v_type = VehicleCategory::find($vip->vehicle_type);
+                        $d->vehicle_reg = $vip->car_reg;
+                        $result->push($d);
+                    }
+                }
+            }
+            if($duration == 'm'){
+                foreach($data as $d){
+                    if(date('m', strtotime($d->created_at)) == date('m')){
+                        $d->v_type = VehicleCategory::find($d->vehicle_type);
+                        $d->req_by = User::find($d->created_by);
+                        if($d->updated_by != null){
+                            $d->co_by = User::find($d->updated_by);
+                        }
+                        $result->push($d);
+                    }
+                }
+                foreach($vipData as $d){
+                    if(date('m', strtotime($d->created_at)) == date('m')){
+                        $d->req_by = User::find($d->created_by);
+                        if($d->updated_by != null){
+                            $d->co_by = User::find($d->updated_by);
+                        }
+                        $vip = VIPRequests::where('vipId', $d->vip_id)->first();
+                        $d->v_type = VehicleCategory::find($vip->vehicle_type);
+                        $d->vehicle_reg = $vip->car_reg;
+                        $result->push($d);
+                    }
+                }
+            }
+            if($duration == 'y'){
+                foreach($data as $d){
+                    if(date('Y', strtotime($d->created_at)) == date('Y')){
+                        $d->v_type = VehicleCategory::find($d->vehicle_type);
+                        $d->req_by = User::find($d->created_by);
+                        if($d->updated_by != null){
+                            $d->co_by = User::find($d->updated_by);
+                        }
+                        $result->push($d);
+                    }
+                }
+                foreach($vipData as $d){
+                    if(date('Y', strtotime($d->created_at)) == date('Y')){
+                        $d->req_by = User::find($d->created_by);
+                        if($d->updated_by != null){
+                            $d->co_by = User::find($d->updated_by);
+                        }
+                        $vip = VIPRequests::where('vipId', $d->vip_id)->first();
+                        $d->v_type = VehicleCategory::find($vip->vehicle_type);
+                        $d->vehicle_reg = $vip->car_reg;
+                        $result->push($d);
+                    }
+                }
+            }
+        }
+        if(isset($request->eDate) && isset($request->sDate) && !isset($request->vc) && !isset($request->type)){
+            foreach($data as $d){
+                $d->v_type = VehicleCategory::find($d->vehicle_type);
+                $d->req_by = User::find($d->created_by);
+                if($d->updated_by != null){
+                    $d->co_by = User::find($d->updated_by);
+                }
+                if(in_array(date('Y-m-d', strtotime($d->created_at)), $dates) || in_array(date('Y-m-d', strtotime($d->updated_at)), $dates)){
+                    $result->push($d);
+                }
+            }
+            foreach($vipData as $d){
+                $d->req_by = User::find($d->created_by);
+                if($d->updated_by != null){
+                    $d->co_by = User::find($d->updated_by);
+                }
+                $vip = VIPRequests::where('vipId', $d->vip_id)->first();
+                $d->v_type = VehicleCategory::find($vip->vehicle_type);
+                $d->vehicle_reg = $vip->car_reg;
+                if(in_array(date('Y-m-d', strtotime($d->created_at)), $dates) || in_array(date('Y-m-d', strtotime($d->updated_at)), $dates)){
+                    $result->push($d);
+                }
             }
         }
         return view('pages.client.vh-report', [
@@ -954,6 +1453,9 @@ class Client extends Controller
             'vc' => $vc,
             'vc_selected' => $vc_selected,
             'type' => $type,
+            'duration' => $duration,
+            'sDate' => $sDate,
+            'eDate' => $eDate,
             'daily' => $daily,
             'weekly' => $weekly,
             'monthly' => $monthly,
