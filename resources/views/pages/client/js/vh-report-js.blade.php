@@ -3,7 +3,7 @@
         $('#exampleFormControlSelect1').on('change', function(e){
             e.preventDefault();
             var link = '{{ url('/report/vehicle-category') }}';
-            @if($type != null && $duration == null)
+            @if($type != null && $duration == null && $sDate == null && $eDate)
             link = link+'?type={{ $type }}&vc='+$(this).val();
             @elseif($type == null && $duration != null)
             link = link+'?duration={{ $duration }}&vc='+$(this).val();
@@ -21,7 +21,7 @@
         $('#exampleFormControlSelect2').on('change', function(e){
             e.preventDefault();
             var link = '{{ url('/report/vehicle-category') }}';
-            @if($vc_selected != null && $duration == null)
+            @if($vc_selected != null && $duration == null && $sDate == null && $eDate)
             link = link+'?vc={{ $vc_selected }}&type='+$(this).val();
             @elseif($vc_selected == null && $duration != null)
             link = link+'?duration={{ $duration }}&type='+$(this).val();
@@ -30,7 +30,7 @@
             @elseif($vc_selected == null && $eDate != null && $sDate != null)
             link = link+'?sDate={{ date('d/m/Y', strtotime($sDate)) }}&eDate={{ date('d/m/Y', strtotime($eDate)) }}&type='+$(this).val();
             @elseif($vc_selected != null && $eDate != null && $sDate != null)
-            link = link+'?sDate={{ date('d/m/Y', strtotime($sDate)) }}&eDate={{ date('d/m/Y', strtotime($eDate)) }}&vc_selected={{ $vc_selected }}&type='+$(this).val();
+            link = link+'?sDate={{ date('d/m/Y', strtotime($sDate)) }}&eDate={{ date('d/m/Y', strtotime($eDate)) }}&vc={{ $vc_selected }}&type='+$(this).val();
             @else
             link = link+'?type='+$(this).val();
             @endif

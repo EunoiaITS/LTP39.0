@@ -99,7 +99,7 @@
                         <div class="or-vechicle">OR</div>
                         <div class="vechicle-select optional-or">
                             <div class="form-group">
-                                <label for="exampleFormControlSelect2">(Optional){{ $sDate.' - '.$eDate }}</label>
+                                <label for="exampleFormControlSelect2">(Optional)</label>
                                 <input type="text" name="sDate" id="sDate" class="form-control datepicker-f" placeholder="Form">
                                 <input type="text" name="eDate" id="eDate" class="form-control datepicker-f" placeholder="To">
                             </div>
