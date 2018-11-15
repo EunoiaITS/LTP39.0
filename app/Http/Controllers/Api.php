@@ -228,15 +228,15 @@ class Api extends Controller
                 }
             }
             if(empty($errors)){
-                $lastvipId = sprintf('%08d', 1);
+                $lastvipId = sprintf('%03d', 1);
                 $lastvip = VIPRequests::where('client_id', $request->client_id)
                     ->orderBy('id', 'DESC')
                     ->first();
-                if(!empty($lastvip) && (int)(substr($lastvip->vipId, -8)) >= 1){
-                    $lastvipId = sprintf('%08d', (int)(substr($lastvip->vipId, -8)) + 1);
+                if(!empty($lastvip) && (int)(substr($lastvip->vipId, -3)) >= 1){
+                    $lastvipId = sprintf('%03d', (int)(substr($lastvip->vipId, -3)) + 1);
                 }
                 $client = Clients::where('user_id', $request->client_id)->first();
-                $vip->vipId = 'VIP-'.$client->client_id.$lastvipId;
+                $vip->vipId = $client->client_id.'VIP'.$lastvipId;
                 $vip->name = $request->name;
                 $vip->vehicle_type = $request->vehicle_type;
                 $vip->client_id = $request->client_id;
@@ -329,7 +329,9 @@ class Api extends Controller
      */
     public function vipCheckOut(Request $request){
         if($request->isMethod('post')){
-            $checkOut = VIPCheckInOut::where('ticket_id', $request->ticket_id)->first();
+            $checkOut = VIPCheckInOut::where('vip_id', $request->vip_id)
+                ->orderBy('id', 'desc')
+                ->first();
             if(!empty($checkOut) && $checkOut->receipt_id == NULL){
                 $checkOut->updated_at = $request->check_out_time;
                 $checkOut->updated_by = $request->employee;

@@ -85,12 +85,12 @@
                     <div class="col-sm-6 col-md-6 col-lg-3">
                         <div class="vechicle-select">
                             <div class="form-group">
-                                <label for="exampleFormControlSelect2">(Must Select One)</label>
-                                <select class="form-control get-select-picker" id="exampleFormControlSelect2" title="Duration Selection">
-                                    <option value="">Daily</option>
-                                    <option value="">Weekly</option>
-                                    <option value="">Monthly</option>
-                                    <option value="">Yearly</option>
+                                <label for="exampleFormControlSelect3">(Must Select One)</label>
+                                <select class="form-control get-select-picker" name="duration" id="exampleFormControlSelect3" title="Duration Selection">
+                                    <option value="d" @if($duration != null && $duration == 'd'){{ 'selected' }}@endif>Daily</option>
+                                    <option value="w" @if($duration != null && $duration == 'w'){{ 'selected' }}@endif>Weekly</option>
+                                    <option value="m" @if($duration != null && $duration == 'm'){{ 'selected' }}@endif>Monthly</option>
+                                    <option value="y" @if($duration != null && $duration == 'y'){{ 'selected' }}@endif>Yearly</option>
                                 </select>
                             </div>
                         </div>
@@ -100,8 +100,8 @@
                         <div class="vechicle-select optional-or">
                             <div class="form-group">
                                 <label for="exampleFormControlSelect2">(Optional)</label>
-                                <input type="text" class="form-control datepicker-f" placeholder="Form">
-                                <input type="text" class="form-control datepicker-f" placeholder="To">
+                                <input type="text" name="sDate" id="sDate" class="form-control datepicker-f" placeholder="Form">
+                                <input type="text" name="eDate" id="eDate" class="form-control datepicker-f" placeholder="To">
                             </div>
                         </div>
                     </div>
@@ -134,13 +134,13 @@
                             <tr>
                                 <td>{{ $i++ }}</td>
                                 <td>{{ $r->ticket_id }}</td>
-                                <td>{{ $r->vehicle_type }}</td>
-                                <td>@if($r->fair == null){{ 'Checked In' }}@else{{ 'Checked Out' }}@endif</td>
+                                <td>{{ $r->v_type->type_name }}</td>
+                                <td>@if($r->receipt_id == null){{ 'Checked In' }}@else{{ 'Checked Out' }}@endif</td>
                                 <td>{{ $r->vehicle_reg }}</td>
                                 <td>{{ date('Y-m-d H:i A', strtotime($r->created_at)) }}</td>
-                                <td>@if($r->fair != null){{ date('Y-m-d H:i A', strtotime($r->updated_at)) }}@endif</td>
-                                <td>EMP 1</td>
-                                <td></td>
+                                <td>@if($r->receipt_id != null){{ date('Y-m-d H:i A', strtotime($r->updated_at)) }}@endif</td>
+                                <td>{{ $r->req_by->name }}</td>
+                                <td>@if(isset($r->co_by)){{ $r->co_by->name }}@endif</td>
                                 <td>{{ date('d/m/Y', strtotime($r->created_at)) }}</td>
                             </tr>
                             @endforeach

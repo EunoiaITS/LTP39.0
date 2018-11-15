@@ -29,10 +29,10 @@
                 <div class="panel-body">
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url('/report/vehicle-category') }}">Vehicle Category</a></li>
-                        <li><a href="user-income.html">Users income(check Out)</a></li>
-                        <li><a href="sales-report.html">Sales</a></li>
-                        <li><a href="ticket-report.html">Ticket</a></li>
-                        <li><a href="receipt-report.html">Receipt</a></li>
+                        <li><a href="{{ url('/report/user-incomes') }}">Users income(check Out)</a></li>
+                        <li><a href="{{ url('/report/sales') }}">Sales</a></li>
+                        <li><a href="{{ url('/report/tickets') }}">Ticket</a></li>
+                        <li><a href="{{ url('/report/receipts') }}">Receipt</a></li>
                     </ul>
                 </div>
             </div>
