@@ -22,3 +22,15 @@ Route::middleware('auth:api')->group(function () {
     Route::post('vip-check-in', 'Api@vipCheckIn');
     Route::post('vip-check-out', 'Api@vipCheckOut');
 });
+
+Route::prefix('v1')->group(function(){
+    Route::post('/login', 'APIV2@login');
+    Route::middleware('APIToken')->group(function () {
+        Route::post('check-in', 'APIV2@checkIn');
+        Route::post('check-out', 'APIV2@checkOut');
+        Route::post('vip-request', 'APIV2@vipRequest');
+        Route::post('vip-check-in', 'APIV2@vipCheckIn');
+        Route::post('vip-check-out', 'APIV2@vipCheckOut');
+        Route::get('/logout','APIV2@logout');
+    });
+});
