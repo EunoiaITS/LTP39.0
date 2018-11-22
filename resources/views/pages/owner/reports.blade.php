@@ -71,7 +71,9 @@
                             <div class="form-group">
                                 <select class="form-control get-select-picker" name="vc" id="exampleFormControlSelect1" title="Client Name">
                                     @foreach($clients as $c)
-                                    <option value="{{ $c->id }}" @if(isset($vc) && $vc == $c->id){{ 'selected' }}@endif>{{ $c->name }}</option>
+                                        @if($type == $c->type)
+                                            <option value="{{ $c->id }}" @if(isset($vc) && $vc == $c->id){{ 'selected' }}@endif>{{ $c->name }}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -86,7 +88,7 @@
                                 </div>
                                 <div class="optional-private">
                                     <input type="text" name="eDate" id="eDate" class="form-control datepicker-f">
-                                    <span class="date-pickerlabel">Form</span>
+                                    <span class="date-pickerlabel">To</span>
                                 </div>
                             </div>
                         </div>

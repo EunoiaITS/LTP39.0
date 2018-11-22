@@ -525,6 +525,7 @@ class Owner extends Controller
                 }
             }
             if(empty($errors)){
+                //dd($request->all());
                 $cb->client_id = $request->client_id;
                 $cb->billing_id = 'BILL'.$lastBillId;
                 $cb->billing_term = $request->billing_term;
@@ -584,7 +585,7 @@ class Owner extends Controller
      */
 
     public function manageBilling(){
-        $billing = CompanyBillingSettings::all();
+        $billing = CompanyBillingSettings::orderBy('bill_start_date','asc')->get();
         foreach ($billing as $b){
             $client = Clients::where('client_id',$b->client_id)->first();
             $user = User::find($client->user_id);
@@ -670,6 +671,10 @@ class Owner extends Controller
     public function reports(Request $request){
         $clients = User::where('role', 'client')
             ->get();
+        foreach ($clients as $c){
+            $data = Clients::where('user_id',$c->id)->first();
+            $c->type = $data->client_type;
+        }
         $daily = $weekly = $monthly = $yearly = 0;
         $data = CheckInOut::where('fair', '!=', null)
             ->get();
@@ -800,5 +805,8 @@ class Owner extends Controller
             'yearly' => $yearly,
             'js' => 'pages.owner.js.reports-js'
         ]);
+    }
+    public function createAdvert(){
+        return view('pages.owner.create-advert');
     }
 }

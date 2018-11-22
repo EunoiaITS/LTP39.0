@@ -50,6 +50,6 @@
             </div>
         </li>
         <li><a href="{{ url('/reports') }}"> Report</a></li>
-        <li><a href="create-advert.html"> Advert</a></li>
+        <li><a href="{{ url('/create-advert') }}"> Advert</a></li>
     </ul>
 </div>

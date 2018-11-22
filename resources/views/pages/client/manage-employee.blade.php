@@ -41,7 +41,7 @@
                                 <div class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModalEmp-{{ $e->id }}">Edit</div>
                                 <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModalPass-{{ $e->id }}">Edit Password</button>
                                 <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModalBlock-{{ $e->id }}">@if($e->status == 'unblock') {{ 'Block' }} @else {{ 'Unblock' }} @endif</button>
-                                <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModalBlock-{{ $e->id }}">Delete</button>
+                                <button class="edit-icon btn btn-login" data-toggle="modal" data-target="#myModalDel-{{ $e->id }}">Delete</button>
                             </td>
                         </tr>
                         @endforeach

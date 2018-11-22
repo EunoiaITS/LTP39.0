@@ -81,3 +81,21 @@ block/unblock modal
     </div>
 </div>
 @endforeach
+
+@foreach($employees as $e)
+    <div class="modal fade" id="myModalDel-{{ $e->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div  class="modal-dialog" role="document">
+            <div class="modal-content modal-form">
+                <form action="{{ url('/delete-employee') }}" method="post">
+                    {{ csrf_field() }}
+                    <div class="modal-body text-center modal-padding">
+                        <p>Are you sure you want to Delete <strong>{{ $e->name }}</strong> ?</p>
+                        <input type="hidden" name="emp_id" value="{{ $e->id }}">
+                        <button type="submit" class="btn btn-default">Yes</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endforeach

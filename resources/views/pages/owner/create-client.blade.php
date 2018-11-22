@@ -3,7 +3,7 @@
 
     <!-- main-content area -->
     <div class="click-loading-option">
-		<img src="img/loading_icon.gif" alt="">
+		<img src="{{ asset('/public/assets/img/loading_icon.gif') }}" alt="">
 	</div>
     <div class="dashboard-main-content clearfix">
         <div class="container">
@@ -59,10 +59,11 @@
                                 <div class="clearfix"></div>
                                 <div class="file btn btn-sm btn-primary ">
                                     <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><span>Browse File</span>
-                                    <input type="file" class="input-upload" name="file">
+                                    <input type="file" class="input-upload file-upload" name="file">
                                 </div>
+                                <div id="file-upload-filename"></div>
                                 <div class="create-client-gif">
-                                    <img src="img/loading_icon.gif" alt="">
+                                    <img src="{{ asset('/public/assets/img/loading_icon.gif') }}" alt="">
                                 </div>
                             </div>
 

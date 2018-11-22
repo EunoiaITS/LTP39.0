@@ -1,5 +1,11 @@
 <script>
     $(document).ready(function () {
+        // $('#file-upload').on('change',function (e) {
+        //    e.preventDefault();
+        //     var input = $(this).val();
+        //     var fileName = input.files[0].name;
+        //     $('#file-upload-filename').html(fileName);
+        // });
         var name = '';
         var name1 = '';
         var type = '';

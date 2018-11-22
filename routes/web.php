@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth', 'owner']], function(){
 
     Route::post('/payment','Owner@payment');
     Route::get('/reports', 'Owner@reports');
+    Route::get('/create-advert', 'Owner@createAdvert');
 
 });
 
@@ -84,6 +85,7 @@ Route::group(['middleware' => ['auth', 'client']], function(){
     Route::get('/manage-employee', 'Client@manageEmployee');
     Route::post('/edit-password', 'Client@editPassword');
     Route::post('/edit-employee', 'Client@editEmployee');
+    Route::post('/delete-employee', 'Client@deleteEmployee');
     Route::post('/blocking', 'Client@blocking');
 
     /**

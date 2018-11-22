@@ -64,7 +64,7 @@
 	=========================================*/
 
   	$('.datepicker-f').datetimepicker({
-	    format: "DD/MM/YYYY",
+	    format: "YYYY-MM-DD",
 	    icons: {
 	      up: 'fa fa-angle-up',
 	      down: 'fa fa-angle-down',

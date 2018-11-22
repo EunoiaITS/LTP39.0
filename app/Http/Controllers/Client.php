@@ -65,7 +65,14 @@ class Client extends Controller
                 if(empty($errors)){
                     $vt->client_id = $id;
                     $vt->type_id = $client->client_id.'VEH'.$lastVehId;
-                    $vt->type_name = $request->type_name;
+                    $vc = VehicleCategory::where('type_name',$request->type_name)->first();
+                    if(empty($vc)){
+                        $vt->type_name = $request->type_name;
+                    }else{
+                        return redirect()
+                            ->to('/settings/vehicle-types')
+                            ->with('error', 'Category Already Exists !!');
+                    }
                     if($vt->save()){
                         return redirect()
                             ->to('/settings/vehicle-types')
@@ -542,6 +549,24 @@ class Client extends Controller
                 return redirect()
                     ->to('/manage-employee')
                     ->with('success', 'The details was changed successfully!!');
+            }else{
+                return redirect()
+                    ->to('/manage-employee')
+                    ->with('error', 'Something went wrong! Please try again!');
+            }
+        }
+    }
+
+    /**
+     * editEmployee - function to edit employee
+     */
+
+    public function deleteEmployee(Request $request){
+        if($request->isMethod('post')){
+            if(Employee::destroy($request->emp_id)){
+                return redirect()
+                    ->to('/manage-employee')
+                    ->with('success', 'The Employee was deleted successfully!!');
             }else{
                 return redirect()
                     ->to('/manage-employee')
