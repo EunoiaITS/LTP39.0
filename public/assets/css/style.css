@@ -527,6 +527,7 @@
     .dashboard-sidebar {
         width: 80%;
         max-width: 250px;
+        min-hight:450px;
         height: 100%;
         overflow-y: auto !important;
         background: rgb(245,209,207);
