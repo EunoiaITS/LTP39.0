@@ -44,7 +44,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="user-crname" class="usr-lock"><i class="fas fa-car"></i></label>
-                                    <input type="text" placeholder="Total Parking" name="amount" class="form-control" value="{{ old('amount') }}" required>
+                                    <input type="number" placeholder="Total Parking" name="amount" class="form-control" value="{{ old('amount') }}" required>
                                 </div>
                                 <div class="submit-forget-password">
                                     <input type="hidden" name="action" value="assign">
