@@ -55,55 +55,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12 dashboad-title report-advert-sale">
-                    <h4 class="date">Advert Sale Total</h4>
-                </div>
-                <div class="col-sm-12 total-area padding-0">
-                    <div class="col-sm-6 col-md-3">
-                        <div class="calender-area-date">
-                            <div class="date-icon">
-                                <span>D</span>
-                            </div>
-                            <div class="date-timepicker">
-                                <h4 class="date-span"><span>BDT</span> 330</h4>
-                                <div class="per">+5%</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="calender-area-date">
-                            <div class="date-icon">
-                                <span>W</span>
-                            </div>
-                            <div class="date-timepicker">
-                                <h4 class="date-span"><span>BDT</span> 2310</h4>
-                                <div class="per">+5%</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="calender-area-date">
-                            <div class="date-icon">
-                                <span>M</span>
-                            </div>
-                            <div class="date-timepicker">
-                                <h4 class="date-span"><span>BDT</span> 69,300</h4>
-                                <div class="per">+5%</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="calender-area-date">
-                            <div class="date-icon">
-                                <span>Y</span>
-                            </div>
-                            <div class="date-timepicker">
-                                <h4 class="date-span"><span>BDT</span> 800,600</h4>
-                                <div class="per">+5%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="col-sm-12 vechicale-catagory padding-0 report-advert-sale">
                     <div class="col-sm-6 col-md-6 col-lg-3">
                         <div class="vechicle-select">
