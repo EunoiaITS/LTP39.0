@@ -5,7 +5,7 @@
     <div  class="modal-dialog" role="document">
         <div class="modal-content modal-form">
             <div class="modal-body text-center modal-padding">
-                <p>No parking Fees Will be Charged Form <br>  <strong><span class="from-time"></span></strong> to <strong><span class="to-time"></span></strong></p>
+                <p>No parking Fees Will be Charged Form <br>  <strong class="from-time"></span></strong> to <strong class="to-time"></strong></p>
                 <button type="submit" form="time" class="btn btn-default">Save</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
