@@ -349,7 +349,6 @@
     .modal-content .form-control{
       border-color: transparent transparent #af1b3f transparent;
       color:#af1b3f;
-      text-transform: capitalize;
       font-size: 15px;
     }
     .modal-content form {
