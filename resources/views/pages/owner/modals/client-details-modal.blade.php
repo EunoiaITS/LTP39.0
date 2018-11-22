@@ -10,6 +10,10 @@
                     {{ csrf_field() }}
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-lock"></i></label>
+                        <input type="password" name="password" placeholder="Type old Password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-name" class="usr-lock"><i class="fas fa-lock"></i></label>
                         <input type="password" name="password" placeholder="Type new Password" class="form-control" required>
                     </div>
                     <div class="form-group">
@@ -36,10 +40,6 @@ create manager modal
                 <form method="post" id="create-managers" action="{{ url('/client-details?client_id='.$client->client_id) }}">
                     {{ csrf_field() }}
                     <div class="form-group">
-                        <label for="user-name" class="usr-lock"><i class="fas fa-id-badge"></i></label>
-                        <input type="text" name="manager_id" placeholder="ID" class="form-control" required>
-                    </div>
-                    <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-user"></i></label>
                         <input type="text" name="name" placeholder="Name" class="form-control" required>
                     </div>
@@ -57,7 +57,7 @@ create manager modal
                     </div>
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-phone"></i></label>
-                        <input type="text" name="phone" placeholder="Phone" class="form-control" required>
+                        <input type="number" name="phone" placeholder="Phone" class="form-control" required>
                     </div>
                     <input type="hidden" name="role" value="manager">
                     <input type="hidden" name="action" value="crt-mngr">
