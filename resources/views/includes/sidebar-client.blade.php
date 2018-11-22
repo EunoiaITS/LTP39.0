@@ -31,8 +31,6 @@
                         <li><a href="{{ url('/report/vehicle-category') }}">Vehicle Category</a></li>
                         <li><a href="{{ url('/report/user-incomes') }}">Users income(check Out)</a></li>
                         <li><a href="{{ url('/report/sales') }}">Sales</a></li>
-                        <li><a href="{{ url('/report/tickets') }}">Ticket</a></li>
-                        <li><a href="{{ url('/report/receipts') }}">Receipt</a></li>
                     </ul>
                 </div>
             </div>

@@ -17,7 +17,7 @@
                                 <span>D</span>
                             </div>
                             <div class="date-timepicker">
-                                <h4 class="date-span">330</h4>
+                                <h4 class="date-span">{{ $daily }}</h4>
                                 <div class="per">+5%</div>
                             </div>
                         </div>
@@ -28,7 +28,7 @@
                                 <span>W</span>
                             </div>
                             <div class="date-timepicker">
-                                <h4 class="date-span">2310</h4>
+                                <h4 class="date-span">{{ $weekly }}</h4>
                                 <div class="per">+5%</div>
                             </div>
                         </div>
@@ -39,7 +39,7 @@
                                 <span>M</span>
                             </div>
                             <div class="date-timepicker">
-                                <h4 class="date-span">69,300</h4>
+                                <h4 class="date-span">{{ $monthly }}</h4>
                                 <div class="per">+5%</div>
                             </div>
                         </div>
@@ -50,7 +50,7 @@
                                 <span>Y</span>
                             </div>
                             <div class="date-timepicker">
-                                <h4 class="date-span">800,600</h4>
+                                <h4 class="date-span">{{ $yearly }}</h4>
                                 <div class="per">+5%</div>
                             </div>
                         </div>
@@ -61,10 +61,10 @@
                         <div class="vechicle-select">
                             <div class="form-group">
                                 <label for="exampleFormControlSelect1">(Must Select One)</label>
-                                <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Select Employee">
-                                    <option value="">Ali</option>
-                                    <option value="">Rahman</option>
-                                    <option value="">Khan</option>
+                                <select class="form-control get-select-picker" name="emp" id="exampleFormControlSelect1" title="Select Employee">
+                                    @foreach($employees as $e)
+                                    <option value="{{ $e->details->id }}" @if($e->details->id == $emp){{ 'selected' }}@endif>{{ $e->name }}</option>
+                                        @endforeach
                                 </select>
                             </div>
                         </div>
@@ -73,11 +73,11 @@
                         <div class="vechicle-select">
                             <div class="form-group">
                                 <label for="exampleFormControlSelect2">(Must Select One)</label>
-                                <select class="form-control get-select-picker" id="exampleFormControlSelect2" title="Duration Selection">
-                                    <option value="">Daily</option>
-                                    <option value="">Weekly</option>
-                                    <option value="">Monthly</option>
-                                    <option value="">Yearly</option>
+                                <select class="form-control get-select-picker" name="duration" id="exampleFormControlSelect2" title="Duration Selection">
+                                    <option value="d" @if($duration == 'd'){{ 'selected' }}@endif>Daily</option>
+                                    <option value="w" @if($duration == 'w'){{ 'selected' }}@endif>Weekly</option>
+                                    <option value="m" @if($duration == 'm'){{ 'selected' }}@endif>Monthly</option>
+                                    <option value="y" @if($duration == 'y'){{ 'selected' }}@endif>Yearly</option>
                                 </select>
                             </div>
                         </div>
@@ -87,8 +87,8 @@
                         <div class="vechicle-select optional-or">
                             <div class="form-group">
                                 <label for="exampleFormControlSelect2">(Optional)</label>
-                                <input type="text" class="form-control datepicker-f" placeholder="Form">
-                                <input type="text" class="form-control datepicker-f" placeholder="To">
+                                <input type="text" name="sDate" id="sDate" class="form-control datepicker-f" placeholder="Form">
+                                <input type="text" name="eDate" id="eDate" class="form-control datepicker-f" placeholder="To">
                             </div>
                         </div>
                     </div>
@@ -109,176 +109,19 @@
                             </tr>
                             </thead>
                             <tbody>
+                            <?php $i = 1; ?>
+                            @foreach($result as $r)
                             <tr>
-                                <td>1</td>
-                                <td>EMP001</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
+                                <td>{{ $i++ }}</td>
+                                <td>{{ $r->employee_id }}</td>
+                                <td>{{ $r->req_by->name }}</td>
+                                <td>{{ $r->vehicle_reg }}</td>
+                                <td>{{ $r->ticket_id }}</td>
+                                <td>{{ date('d/m/Y H:i A', strtotime($r->created_at)) }}</td>
+                                <td>BDT. {{ $r->fair }}</td>
+                                <td>{{ date('d/m/Y', strtotime($r->created_at)) }}</td>
                             </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>EMP002</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>EMP003</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>EMP004</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>EMP005</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>EMP006</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>7</td>
-                                <td>EMP007</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>8</td>
-                                <td>EMP008</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>9</td>
-                                <td>EMP009</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>10</td>
-                                <td>EMP010</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>11</td>
-                                <td>EMP011</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>12</td>
-                                <td>EMP012</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>13</td>
-                                <td>EMP013</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>14</td>
-                                <td>EMP014</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>15</td>
-                                <td>EMP015</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>16</td>
-                                <td>EMP016</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
-                            <tr>
-                                <td>17</td>
-                                <td>EMP017</td>
-                                <td>Rahman</td>
-                                <td>Da 0007</td>
-                                <td>C00001</td>
-                                <td>07:00 AM</td>
-                                <td>BDT. 7777</td>
-                                <td>16/09/18</td>
-                            </tr>
+                            @endforeach
                         </table>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 
+use App\CheckInOut;
 use App\Clients;
 use App\CompanyDevice;
 use App\CompanyBillingSettings;
@@ -11,6 +12,7 @@ use App\CompanyPayment;
 use App\Managers;
 use App\User;
 use Auth;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class Owner extends Controller
@@ -657,5 +659,143 @@ class Owner extends Controller
                     ->with('error', 'The Transaction Can not be added!!');
             }
         }
+    }
+
+    /**
+     * reports - function to show all the reports
+    */
+    public function reports(Request $request){
+        $clients = User::where('role', 'client')
+            ->get();
+        $daily = $weekly = $monthly = $yearly = 0;
+        $data = CheckInOut::where('fair', '!=', null)
+            ->get();
+        foreach($data as $d){
+            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
+                $daily+=$d->fair;
+            }
+            if(date('W', strtotime($d->created_at)) == date('W')){
+                $weekly+=$d->fair;
+            }
+            if(date('m', strtotime($d->created_at)) == date('m')){
+                $monthly+=$d->fair;
+            }
+            if(date('Y', strtotime($d->created_at)) == date('Y')){
+                $yearly+=$d->fair;
+            }
+        }
+        $result = new Collection();
+        $vc_selected = $type = $sDate = $eDate = null;
+        $dates = array();
+        if(isset($request->sDate) && isset($request->eDate)){
+            $exS = explode('/', $request->sDate);
+            $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
+            $exE = explode('/', $request->eDate);
+            $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
+                $period = new \DatePeriod(
+                    new \DateTime($sDate),
+                    new \DateInterval('P1D'),
+                    new \DateTime($eDate)
+                );
+                $dates[] = $eDate;
+            }else{
+                $period = new \DatePeriod(
+                    new \DateTime($eDate),
+                    new \DateInterval('P1D'),
+                    new \DateTime($sDate)
+                );
+                $dates[] = $sDate;
+            }
+            foreach ($period as $key => $value) {
+                $dates[] = $value->format('Y-m-d');
+            }
+        }
+        if(isset($request->vc) && !isset($request->type)){
+            $vc_selected = $request->vc;
+            $client = User::find($vc_selected);
+            $client->details = Clients::where('user_id', $client->id)->first();
+            $clData = CheckInOut::where('client_id', $vc_selected)
+                ->where('fair', '!=', null)
+                ->get();
+            $cl_daily = $cl_weekly = $cl_monthly = $cl_yearly = $from_to = 0;
+            foreach($clData as $cd){
+                if(date('Y-m-d', strtotime($cd->created_at)) == date('Y-m-d')){
+                    $cl_daily+=$cd->fair;
+                }
+                if(date('W', strtotime($cd->created_at)) == date('W')){
+                    $cl_weekly+=$cd->fair;
+                }
+                if(date('m', strtotime($cd->created_at)) == date('m')){
+                    $cl_monthly+=$cd->fair;
+                }
+                if(date('Y', strtotime($cd->created_at)) == date('Y')){
+                    $cl_yearly+=$cd->fair;
+                }
+                if(isset($request->sDate) && isset($request->eDate)){
+                    if(in_array(date('Y-m-d', strtotime($cd->created_at)), $dates) || in_array(date('Y-m-d', strtotime($cd->updated_at)), $dates)){
+                        $from_to += $cd->fair;
+                    }
+                }
+            }
+            $client->daily = $cl_daily;
+            $client->weekly = $cl_weekly;
+            $client->monthly = $cl_monthly;
+            $client->yearly = $cl_yearly;
+            $client->from_to = $from_to;
+            $result->push($client);
+        }
+        if(!isset($request->vc) && isset($request->type)){
+            $type = $request->type;
+            if($request->type == 'park'){
+                foreach($clients as $client){
+                    $client->details = Clients::where('user_id', $client->id)->first();
+                    $clData = CheckInOut::where('client_id', $client->id)
+                        ->where('fair', '!=', null)
+                        ->get();
+                    $cl_daily = $cl_weekly = $cl_monthly = $cl_yearly = $from_to = 0;
+                    foreach($clData as $cd){
+                        if(date('Y-m-d', strtotime($cd->created_at)) == date('Y-m-d')){
+                            $cl_daily+=$cd->fair;
+                        }
+                        if(date('W', strtotime($cd->created_at)) == date('W')){
+                            $cl_weekly+=$cd->fair;
+                        }
+                        if(date('m', strtotime($cd->created_at)) == date('m')){
+                            $cl_monthly+=$cd->fair;
+                        }
+                        if(date('Y', strtotime($cd->created_at)) == date('Y')){
+                            $cl_yearly+=$cd->fair;
+                        }
+                        if(isset($request->sDate) && isset($request->eDate)){
+                            if(in_array(date('Y-m-d', strtotime($cd->created_at)), $dates) || in_array(date('Y-m-d', strtotime($cd->updated_at)), $dates)){
+                                $from_to += $cd->fair;
+                            }
+                        }
+                    }
+                    $client->daily = $cl_daily;
+                    $client->weekly = $cl_weekly;
+                    $client->monthly = $cl_monthly;
+                    $client->yearly = $cl_yearly;
+                    $client->from_to = $from_to;
+                    $result->push($client);
+                }
+            }
+        }
+        if(isset($request->vc) && isset($request->type)){}
+        if(isset($request->sDate) && isset($request->eDate) && !isset($request->vc) && !isset($request->type)){}
+        return view('pages.owner.reports', [
+            'result' => $result,
+            'clients' => $clients,
+            'vc' => $vc_selected,
+            'type' => $type,
+            'sDate' => $sDate,
+            'eDate' => $eDate,
+            'daily' => $daily,
+            'weekly' => $weekly,
+            'monthly' => $monthly,
+            'yearly' => $yearly,
+            'js' => 'pages.owner.js.reports-js'
+        ]);
     }
 }

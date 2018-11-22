@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 
 use App\CheckInOut;
-use App\CheckOut;
 use App\Clients;
 use App\Employee;
 use App\ExemptedDuration;

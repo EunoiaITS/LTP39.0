@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth', 'owner']], function(){
      **/
 
     Route::post('/payment','Owner@payment');
+    Route::get('/reports', 'Owner@reports');
 
 });
 

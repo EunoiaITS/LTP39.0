@@ -49,7 +49,7 @@
                 </div>
             </div>
         </li>
-        <li><a href="create-report.html"> Report</a></li>
+        <li><a href="{{ url('/reports') }}"> Report</a></li>
         <li><a href="create-advert.html"> Advert</a></li>
     </ul>
 </div>
