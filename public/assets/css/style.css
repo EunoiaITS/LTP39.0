@@ -1164,14 +1164,27 @@
       float: left;
       display: inline-block;
     }
+     .optional-private{
+      width: 45%;
+      float: left;
+      position: relative;
+      margin-right: 8px;
+    }
     .vechicle-select.optional-or .form-control {
-        width: 45%;
-        float: left;
         margin-right: 10px;
         font-size: 11px;
     }
-    .vechicle-select.optional-or .form-control:last-child{
+    .optional-private:last-child{
       margin-right: 0;
+    }
+     .pcikerlabel-relative .form-control{
+      padding-left: 56px;
+    }
+    .date-pickerlabel {
+        position: absolute;
+        left: 10px;
+        top: 8px;
+        color: #fff;
     }
 
     /*request notification page*/
@@ -1434,9 +1447,6 @@
       .vechicle-select.optional-or{
         width: 100%;
         float: none;
-      }
-      .vechicle-select.optional-or .form-control{
-        width: 47%;
       }
       .form-control{
         width: 290px;
