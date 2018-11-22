@@ -864,6 +864,11 @@
         margin: 20px auto;
         display: block;
     }
+    .create-client-gif{
+        width: 40px;
+        float: left;
+        margin: 2px 14px;
+    }
     .edit-icon-absolute .edit-icon-option{
         position: absolute;
         top: 35px;
