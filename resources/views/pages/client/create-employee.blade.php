@@ -26,7 +26,7 @@
                         </div>
                         <div class="form-group">
                             <label for="user-crname" class="usr-lock"><i class="fas fa-user"></i></label>
-                            <input name="email" type="text" placeholder="Email" class="form-control" required>
+                            <input name="email" type="email" placeholder="Email" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="user-crpassword" class="usr-lock"><i class="fas fa-lock"></i></label>
@@ -38,7 +38,7 @@
                         </div>
                         <div class="form-group">
                             <label for="user-crphone" class="usr-lock"><i class="fas fa-phone"></i></label>
-                            <input name="phone" type="text" placeholder="Phone" class="form-control" required>
+                            <input name="phone" type="number" placeholder="Phone" class="form-control" required>
                         </div>
                         <div class="submit-forget-password">
                             <input type="hidden" name="role" value="emp">
