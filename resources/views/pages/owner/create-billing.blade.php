@@ -37,7 +37,7 @@
                             <div class="vechicle-select">
                                 <div class="form-group">
                                     <label for="exampleFormControlSelect1">Select Billing Term</label>
-                                    <select name="billing_term" class="form-control get-select-picker" id="exampleFormControlSelect1" title="month(s)" multiple>
+                                    <select name="billing_term" class="form-control get-select-picker" id="exampleFormControlSelect1" title="month(s)">
                                         <option value="1">01</option>
                                         <option value="2">02</option>
                                         <option value="3">03</option>
@@ -47,7 +47,8 @@
                             </div>
                             <div class="form-group bill-amount">
                                 <label for="user-bdt">Amount According to Billing Term</label>
-                                <input name="billing_amount" type="text" placeholder="BDT 0.00" class="form-control" id="user-bdt" required>
+                                <span  class="usr-lock-bill">BDT</span>
+                                <input name="billing_amount" type="number" placeholder="0.00" class="form-control" id="user-bdt" required>
                             </div>
                             <div class="form-group">
                                 <label for="user-email" class="usr-lock"><i class="fas fa-calendar-alt"></i></label>
