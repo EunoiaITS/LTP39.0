@@ -9,7 +9,7 @@
                     <h4 class="date">Date: <span>{{ date('d-m-Y') }}</span></h4>
                 </div>
                 <div class="col-md-5 col-sm-6">
-                    <div class="dashboard-total clearfix">
+                    <div class="dashboard-total clearfix" style="56px 0px">
                         <div class="money-icon">
                             <img src="{{ asset('public/assets/img/taka.png') }}" alt="">
                         </div>
