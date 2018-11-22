@@ -45,9 +45,9 @@
                             </div>
                         </div>
                     </div>
-                    @foreach($users as $u)
                     <!-- pie chart -->
                     <div class="col-sm-12 padding-0">
+                        @foreach($users as $u)
                         <div class="col-sm-6 col-md-4">
                             <div class="dashboard-total clearfix">
                                 <h3 class="total-dash"> {{ $u->name }} </h3>
@@ -59,9 +59,9 @@
                                 </div>
                             </div>
                         </div>
+                        @endforeach
                     </div>
                     <!-- pagination -->
-                    @endforeach
                     <div class=" col-sm-12 bootstrap-pagination">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">

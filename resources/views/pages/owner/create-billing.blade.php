@@ -21,7 +21,7 @@
                             <div class="vechicle-select">
                                 <div class="form-group">
                                     <label for="client">Client's Name</label>
-                                    <select class="form-control get-select-picker" id="client" title="Client's Category">
+                                    <select class="form-control get-select-picker" id="client" title="Client's Name">
                                         @foreach($clients as $c)
                                             @if(isset($c->check) && $c->check == 'yes')
                                                 <option value="{{ $c->client_id }}">{{ $c->name }}</option>

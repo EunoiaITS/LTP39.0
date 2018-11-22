@@ -26,7 +26,11 @@
            e.preventDefault();
            var str = $(this).val();
            var val = str.split(' ');
-           name = val[0].slice(0,1) + val[1].slice(0,1);
+           if(val[1]){
+               name = val[0].slice(0,1) + val[1].slice(0,1);
+           }else{
+               name = val[0];
+           }
            name1 = val[0].slice(0,2) + val[1].slice(0,1);
             $.each(JSON.parse(clients),function (i, e){
                 if(e.client_id === (name + type + year)){

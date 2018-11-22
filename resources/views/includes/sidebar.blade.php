@@ -29,7 +29,7 @@
                 <div class="panel-body">
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url('/create-client') }}">Create Client</a></li>
-                        <li><a href="{{ url('/clients-list') }}">Manage Client</a></li>
+                        <li><a href="{{ url('/clients-list?type=park') }}">Manage Client</a></li>
                     </ul>
                 </div>
             </div>

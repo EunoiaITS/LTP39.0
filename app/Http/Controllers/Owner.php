@@ -109,7 +109,9 @@ class Owner extends Controller
      * all clients - function to show all clients
      **/
     public function allClients(Request $request){
-        $clients = Clients::all();
+        $clients = Clients::where('client_type',$request->type)
+            ->orderBy('id','desc')
+            ->get();
         foreach($clients as $client){
             $client->data = User::find($client->user_id);
         }
@@ -145,7 +147,8 @@ class Owner extends Controller
 
         return view('pages.owner.clients-list', [
             'clients' => $clients,
-            'modal' => 'pages.owner.modals.client-list-modals'
+            'modal' => 'pages.owner.modals.client-list-modals',
+            'js' => 'pages.owner.js.client-list-js'
         ]);
     }
 
@@ -444,7 +447,7 @@ class Owner extends Controller
      * param - request - takes all the post request data
      */
     public function manageDevice(Request $request){
-        $devices = CompanyDevice::all();
+        $devices = CompanyDevice::orderBy('id','desc')->get();
         foreach($devices as $dv){
             $clients = Clients::where('id', $dv->client_id)->get();
             foreach ($clients as $client){

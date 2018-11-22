@@ -23,9 +23,9 @@
                             <div class="vechicle-select">
                                 <div class="form-group">
                                     <label for="exampleFormControlSelect1">Client Type</label>
-                                    <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Cleint Category">
-                                        <option value="">Parking Client</option>
-                                        <option value="">Advertisement Client</option>
+                                    <select class="form-control get-select-picker" id="client-select" title="Client Category">
+                                        <option value="pc">Parking Client</option>
+                                        <option value="ac">Advertisement Client</option>
                                     </select>
                                 </div>
                             </div>
