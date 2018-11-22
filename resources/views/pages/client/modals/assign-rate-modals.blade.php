@@ -19,15 +19,15 @@
                     </div>
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-clock"></i></label>
-                        <input type="text" placeholder="Base Hour" name="base_hour" class="form-control" value="{{ old('base_hour') }}" required>
+                        <input type="number" placeholder="Base Hour" name="base_hour" class="form-control" value="{{ old('base_hour') }}" required>
                     </div>
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="far fa-clock"></i></label>
-                        <input type="text" placeholder="Base Fair" name="base_rate" class="form-control" value="{{ old('base_rate') }}" required>
+                        <input type="number" placeholder="Base Fair" name="base_rate" class="form-control" value="{{ old('base_rate') }}" required>
                     </div>
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-hourglass-half"></i></label>
-                        <input type="text" placeholder="Subsequent Hour Rate" name="sub_rate" class="form-control" value="{{ old('sub_rate') }}" required>
+                        <input type="number" placeholder="Subsequent Hour Rate" name="sub_rate" class="form-control" value="{{ old('sub_rate') }}" required>
                     </div>
                     <input type="hidden" name="action" value="create">
                 </form>

@@ -40,6 +40,12 @@
 	  $(".user-dropdown ul li a").on('click', function(){
 	    $(".user-dropdown").removeClass('new-user');
 	  });
+    
+    // page click indication loader --*/
+
+    $(".btn-info").click(function(){
+        $(".click-loading-option").addClass("addclickloading").delay(1500).fadeOut('fade');
+    });
 
     /*--============================
 	sidebar plus icon toggle class

@@ -167,6 +167,26 @@
        border-radius: 0 !important;
      }
 
+    /*--
+    click loading
+    ===================--*/
+    .click-loading-option{
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: rgb(255,255,255,.5);
+      z-index: 9999;
+      display: none;
+    }
+    .click-loading-option.addclickloading{
+      display: block;
+    }
+    .click-loading-option img{
+      display: block;
+      width: 60px;
+      margin:0 auto;
+    }
+
     /*--===================
     parking kori login page
     ======================================--*/
@@ -207,7 +227,7 @@
       position: relative;
     }
     .bill-amount .form-control{
-      padding-left: 0px;
+      padding-left: 36px;
     }
     .form-control::placeholder{
       color: #fff;
@@ -244,6 +264,11 @@
         top: 10px;
         position: absolute;
         color: #fff;
+    }
+    .usr-lock-bill{
+      position: absolute;
+      left: 0;
+      top:37px;
     }
     .btn.btn-login{
         display: table;
@@ -329,7 +354,6 @@
     .modal-content .form-control{
       border-color: transparent transparent #af1b3f transparent;
       color:#af1b3f;
-      text-transform: capitalize;
       font-size: 15px;
     }
     .modal-content form {
@@ -503,6 +527,7 @@
     .dashboard-sidebar {
         width: 80%;
         max-width: 250px;
+        min-hight:450px;
         height: 100%;
         overflow-y: auto !important;
         background: rgb(245,209,207);
@@ -752,17 +777,17 @@
     }
     .employee-form .form-control{
       border-bottom-color: #000;
-      color: #000;
+      color: #757474;
       font-size: 16px;
     }
     .employee-form .form-control::placeholder{
-      color: #000;
+      color: #a9a6a6;
     }
     .employee-form .form-control::-webkit-placeholder{
-      color: #000;
+      color: #a9a6a6;
     }
     .employee-form .form-control::-moz-placeholder{
-      color: #000;
+      color: #a9a6a6;
     }
 
     .employee-form .form-control:focus::-webkit-input-placeholder {
@@ -843,6 +868,11 @@
         width: 150px;
         margin: 20px auto;
         display: block;
+    }
+    .create-client-gif{
+        width: 40px;
+        float: left;
+        margin: 2px 14px;
     }
     .edit-icon-absolute .edit-icon-option{
         position: absolute;
@@ -1052,6 +1082,13 @@
         width: 80%;
         padding-left: 16px;
     }
+    .date-span span{
+        font-size: 18px;
+        margin-right: 15px;
+        display: inline;
+        padding-top: 9px;
+        float: left;
+    }
     .per {
         float: left;
         width: 35px;
@@ -1128,14 +1165,27 @@
       float: left;
       display: inline-block;
     }
+     .optional-private{
+      width: 45%;
+      float: left;
+      position: relative;
+      margin-right: 8px;
+    }
     .vechicle-select.optional-or .form-control {
-        width: 45%;
-        float: left;
         margin-right: 10px;
         font-size: 11px;
     }
-    .vechicle-select.optional-or .form-control:last-child{
+    .optional-private:last-child{
       margin-right: 0;
+    }
+     .pcikerlabel-relative .form-control{
+      padding-left: 56px;
+    }
+    .date-pickerlabel {
+        position: absolute;
+        left: 10px;
+        top: 8px;
+        color: #fff;
     }
 
     /*request notification page*/
@@ -1398,9 +1448,6 @@
       .vechicle-select.optional-or{
         width: 100%;
         float: none;
-      }
-      .vechicle-select.optional-or .form-control{
-        width: 47%;
       }
       .form-control{
         width: 290px;

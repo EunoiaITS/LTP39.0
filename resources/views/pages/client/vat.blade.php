@@ -25,7 +25,8 @@
                                 <div class="vechicle-select">
                                     <div class="form-group">
                                         <label for="exampleFormControlSelect1">VAT %</label>
-                                        <input type="text" name="vat" class="form-control" placeholder="N/A" value="@if(!empty($vat)){{ $vat->vat }}@endif">
+                                        <input type="number" name="vat" class="form-control" min="0" max="100" onKeyUp="if(this.value>100){this.value='100';}else if(this.value<0){this.value='0';}"  placeholder="N/A" value="@if(!empty($vat)){{ $vat->vat }}@endif">
+                                        <p style="margin-top:12px;"><strong>Note: </strong>Vat value will be 0 to 100 </p>
                                     </div>
                                 </div>
                                 <div class="submit-forget-password">

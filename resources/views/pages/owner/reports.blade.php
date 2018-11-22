@@ -16,7 +16,7 @@
                                 <span>D</span>
                             </div>
                             <div class="date-timepicker">
-                                <h4 class="date-span">{{ $daily }}</h4>
+                                <h4 class="date-span"><span>BDT</span>{{ $daily }}</h4>
                                 <div class="per">+5%</div>
                             </div>
                         </div>
@@ -27,7 +27,7 @@
                                 <span>W</span>
                             </div>
                             <div class="date-timepicker">
-                                <h4 class="date-span">{{ $weekly }}</h4>
+                                <h4 class="date-span"><span>BDT</span>{{ $weekly }}</h4>
                                 <div class="per">+5%</div>
                             </div>
                         </div>
@@ -38,7 +38,7 @@
                                 <span>M</span>
                             </div>
                             <div class="date-timepicker">
-                                <h4 class="date-span">{{ $monthly }}</h4>
+                                <h4 class="date-span"><span>BDT</span>{{ $monthly }}</h4>
                                 <div class="per">+5%</div>
                             </div>
                         </div>
@@ -49,56 +49,7 @@
                                 <span>Y</span>
                             </div>
                             <div class="date-timepicker">
-                                <h4 class="date-span">{{ $yearly }}</h4>
-                                <div class="per">+5%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-12 dashboad-title report-advert-sale">
-                    <h4 class="date">Advert Sale Total</h4>
-                </div>
-                <div class="col-sm-12 total-area padding-0">
-                    <div class="col-sm-6 col-md-3">
-                        <div class="calender-area-date">
-                            <div class="date-icon">
-                                <span>D</span>
-                            </div>
-                            <div class="date-timepicker">
-                                <h4 class="date-span">330</h4>
-                                <div class="per">+5%</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="calender-area-date">
-                            <div class="date-icon">
-                                <span>W</span>
-                            </div>
-                            <div class="date-timepicker">
-                                <h4 class="date-span">2310</h4>
-                                <div class="per">+5%</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="calender-area-date">
-                            <div class="date-icon">
-                                <span>M</span>
-                            </div>
-                            <div class="date-timepicker">
-                                <h4 class="date-span">69,300</h4>
-                                <div class="per">+5%</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="calender-area-date">
-                            <div class="date-icon">
-                                <span>Y</span>
-                            </div>
-                            <div class="date-timepicker">
-                                <h4 class="date-span">800,600</h4>
+                                <h4 class="date-span"><span>BDT</span>{{ $yearly }}</h4>
                                 <div class="per">+5%</div>
                             </div>
                         </div>
@@ -108,18 +59,7 @@
                     <div class="col-sm-6 col-md-6 col-lg-3">
                         <div class="vechicle-select">
                             <div class="form-group">
-                                <select class="form-control get-select-picker" name="vc" id="exampleFormControlSelect1" title="Client Category">
-                                    @foreach($clients as $c)
-                                    <option value="{{ $c->id }}" @if(isset($vc) && $vc == $c->id){{ 'selected' }}@endif>{{ $c->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-6 col-lg-3">
-                        <div class="vechicle-select">
-                            <div class="form-group">
-                                <select class="form-control get-select-picker" name="type" id="exampleFormControlSelect2" title="Sales Category">
+                                <select class="form-control get-select-picker" name="type" id="exampleFormControlSelect2" title="Client Category">
                                     <option value="ad" @if(isset($type) && $type == 'ad'){{ 'selected' }}@endif>Advert</option>
                                     <option value="park" @if(isset($type) && $type == 'park'){{ 'selected' }}@endif>Parking</option>
                                 </select>
@@ -127,10 +67,27 @@
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-6 col-lg-3">
-                        <div class="vechicle-select optional-or">
+                        <div class="vechicle-select">
                             <div class="form-group">
-                                <input type="text" name="sDate" id="sDate" class="form-control datepicker-f" placeholder="Form">
-                                <input type="text" name="eDate" id="eDate" class="form-control datepicker-f" placeholder="To">
+                                <select class="form-control get-select-picker" name="vc" id="exampleFormControlSelect1" title="Client Name">
+                                    @foreach($clients as $c)
+                                    <option value="{{ $c->id }}" @if(isset($vc) && $vc == $c->id){{ 'selected' }}@endif>{{ $c->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-5">
+                        <div class="vechicle-select optional-or pcikerlabel-relative">
+                            <div class="form-group">
+                                <div class="optional-private">
+                                     <input type="text" name="sDate" id="sDate" class="form-control datepicker-f">
+                                    <span class="date-pickerlabel">Form</span>
+                                </div>
+                                <div class="optional-private">
+                                    <input type="text" name="eDate" id="eDate" class="form-control datepicker-f">
+                                    <span class="date-pickerlabel">Form</span>
+                                </div>
                             </div>
                         </div>
                     </div>

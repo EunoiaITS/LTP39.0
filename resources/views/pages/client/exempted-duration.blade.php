@@ -49,7 +49,7 @@
                                 <div class="vechicle-select">
                                     <div class="form-group">
                                         <label for="exampleFormControlSelect1">Exemted Duration</label>
-                                        <input type="text" name="duration" class="form-control e-duration" placeholder="minutes" value="@if(!empty($exDuration)){{ $exDuration->duration }}@endif">
+                                        <input type="number" name="duration" class="form-control e-duration" placeholder="minutes" value="@if(!empty($exDuration)){{ $exDuration->duration }}@endif">
                                     </div>
                                 </div>
                                 @if(!empty($exDuration))
