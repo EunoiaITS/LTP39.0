@@ -52,7 +52,7 @@
             </div>
         </li>
         <!-- Dropdown-->
-        <li class="panel panel-default active active-employee" id="dropdown">
+        <li class="panel panel-default active" id="dropdown">
             <a data-toggle="collapse" href="#dropdown-lvl4">
                 Settings<span class="icon-right"></span>
             </a>
