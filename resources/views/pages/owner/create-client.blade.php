@@ -2,6 +2,9 @@
 @section('content')
 
     <!-- main-content area -->
+    <div class="click-loading-option">
+		<img src="img/loading_icon.gif" alt="">
+	</div>
     <div class="dashboard-main-content clearfix">
         <div class="container">
             <div class="row">
@@ -57,6 +60,9 @@
                                 <div class="file btn btn-sm btn-primary ">
                                     <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><span>Browse File</span>
                                     <input type="file" class="input-upload" name="file">
+                                </div>
+                                <div class="create-client-gif">
+                                    <img src="img/loading_icon.gif" alt="">
                                 </div>
                             </div>
 
