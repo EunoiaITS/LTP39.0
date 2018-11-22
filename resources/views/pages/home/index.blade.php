@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/public/home/img/pk-icon.ico') }}">
 
     <!-- stylesheet css -->
-    <link rel="stylesheet" href="{{ asset('/public/home/img/css/fontawesome-all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('/public/home/css/fontawesome-all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('/public/home/css/flaticon.css') }}">
     <link rel="stylesheet" href="{{ asset('/public/home/css/bootstrap.min.css') }}">
 	<!-- slick slider -->
