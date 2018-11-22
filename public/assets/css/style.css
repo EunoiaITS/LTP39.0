@@ -227,7 +227,7 @@
       position: relative;
     }
     .bill-amount .form-control{
-      padding-left: 0px;
+      padding-left: 36px;
     }
     .form-control::placeholder{
       color: #fff;
@@ -264,6 +264,11 @@
         top: 10px;
         position: absolute;
         color: #fff;
+    }
+    .usr-lock-bill{
+      position: absolute;
+      left: 0;
+      top:37px;
     }
     .btn.btn-login{
         display: table;
