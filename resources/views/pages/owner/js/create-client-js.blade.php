@@ -6,6 +6,10 @@
         //     var fileName = input.files[0].name;
         //     $('#file-upload-filename').html(fileName);
         // });
+        $('input[type="file"]').change(function(e){
+            var fileName = e.target.files[0].name;
+            $('.custom-file-label').html(fileName);
+        });
         var name = '';
         var name1 = '';
         var type = '';

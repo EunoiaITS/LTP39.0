@@ -25,8 +25,8 @@
                                 <div class="vechicle-select">
                                     <div class="form-group">
                                         <label for="exampleFormControlSelect1">Exemted Time</label>
-                                        <input type="text" name="from" class="form-control form-exampted from" id="datetimepicker3"	placeholder="Form" value="@if(!empty($exTime)){{ $exTime->from }}@endif">
-                                        <input type="text" name="to" class="form-control form-exampted to" id="datetimepicker4" placeholder="To" value="@if(!empty($exTime)){{ $exTime->to }}@endif">
+                                        <input type="text" name="from" class="form-control form-exampted from" id="datetimepicker3"	placeholder="Form" value="@if(!empty($exTime)){{ $exTime->from }}@endif" required>
+                                        <input type="text" name="to" class="form-control form-exampted to" id="datetimepicker4" placeholder="To" value="@if(!empty($exTime)){{ $exTime->to }}@endif" required>
                                     </div>
                                 </div>
                                 <div class="clearfix" style="height: 20px"></div>
@@ -49,7 +49,7 @@
                                 <div class="vechicle-select">
                                     <div class="form-group">
                                         <label for="exampleFormControlSelect1">Exemted Duration</label>
-                                        <input type="number" name="duration" class="form-control e-duration" placeholder="minutes" value="@if(!empty($exDuration)){{ $exDuration->duration }}@endif">
+                                        <input type="number" name="duration" class="form-control e-duration" placeholder="minutes" value="@if(!empty($exDuration)){{ $exDuration->duration }}@endif" required>
                                     </div>
                                 </div>
                                 @if(!empty($exDuration))

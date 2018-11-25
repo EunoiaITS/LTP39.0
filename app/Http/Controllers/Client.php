@@ -132,7 +132,11 @@ class Client extends Controller
         }
         $vt = VehicleCategory::where('client_id', $id)->get();
         $ps = new Collection();
+        $check = new Collection();
         foreach($vt as $v){
+            if(!ParkingSetting::where('vehicle_id', $v->id)->first()){
+                $check->push($v);
+            }
             $vps = ParkingSetting::where('vehicle_id', $v->id)->get();
             foreach($vps as $vp){
                 $ps->push($vp);
@@ -210,6 +214,7 @@ class Client extends Controller
         return view('pages.client.assign-parking', [
             'vt' => $vt,
             'ps' => $ps,
+            'check' => $check,
             'modal' => 'pages.client.modals.assign-parking-modals'
         ]);
     }
@@ -224,8 +229,12 @@ class Client extends Controller
             $id = $mngr->client_id;
         }
         $vt = VehicleCategory::where('client_id', $id)->get();
+        $check = new Collection();
         $pr = new Collection();
         foreach($vt as $v){
+            if(!ParkingRate::where('vehicle_id', $v->id)->first()){
+                $check->push($v);
+            }
             $vpr = ParkingRate::where('vehicle_id', $v->id)->get();
             foreach($vpr as $vp){
                 $pr->push($vp);
@@ -307,6 +316,7 @@ class Client extends Controller
         return view('pages.client.assign-rate', [
             'vt' => $vt,
             'pr' => $pr,
+            'check' => $check,
             'modal' => 'pages.client.modals.assign-rate-modals'
         ]);
     }

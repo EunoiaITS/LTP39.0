@@ -24,6 +24,7 @@ Route::group(['middleware' => ['auth', 'owner']], function(){
     Route::get('/clients-list', 'Owner@allClients');
     Route::post('/clients-list', 'Owner@allClients');
     Route::get('/client-details?type=park', 'Owner@clientDetails');
+    Route::get('/client-details', 'Owner@clientDetails');
     Route::post('/client-details', 'Owner@clientDetails');
 
     /**
@@ -73,8 +74,8 @@ Route::group(['middleware' => ['auth', 'client']], function(){
     Route::post('/settings/exempted-setting', 'Client@exemptedDuration');
     Route::get('/settings/vat', 'Client@vat');
     Route::post('/settings/vat', 'Client@vat');
-    Route::get('/settings/vip-parking', 'Client@vipParking');
-    Route::post('/settings/vip-parking', 'Client@vipParking');
+    //Route::get('/settings/vip-parking', 'Client@vipParking');
+    //Route::post('/settings/vip-parking', 'Client@vipParking');
 
     /**
      * Employee Routes

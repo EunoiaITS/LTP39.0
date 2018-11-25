@@ -57,13 +57,9 @@
                             <div class="form-group clearfix">
                                 <label for="payment-terms">Payment Terms</label>
                                 <div class="clearfix"></div>
-                                <div class="file btn btn-sm btn-primary ">
-                                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><span>Browse File</span>
-                                    <input type="file" class="input-upload file-upload" name="file">
-                                </div>
-                                <div id="file-upload-filename"></div>
-                                <div class="create-client-gif">
-                                    <img src="{{ asset('/public/assets/img/loading_icon.gif') }}" alt="">
+                                <div class="file btn btn-sm btn-primary">
+                                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><span class="custom-file-label">Browse File</span>
+                                    <input type="file" class="input-upload file-upload" id="inputGroupFile02" name="file">
                                 </div>
                             </div>
 

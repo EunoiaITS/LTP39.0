@@ -12,7 +12,7 @@
                         <label class="model-label" for="exampleFormControlSelect2">Vehicle Type</label>
 
                         <select class="form-control get-select-picker" name="vehicle_id" id="exampleFormControlSelect2" title="Vehicle Category">
-                            @foreach($vt as $v)
+                            @foreach($check as $v)
                             <option value="{{ $v->id }}">{{ $v->type_name }}</option>
                             @endforeach
                         </select>

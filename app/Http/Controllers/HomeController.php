@@ -34,6 +34,8 @@ class HomeController extends Controller
         }else{
             $page = 'pages.home.index';
         }
-        return view($page);
+        return view($page,[
+            'js' => 'pages.owner.js.dashboard-js'
+        ]);
     }
 }

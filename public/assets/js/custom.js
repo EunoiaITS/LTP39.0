@@ -71,8 +71,19 @@
 	      previous: 'fa fa-angle-left',
 	      next: 'fa fa-angle-right',
 	    },
-		maxDate: moment(),
+		minDate: moment(),
 	});
+
+    $('.datepicker-d').datetimepicker({
+        format: "DD/MM/YYYY",
+        icons: {
+            up: 'fa fa-angle-up',
+            down: 'fa fa-angle-down',
+            previous: 'fa fa-angle-left',
+            next: 'fa fa-angle-right',
+        },
+        maxDate: moment(),
+    });
 
   	/*======================
 	time-et-select-picker

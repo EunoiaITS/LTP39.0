@@ -147,6 +147,7 @@ class Owner extends Controller
 
         return view('pages.owner.clients-list', [
             'clients' => $clients,
+            'type' => $request->type,
             'modal' => 'pages.owner.modals.client-list-modals',
             'js' => 'pages.owner.js.client-list-js'
         ]);

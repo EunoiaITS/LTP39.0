@@ -27,7 +27,7 @@ var config = {
 };
 
 window.onload = function() {
-    var ctx = document.getElementById("chart-area").getContext("2d");
+    var ctx = document.getElementsByClassName("chart-area").getContext("2d");
     window.myPie = new Chart(ctx, config);
 };
 

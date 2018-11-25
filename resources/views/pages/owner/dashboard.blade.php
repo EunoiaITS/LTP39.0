@@ -55,7 +55,7 @@
                                     <h4>Current Parking Status</h4>
                                 </div>
                                 <div class="total-cost parking-pie-chart">
-                                    <canvas id="chart-area" width="200px" height="200px"/>
+                                    <canvas id="chart-area{{$u->id}}" width="200px" height="200px"/>
                                 </div>
                             </div>
                         </div>
@@ -64,23 +64,7 @@
                     <!-- pagination -->
                     <div class=" col-sm-12 bootstrap-pagination">
                         <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
-                            </ul>
+                            {{ $users->links() }}
                         </nav>
                     </div>
                 </div>
