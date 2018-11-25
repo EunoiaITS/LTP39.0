@@ -25,17 +25,20 @@ class HomeController extends Controller
     public function index()
     {
         $page = 'pages.home.index';
+        $js = 'pages.owner.js.dashboard-js';
         if(Auth::user()){
             if(Auth::user()->role == 'owner' || Auth::user()->role == 'dev'){
                 $page = 'pages.owner.dashboard';
+                $js = 'pages.owner.js.dashboard-js';
             }elseif(Auth::user()->role == 'client' || Auth::user()->role == 'manager'){
                 $page = 'pages.client.dashboard';
+                $js = 'pages.client.js.dashboard-js';
             }
         }else{
             $page = 'pages.home.index';
         }
         return view($page,[
-            'js' => 'pages.owner.js.dashboard-js'
+            'js' => $js
         ]);
     }
 }
