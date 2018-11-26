@@ -117,7 +117,9 @@ class Owner extends Controller
                     ->withInput();
             }
         }
-        return view('pages.owner.create-client');
+        return view('pages.owner.create-client',[
+            'js' => 'pages.owner.js.create-client-js'
+        ]);
     }
 
     /**
