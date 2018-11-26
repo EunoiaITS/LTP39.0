@@ -1,9 +1,11 @@
 
 <script>
     $(document).ready(function () {
-        $('.get-select-picker').on('change',function (e) {
+        $('#generate').on('click',function (e) {
            e.preventDefault();
-           alert($(this).val());
+           var sel = $('#client-select').val();
+           var url = '{{ url('/') }}';
+           window.location.href = url+'?clients='+sel;
         });
     });
     var occupied = '<?php echo $count;?>';

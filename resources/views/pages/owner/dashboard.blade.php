@@ -37,11 +37,12 @@
                     <div class="col-sm-4">
                         <div class="vechicle-select">
                             <div class="form-group">
-                                <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Clients List" multiple data-size="6">
+                                <select id="client-select" class="form-control get-select-picker" id="exampleFormControlSelect1" title="Clients List" multiple>
                                     @foreach($users as $u)
                                         <option value="{{ $u->id }}">{{ $u->name }}</option>
                                     @endforeach
                                 </select>
+                                <button type="submit" id="generate" class="btn btn-primary">Generate</button>
                             </div>
                         </div>
                     </div>

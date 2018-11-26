@@ -29,13 +29,14 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $page = 'pages.home.index';
         $js = 'pages.owner.js.dashboard-js';
         $bill = $clients = $users = '';
         $count = 0;
         $total_veh = 0;
+        $total_sale = 0;
         if(Auth::user()){
             if(Auth::user()->role == 'owner' || Auth::user()->role == 'dev'){
                 $page = 'pages.owner.dashboard';
@@ -47,8 +48,12 @@ class HomeController extends Controller
                 foreach ($cbs as $c){
                     $bill += $c->billing_amount;
                 }
-
-                $users = User::where('role','client')->paginate(6);
+                if(isset($request->clients)){
+                    $req_clients = explode(',',$request->clients);
+                    $users = User::whereIn('id',$req_clients)->paginate(10);
+                }else{
+                    $users = User::where('role','client')->paginate(10);
+                }
                 foreach ($users as $u){
                     $client = Clients::where('user_id',$u->id)
                         ->first();
@@ -89,9 +94,16 @@ class HomeController extends Controller
                         $count++;
                     }
                 }
-                $ps = ParkingSetting::where('client_id',$client->id)->get();
-                foreach ($ps as $p){
-                    $total_veh += $p->amount;
+                $vc = VehicleCategory::where('client_id',$client->id)->get();
+                foreach ($vc as $v){
+                    $ps = ParkingSetting::where('vehicle_id',$v->id)->get();
+                    foreach ($ps as $p){
+                        $total_veh += $p->amount;
+                    }
+                }
+                $cio = CheckInOut::where('client_id',$id)->get();
+                foreach ($cio as $cb){
+                    $total_sale += $cb->fair;
                 }
             }
         }else{
@@ -103,7 +115,8 @@ class HomeController extends Controller
             'count' => $count,
             'total' => $total_veh,
             'bill' => $bill,
-            'clients' => $clients
+            'clients' => $clients,
+            'sale' => $total_sale
         ]);
     }
 }

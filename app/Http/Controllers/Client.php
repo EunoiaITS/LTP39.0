@@ -126,11 +126,12 @@ class Client extends Controller
     */
     public function assignParking(Request $request){
         $id = Auth::id();
+        $client = Clients::where('user_id',$id)->first();
         if(Auth::user()->role == 'manager'){
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
         }
-        $vt = VehicleCategory::where('client_id', $id)->get();
+        $vt = VehicleCategory::where('client_id', $client->id)->get();
         $ps = new Collection();
         $check = new Collection();
         foreach($vt as $v){
@@ -147,8 +148,7 @@ class Client extends Controller
         }
         if($request->isMethod('post')){
             $lastApId = sprintf('%03d', 1);
-            $lastAp = ParkingSetting::where('client_id', $id)
-                ->orderBy('id','desc')
+            $lastAp = ParkingSetting::orderBy('id','desc')
                 ->first();
             $vc = VehicleCategory::find($request->vehicle_id);
             if(!empty($lastAp) && (int)(substr($lastAp->assign_parking_id, -3)) >= 1){
@@ -168,7 +168,6 @@ class Client extends Controller
                 if(empty($errors)){
                     $assign->vehicle_id = $request->vehicle_id;
                     $assign->amount = $request->amount;
-                    $assign->client_id = $id;
                     $assign->assign_parking_id = $vc->type_id.'API'.$lastApId;
                     if($assign->save()){
                         return redirect()
