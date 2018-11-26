@@ -1,5 +1,6 @@
 <script>
-
+    var occupied = '<?php echo $count;?>';
+    var free = '<?php echo ($total - $count);?>';
     // pie chart
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 50);
@@ -9,7 +10,7 @@
         data: {
             labels: ["Free", "Occupied"],
             datasets: [{
-                data: ['400', '800' ],
+                data: [free, occupied ],
                 backgroundColor: [
                     '#A049A7',
                     '#229ED2'

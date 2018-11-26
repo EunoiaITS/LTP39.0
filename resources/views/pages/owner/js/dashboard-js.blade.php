@@ -1,5 +1,13 @@
 
 <script>
+    $(document).ready(function () {
+        $('.get-select-picker').on('change',function (e) {
+           e.preventDefault();
+           alert($(this).val());
+        });
+    });
+    var occupied = '<?php echo $count;?>';
+    var free = '<?php echo ($total - $count);?>';
     @foreach($users as $u)
 
     // pie chart
@@ -11,7 +19,7 @@
         data: {
             labels: ["Free", "Occupied"],
             datasets: [{
-                data: ['400', '800' ],
+                data: [free, occupied ],
                 backgroundColor: [
                     '#A049A7',
                     '#229ED2'

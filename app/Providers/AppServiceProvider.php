@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\CheckInOut;
+use App\Http\Middleware\Client;
+use App\ParkingSetting;
+use App\VIPCheckInOut;
+use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -28,16 +33,6 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with(compact('controller', 'action'));
         });
-        $clients = Clients::all()->count();
-        View::share('clients',$clients);
-        $bill = 0;
-        $cbs = CompanyBillingSettings::all();
-        foreach ($cbs as $c){
-            $bill += $c->billing_amount;
-        }
-        View::share('bill',$bill);
-        $users = User::where('role','client')->get();
-        View::share('users',$users);
     }
 
     /**

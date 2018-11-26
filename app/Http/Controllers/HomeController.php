@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use App\Clients;
+use App\CompanyBillingSettings;
+use App\CheckInOut;
+use App\VIPCheckInOut;
+use App\ParkingSetting;
+use App\User;
 
 class HomeController extends Controller
 {
@@ -26,19 +32,74 @@ class HomeController extends Controller
     {
         $page = 'pages.home.index';
         $js = 'pages.owner.js.dashboard-js';
+        $bill = $clients = $users = '';
+        $count = 0;
+        $total_veh = 0;
         if(Auth::user()){
             if(Auth::user()->role == 'owner' || Auth::user()->role == 'dev'){
                 $page = 'pages.owner.dashboard';
                 $js = 'pages.owner.js.dashboard-js';
+                $clients = Clients::all()->count();
+
+                $bill = 0;
+                $cbs = CompanyBillingSettings::all();
+                foreach ($cbs as $c){
+                    $bill += $c->billing_amount;
+                }
+
+                $users = User::where('role','client')->paginate(6);
+                foreach ($users as $u){
+                    $client = Clients::where('user_id',$u->id)
+                        ->first();
+                    $cio = CheckInOut::where('client_id',$client->id)->get();
+                    foreach ($cio as $c){
+                        if($c->receipt_id == null){
+                            $count++;
+                        }
+                    }
+                    $vcio = VIPCheckInOut::where('client_id',$client->id)->get();
+                    foreach ($vcio as $c){
+                        if($c->receipt_id == null){
+                            $count++;
+                        }
+                    }
+                    $ps = ParkingSetting::where('client_id',$client->id)->get();
+                    foreach ($ps as $p){
+                        $total_veh += $p->amount;
+                    }
+                }
             }elseif(Auth::user()->role == 'client' || Auth::user()->role == 'manager'){
                 $page = 'pages.client.dashboard';
                 $js = 'pages.client.js.dashboard-js';
+                $id = Auth::id();
+                $client = Clients::where('user_id',$id)->first();
+                $cio = CheckInOut::where('client_id',$client->id)->get();
+                foreach ($cio as $c){
+                    if($c->receipt_id == null){
+                        $count++;
+                    }
+                }
+                $vcio = VIPCheckInOut::where('client_id',$client->id)->get();
+                foreach ($vcio as $c){
+                    if($c->receipt_id == null){
+                        $count++;
+                    }
+                }
+                $ps = ParkingSetting::where('client_id',$client->id)->get();
+                foreach ($ps as $p){
+                    $total_veh += $p->amount;
+                }
             }
         }else{
             $page = 'pages.home.index';
         }
         return view($page,[
-            'js' => $js
+            'js' => $js,
+            'users' => $users,
+            'count' => $count,
+            'total' => $total_veh,
+            'bill' => $bill,
+            'clients' => $clients
         ]);
     }
 }

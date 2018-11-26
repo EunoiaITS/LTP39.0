@@ -39,7 +39,7 @@
                             <div class="form-group">
                                 <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Clients List" multiple data-size="6">
                                     @foreach($users as $u)
-                                        <option value="{{ $u->name }}">{{ $u->name }}</option>
+                                        <option value="{{ $u->id }}">{{ $u->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
