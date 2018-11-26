@@ -8,8 +8,6 @@
            window.location.href = url+'?clients='+sel;
         });
     });
-    var occupied = '<?php echo $count;?>';
-    var free = '<?php echo ($total - $count);?>';
     @foreach($users as $u)
 
     // pie chart
@@ -21,7 +19,7 @@
         data: {
             labels: ["Free", "Occupied"],
             datasets: [{
-                data: [free, occupied ],
+                data: [{{ $u->total - $u->occupied }}, {{ $u->occupied }} ],
                 backgroundColor: [
                     '#A049A7',
                     '#229ED2'

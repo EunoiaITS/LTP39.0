@@ -30,7 +30,6 @@ class Owner extends Controller
      * param - request - takes all the post request data
      */
     public function createClient(Request $request){
-        $clients = Clients::all();
         if($request->isMethod('post')){
             $errors = array();
             if($request->password != $request->repass){
@@ -59,6 +58,21 @@ class Owner extends Controller
             }
 
             if(empty($errors)){
+                $year = date('Y');
+                $type = '';
+                $name = '';
+                if($request->client_type == 'park'){
+                    $type = '01';
+                }else{
+                    $type = '02';
+                }
+                $name_array = explode(' ',$request->name);
+                $name = $name_array[0][0].$name_array[1][0];
+                $name1 = $name_array[0][0].$name_array[0][1].$name_array[1][0];
+                $client_id = $name.$type.$year;
+                $client_id1 = $name1.$type.$year;
+
+
                 $user->name = $request->name;
                 $user->email = $request->email;
                 $user->password = bcrypt($request->password);
@@ -67,7 +81,11 @@ class Owner extends Controller
 
                 if($user->save()){
                     $client->user_id = $user->id;
-                    $client->client_id = $request->client_id;
+                    if(Clients::where('client_id',$client_id)->first()){
+                        $client->client_id = $client_id1;
+                    }else{
+                        $client->client_id = $client_id;
+                    }
                     $client->client_type = $request->client_type;
                     $client->phone = $request->phone;
                     if($request->hasFile('file')) {
@@ -99,10 +117,7 @@ class Owner extends Controller
                     ->withInput();
             }
         }
-        return view('pages.owner.create-client',[
-            'js' => 'pages.owner.js.create-client-js',
-            'ids' => json_encode($clients)
-        ]);
+        return view('pages.owner.create-client');
     }
 
     /**
@@ -231,9 +246,17 @@ class Owner extends Controller
              * create managers section
              */
             if($request->action == 'crt-mngr'){
+                $id = Auth::id();
                 $mngr = new User();
                 $mngr_data = new Managers();
                 $errors_m = array();
+                $lastMngId = sprintf('%03d', 1);
+                $lastMng = Managers::where('client_id', $id)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+                if(!empty($lastMng) && (int)(substr($lastMng->manager_id, -3)) >= 1){
+                    $lastMngId = sprintf('%03d', (int)(substr($lastMng->manager_id, -3)) + 1);
+                }
 
                 if($request->password != $request->repass){
                     $errors_m[] = 'Password didn\'t match.';
@@ -266,7 +289,7 @@ class Owner extends Controller
                     if($mngr->save()){
                         $mngr_data->user_id = $mngr->id;
                         $mngr_data->client_id = $client->user_id;
-                        $mngr_data->manager_id = $request->manager_id;
+                        $mngr_data->manager_id = 'Mng'.$lastMngId;
                         $mngr_data->phone = $request->phone;
                         if($mngr_data->save()){
                             return redirect()

@@ -83,7 +83,7 @@
                         <div class="vechicle-select optional-or pcikerlabel-relative">
                             <div class="form-group">
                                 <div class="optional-private">
-                                     <input type="text" name="sDate" id="sDate" class="form-control datepicker-d">
+                                     <input type="text" name="sDate" id="sDate" value="" class="form-control datepicker-d">
                                     <span class="date-pickerlabel">Form</span>
                                 </div>
                                 <div class="optional-private">

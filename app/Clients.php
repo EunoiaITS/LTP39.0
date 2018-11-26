@@ -13,11 +13,10 @@ class Clients extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'client_id', 'client_type', 'phone', 'payment_file',
+        'user_id', 'client_type', 'phone', 'payment_file',
     ];
 
     protected $rules = array(
-        'client_id'  => 'required|unique:clients',
         'client_type' => 'required|in:park,ad',
     );
     protected $errors;

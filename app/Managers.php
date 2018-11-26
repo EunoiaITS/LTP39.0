@@ -13,11 +13,13 @@ class Managers extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'client_id', 'manager_id', 'phone', 'created_by', 'modified_by',
+        'user_id', 'client_id', 'phone', 'created_by', 'modified_by',
     ];
+    protected $table = 'managers';
 
     protected $rules = array(
-        'manager_id'  => 'required|unique:managers',
+        'name'  => 'required',
+        'email'  => 'required'
     );
 
     protected $errors;

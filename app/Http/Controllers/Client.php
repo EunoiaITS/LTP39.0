@@ -39,7 +39,7 @@ class Client extends Controller
         $id = Auth::id();
         $client = Clients::where('user_id',$id)->first();
         $lastVehId = sprintf('%03d', 1);
-        $lastVeh = VehicleCategory::where('client_id', $client->id)
+        $lastVeh = VehicleCategory::where('client_id', $id)
             ->orderBy('id', 'DESC')
             ->first();
         if(!empty($lastVeh) && (int)(substr($lastVeh->type_id, -3)) >= 1){
@@ -49,7 +49,7 @@ class Client extends Controller
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
         }
-        $vehicle_types = VehicleCategory::where('client_id', $client->id)->get();
+        $vehicle_types = VehicleCategory::where('client_id', $id)->get();
         if($request->isMethod('post')){
             if($request->action == 'create'){
                 $errors = array();
@@ -63,7 +63,7 @@ class Client extends Controller
                     }
                 }
                 if(empty($errors)){
-                    $vt->client_id = $client->id;
+                    $vt->client_id = $id;
                     $vt->type_id = $client->client_id.'VEH'.$lastVehId;
                     $vc = VehicleCategory::where('type_name',$request->type_name)->first();
                     if(empty($vc)){
@@ -126,12 +126,11 @@ class Client extends Controller
     */
     public function assignParking(Request $request){
         $id = Auth::id();
-        $client = Clients::where('user_id',$id)->first();
         if(Auth::user()->role == 'manager'){
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
         }
-        $vt = VehicleCategory::where('client_id', $client->id)->get();
+        $vt = VehicleCategory::where('client_id', $id)->get();
         $ps = new Collection();
         $check = new Collection();
         foreach($vt as $v){
@@ -148,7 +147,8 @@ class Client extends Controller
         }
         if($request->isMethod('post')){
             $lastApId = sprintf('%03d', 1);
-            $lastAp = ParkingSetting::orderBy('id','desc')
+            $lastAp = ParkingSetting::where('client_id', $id)
+                ->orderBy('id','desc')
                 ->first();
             $vc = VehicleCategory::find($request->vehicle_id);
             if(!empty($lastAp) && (int)(substr($lastAp->assign_parking_id, -3)) >= 1){
@@ -167,6 +167,7 @@ class Client extends Controller
                 }
                 if(empty($errors)){
                     $assign->vehicle_id = $request->vehicle_id;
+                    $assign->client_id = $id;
                     $assign->amount = $request->amount;
                     $assign->assign_parking_id = $vc->type_id.'API'.$lastApId;
                     if($assign->save()){

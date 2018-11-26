@@ -34,15 +34,15 @@ class HomeController extends Controller
         $page = 'pages.home.index';
         $js = 'pages.owner.js.dashboard-js';
         $bill = $clients = $users = '';
-        $count = 0;
-        $total_veh = 0;
         $total_sale = 0;
+        $count_cli = 0;
+        $total_veh_cli = 0;
+        $all_clients = User::where('role','client')->get();
         if(Auth::user()){
             if(Auth::user()->role == 'owner' || Auth::user()->role == 'dev'){
                 $page = 'pages.owner.dashboard';
                 $js = 'pages.owner.js.dashboard-js';
                 $clients = Clients::all()->count();
-
                 $bill = 0;
                 $cbs = CompanyBillingSettings::all();
                 foreach ($cbs as $c){
@@ -50,11 +50,13 @@ class HomeController extends Controller
                 }
                 if(isset($request->clients)){
                     $req_clients = explode(',',$request->clients);
-                    $users = User::whereIn('id',$req_clients)->paginate(10);
+                    $users = User::whereIn('id',$req_clients)->paginate(9);
                 }else{
-                    $users = User::where('role','client')->paginate(10);
+                    $users = User::where('role','client')->paginate(9);
                 }
                 foreach ($users as $u){
+                    $count = 0;
+                    $total_veh = 0;
                     $client = Clients::where('user_id',$u->id)
                         ->first();
                     $cio = CheckInOut::where('client_id',$client->id)->get();
@@ -69,6 +71,7 @@ class HomeController extends Controller
                             $count++;
                         }
                     }
+                    $u->occupied = $count;
                     $vc = VehicleCategory::where('client_id',$client->id)->get();
                     foreach ($vc as $v){
                         $ps = ParkingSetting::where('vehicle_id',$v->id)->get();
@@ -76,6 +79,7 @@ class HomeController extends Controller
                             $total_veh += $p->amount;
                         }
                     }
+                    $u->total = $total_veh;
                 }
             }elseif(Auth::user()->role == 'client' || Auth::user()->role == 'manager'){
                 $page = 'pages.client.dashboard';
@@ -85,20 +89,20 @@ class HomeController extends Controller
                 $cio = CheckInOut::where('client_id',$client->id)->get();
                 foreach ($cio as $c){
                     if($c->receipt_id == null){
-                        $count++;
+                        $count_cli++;
                     }
                 }
                 $vcio = VIPCheckInOut::where('client_id',$client->id)->get();
                 foreach ($vcio as $c){
                     if($c->receipt_id == null){
-                        $count++;
+                        $count_cli++;
                     }
                 }
                 $vc = VehicleCategory::where('client_id',$client->id)->get();
                 foreach ($vc as $v){
                     $ps = ParkingSetting::where('vehicle_id',$v->id)->get();
                     foreach ($ps as $p){
-                        $total_veh += $p->amount;
+                        $total_veh_cli += $p->amount;
                     }
                 }
                 $cio = CheckInOut::where('client_id',$id)->get();
@@ -112,11 +116,12 @@ class HomeController extends Controller
         return view($page,[
             'js' => $js,
             'users' => $users,
-            'count' => $count,
-            'total' => $total_veh,
             'bill' => $bill,
+            'count' => $count_cli,
+            'total' => $total_veh_cli,
             'clients' => $clients,
-            'sale' => $total_sale
+            'sale' => $total_sale,
+            'all_clients' => $all_clients
         ]);
     }
 }
