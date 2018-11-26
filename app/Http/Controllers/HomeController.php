@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\VehicleCategory;
 use Illuminate\Http\Request;
 use Auth;
 use App\Clients;
@@ -63,9 +64,12 @@ class HomeController extends Controller
                             $count++;
                         }
                     }
-                    $ps = ParkingSetting::where('client_id',$client->id)->get();
-                    foreach ($ps as $p){
-                        $total_veh += $p->amount;
+                    $vc = VehicleCategory::where('client_id',$client->id)->get();
+                    foreach ($vc as $v){
+                        $ps = ParkingSetting::where('vehicle_id',$v->id)->get();
+                        foreach ($ps as $p){
+                            $total_veh += $p->amount;
+                        }
                     }
                 }
             }elseif(Auth::user()->role == 'client' || Auth::user()->role == 'manager'){

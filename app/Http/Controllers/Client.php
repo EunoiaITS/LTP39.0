@@ -39,7 +39,7 @@ class Client extends Controller
         $id = Auth::id();
         $client = Clients::where('user_id',$id)->first();
         $lastVehId = sprintf('%03d', 1);
-        $lastVeh = VehicleCategory::where('client_id', $id)
+        $lastVeh = VehicleCategory::where('client_id', $client->id)
             ->orderBy('id', 'DESC')
             ->first();
         if(!empty($lastVeh) && (int)(substr($lastVeh->type_id, -3)) >= 1){
@@ -49,7 +49,7 @@ class Client extends Controller
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
         }
-        $vehicle_types = VehicleCategory::where('client_id', $id)->get();
+        $vehicle_types = VehicleCategory::where('client_id', $client->id)->get();
         if($request->isMethod('post')){
             if($request->action == 'create'){
                 $errors = array();
@@ -63,7 +63,7 @@ class Client extends Controller
                     }
                 }
                 if(empty($errors)){
-                    $vt->client_id = $id;
+                    $vt->client_id = $client->id;
                     $vt->type_id = $client->client_id.'VEH'.$lastVehId;
                     $vc = VehicleCategory::where('type_name',$request->type_name)->first();
                     if(empty($vc)){
