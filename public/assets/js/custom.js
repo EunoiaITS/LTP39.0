@@ -2,18 +2,18 @@
 (function($) {
 
   "use strict";
-    // /*=======================================================
-    // // Vertical Center Welcome
-    // ======================================================*/
-    // setInterval(function () {
-    //     var widnowHeight = $(window).height();
-    //     var introHeight = $(".parking-kori-login").height();
-    //     var paddingTop = widnowHeight - introHeight;
-    //     $(".parking-kori-login").css({
-    //         'padding-top': Math.round(paddingTop / 2) + 'px',
-    //         'padding-bottom': Math.round(paddingTop / 2) + 'px'
-    //     });
-    // }, 10);
+    /*=======================================================
+    // Vertical Center Welcome
+    ======================================================*/
+    setInterval(function () {
+        var widnowHeight = $(window).height();
+        var introHeight = $(".parking-kori-login").height();
+        var paddingTop = widnowHeight - introHeight;
+        $(".parking-kori-login").css({
+            'padding-top': Math.round(paddingTop / 2) + 'px',
+            'padding-bottom': Math.round(paddingTop / 2) + 'px'
+        });
+    }, 10);
 
     /*--========================
     // nice scroll
