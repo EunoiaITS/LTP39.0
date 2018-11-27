@@ -80,11 +80,11 @@
                         <div class="vechicle-select optional-or pcikerlabel-relative">
                             <div class="form-group">
                                 <div class="optional-private">
-                                     <input type="text" name="sDate" id="sDate" value="" class="form-control datepicker-d">
+                                     <input type="text" name="sDate" id="sDate" value="" class="form-control">
                                     <span class="date-pickerlabel">Form</span>
                                 </div>
                                 <div class="optional-private">
-                                    <input type="text" name="eDate" id="eDate" class="form-control datepicker-d">
+                                    <input type="text" name="eDate" id="eDate" class="form-control">
                                     <span class="date-pickerlabel">To</span>
                                 </div>
                             </div>
