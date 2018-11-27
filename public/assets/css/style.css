@@ -281,7 +281,19 @@
         padding: 7px 50px;
         border-radius: 0px;
     }
-    .btn.btn-login:hover{
+    .btn.btn-generate {
+        display: table;
+        margin: 0px auto;
+        font-size: 15px;
+        text-transform: uppercase;
+        color: #be4357;
+        background: #fff;
+        border-color: #fff;
+        padding: 7px 50px;
+        border-radius: 0px;
+    }
+    .btn.btn-login:hover,
+    .btn.btn-generate:hover{
       color: #fff;
       background: transparent;
     }
