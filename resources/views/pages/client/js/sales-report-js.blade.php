@@ -50,7 +50,25 @@
             @endif
             window.location.href = link;
         });
-        $('#eDate').datetimepicker().on('dp.change',function(e){
+        var s_date = e_date = '{{ date('Y-m-d') }}';
+        @if($sDate != null)
+        s_date = '{{ $sDate }}';
+        @endif
+        @if($eDate != null)
+        e_date = '{{ $eDate }}';
+        @endif
+        $('#sDate').datetimepicker({
+                    format: "DD/MM/YYYY",
+                    useCurrent: false,
+                    maxDate: moment(),
+                    defaultDate: new Date(s_date),
+                });
+        $('#eDate').datetimepicker({
+            format: "DD/MM/YYYY",
+            useCurrent: false,
+            maxDate: moment(),
+            defaultDate: new Date(e_date),
+        }).on('dp.change',function(e){
             e.preventDefault();
             var sDate = $('#sDate').val();
             var link = '{{ url('/report/sales') }}';

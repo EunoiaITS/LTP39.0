@@ -98,10 +98,10 @@
                             <div class="form-group">
                                 <label for="exampleFormControlSelect2">(Optional)</label>
                                 <div class="optional-private">
-                                     <input type="text" name="sDate" id="sDate" class="form-control datepicker-d" placeholder="Form">
+                                     <input type="text" name="sDate" id="sDate" class="form-control" placeholder="Form">
                                 </div>
                                 <div class="optional-private">
-                                    <input type="text" name="eDate" id="eDate" class="form-control datepicker-d" placeholder="To">
+                                    <input type="text" name="eDate" id="eDate" class="form-control" placeholder="To">
                                 </div>
                             </div>
                         </div>
