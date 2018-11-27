@@ -61,7 +61,7 @@ class HomeController extends Controller
                     $client = Clients::where('user_id',$u->id)
                             ->first();
                     //dd($u->id);
-                    //dd($client);
+                    //dd($client->id);
                     $cio = CheckInOut::where('client_id',$client->id)->get();
                     foreach ($cio as $c){
                         if($c->receipt_id == null){
@@ -75,7 +75,7 @@ class HomeController extends Controller
                         }
                     }
                     $u->occupied = $count;
-                    $ps = ParkingSetting::where('client_id',$client->id)->get();
+                    $ps = ParkingSetting::where('client_id',$client->user_id)->get();
                     foreach ($ps as $p){
                         $total_veh += $p->amount;
                     }

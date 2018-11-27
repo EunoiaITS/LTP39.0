@@ -9,6 +9,7 @@
         });
     });
     @foreach($users as $u)
+    var total = '{{ $u->total}}';
 
     // pie chart
     var randomScalingFactor = function() {
