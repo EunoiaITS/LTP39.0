@@ -281,21 +281,24 @@
         padding: 7px 50px;
         border-radius: 0px;
     }
+    .btn.btn-login:hover{
+      color: #fff;
+      background: transparent;
+    }
     .btn.btn-generate {
         display: table;
         margin: 0px auto;
         font-size: 15px;
         text-transform: uppercase;
         color: #be4357;
-        background: #fff;
-        border-color: #fff;
+        background: #af1b3f;
+        border-color: #af1b3f;
         padding: 7px 50px;
         border-radius: 0px;
+        color: #fff;
     }
-    .btn.btn-login:hover,
     .btn.btn-generate:hover{
-      color: #fff;
-      background: transparent;
+      opacity: .6;
     }
     .parking-login a{
         text-align: center;
