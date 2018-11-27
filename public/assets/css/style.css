@@ -586,7 +586,7 @@
       }
       #sidebar-menu{
             height: 455px;
-            overflow-y: scroll;
+            overflow: auto;
         }
       .navbar-nav{
         padding-left: 0px;
