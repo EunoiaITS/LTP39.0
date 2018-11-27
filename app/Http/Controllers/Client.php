@@ -20,6 +20,7 @@ use App\VipParking;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Managers;
+use Illuminate\Support\Facades\Hash;
 
 class Client extends Controller
 {
@@ -37,7 +38,6 @@ class Client extends Controller
     */
     public function vehicleType(Request $request){
         $id = Auth::id();
-        $client = Clients::where('user_id',$id)->first();
         $lastVehId = sprintf('%03d', 1);
         $lastVeh = VehicleCategory::where('client_id', $id)
             ->orderBy('id', 'DESC')
@@ -49,6 +49,7 @@ class Client extends Controller
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
         }
+        $client = Clients::where('user_id',$id)->first();
         $vehicle_types = VehicleCategory::where('client_id', $id)->get();
         if($request->isMethod('post')){
             if($request->action == 'create'){
@@ -65,8 +66,9 @@ class Client extends Controller
                 if(empty($errors)){
                     $vt->client_id = $id;
                     $vt->type_id = $client->client_id.'VEH'.$lastVehId;
-                    $vc = VehicleCategory::where('type_name',$request->type_name)->first();
-                    if(empty($vc)){
+                    $vc = VehicleCategory::where('type_name',$request->type_name)
+                        ->where('client_id',$id)->count();
+                    if($vc == 0){
                         $vt->type_name = $request->type_name;
                     }else{
                         return redirect()
@@ -455,7 +457,6 @@ class Client extends Controller
 
     public function createEmployee(Request $request){
         $id = Auth::id();
-        $client = Clients::where('user_id',$id)->first();
         $lastEmpId = sprintf('%03d', 1);
         $lastEmp = Employee::where('client_id', $id)
             ->orderBy('id', 'DESC')
@@ -467,6 +468,7 @@ class Client extends Controller
             $mngr = Managers::where('user_id', Auth::id())->first();
             $id = $mngr->client_id;
         }
+        $client = Clients::where('user_id',$id)->first();
         if($request->isMethod('post')){
             $errors = array();
             if($request->password != $request->repass){
@@ -591,19 +593,33 @@ class Client extends Controller
 
     public function editPassword(Request $request){
         if($request->isMethod('post')){
+            $emp = Employee::find($request->emp_id);
+            $client = Clients::where('user_id',$emp->client_id)
+                ->first();
+            $user = User::where('id',$client->user_id)->first();
+            if(Hash::check($request->old_password,$user->password) == false){
+                $errors[] = 'Old Password didn\'t match.';
+            }
             if($request->password != $request->repass){
                 $errors[] = 'Password didn\'t match.';
             }
-            $emp = Employee::find($request->emp_id);
-            $emp->password = bcrypt($request->password);
-            if($emp->save()){
-                return redirect()
-                    ->to('/manage-employee')
-                    ->with('success', 'The password was changed successfully!!');
+            if(empty($errors)){
+                $emp->password = bcrypt($request->password);
+                $user->password = bcrypt($request->password);
+                if($emp->save()){
+                    return redirect()
+                        ->to('/manage-employee')
+                        ->with('success', 'The password was changed successfully!!');
+                }else{
+                    return redirect()
+                        ->to('/manage-employee')
+                        ->with('error', 'Something went wrong! Please try again!');
+                }
             }else{
                 return redirect()
                     ->to('/manage-employee')
-                    ->with('error', 'Something went wrong! Please try again!');
+                    ->with('errors', $errors)
+                    ->withInput();
             }
         }
     }

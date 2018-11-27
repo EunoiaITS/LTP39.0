@@ -1,7 +1,7 @@
 <!-- dashboard sidebar -->
 <div class="dashboard-sidebar">
     <div class="sidebar-location clearfix text-center">
-        <h4>Bashundhara city</h4>
+        <h4>{{ Auth::user()->name }}</h4>
     </div>
     <ul class="nav navbar-nav">
         <!-- Dropdown-->

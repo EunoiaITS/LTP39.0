@@ -44,6 +44,10 @@ edit password modal
                     </div>
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-lock"></i></label>
+                        <input name="old_password" type="password" placeholder="Old Password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-name" class="usr-lock"><i class="fas fa-lock"></i></label>
                         <input name="password" type="password" placeholder="Password" class="form-control" required>
                     </div>
                     <div class="form-group">

@@ -11,6 +11,7 @@ use App\CheckInOut;
 use App\VIPCheckInOut;
 use App\ParkingSetting;
 use App\User;
+use App\Managers;
 
 class HomeController extends Controller
 {
@@ -58,7 +59,9 @@ class HomeController extends Controller
                     $count = 0;
                     $total_veh = 0;
                     $client = Clients::where('user_id',$u->id)
-                        ->first();
+                            ->first();
+                    //dd($u->id);
+                    //dd($client);
                     $cio = CheckInOut::where('client_id',$client->id)->get();
                     foreach ($cio as $c){
                         if($c->receipt_id == null){
@@ -72,12 +75,9 @@ class HomeController extends Controller
                         }
                     }
                     $u->occupied = $count;
-                    $vc = VehicleCategory::where('client_id',$client->id)->get();
-                    foreach ($vc as $v){
-                        $ps = ParkingSetting::where('vehicle_id',$v->id)->get();
-                        foreach ($ps as $p){
-                            $total_veh += $p->amount;
-                        }
+                    $ps = ParkingSetting::where('client_id',$client->id)->get();
+                    foreach ($ps as $p){
+                        $total_veh += $p->amount;
                     }
                     $u->total = $total_veh;
                 }
@@ -85,6 +85,10 @@ class HomeController extends Controller
                 $page = 'pages.client.dashboard';
                 $js = 'pages.client.js.dashboard-js';
                 $id = Auth::id();
+                if(Auth::user()->role == 'manager'){
+                    $mngr = Managers::where('user_id', Auth::id())->first();
+                    $id = $mngr->client_id;
+                }
                 $client = Clients::where('user_id',$id)->first();
                 $cio = CheckInOut::where('client_id',$client->id)->get();
                 foreach ($cio as $c){
@@ -98,12 +102,9 @@ class HomeController extends Controller
                         $count_cli++;
                     }
                 }
-                $vc = VehicleCategory::where('client_id',$client->id)->get();
-                foreach ($vc as $v){
-                    $ps = ParkingSetting::where('vehicle_id',$v->id)->get();
-                    foreach ($ps as $p){
-                        $total_veh_cli += $p->amount;
-                    }
+                $ps = ParkingSetting::where('client_id',$id)->get();
+                foreach ($ps as $p){
+                    $total_veh_cli += $p->amount;
                 }
                 $cio = CheckInOut::where('client_id',$id)->get();
                 foreach ($cio as $cb){
