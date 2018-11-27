@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <button type="submit" id="generate" class="btn-info btn btn-login">Generate</button>
+                        <button type="submit" id="generate" class="btn-info btn btn-generate">Generate</button>
                     </div>
                     <!-- pie chart -->
                     <div class="col-sm-12 padding-0">
