@@ -60,7 +60,6 @@
                         <div class="vechicle-select">
                             <div class="form-group">
                                 <select class="form-control get-select-picker" name="type" id="exampleFormControlSelect2" title="Client Category">
-                                    <option value="ad" @if(isset($type) && $type == 'ad'){{ 'selected' }}@endif>Advert</option>
                                     <option value="park" @if(isset($type) && $type == 'park'){{ 'selected' }}@endif>Parking</option>
                                 </select>
                             </div>
@@ -71,15 +70,13 @@
                             <div class="form-group">
                                 <select class="form-control get-select-picker" name="vc" id="exampleFormControlSelect1" title="Client Name">
                                     @foreach($clients as $c)
-                                        @if($type == $c->type)
-                                            <option value="{{ $c->id }}" @if(isset($vc) && $vc == $c->id){{ 'selected' }}@endif>{{ $c->name }}</option>
-                                        @endif
+                                        <option value="{{ $c->id }}" @if(isset($vc) && $vc == $c->id){{ 'selected' }}@endif>{{ $c->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-6 col-lg-4">
+                    <div class="col-sm-6 col-md-6 col-lg-6">
                         <div class="vechicle-select optional-or pcikerlabel-relative">
                             <div class="form-group">
                                 <div class="optional-private">
@@ -92,9 +89,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-1 col-sm-4">
-                        <button type="submit" id="generate" class="btn-info btn btn-generate">Generate</button>
                     </div>
                 </div>
                 <div class="col-sm-10 col-sm-offset-1">

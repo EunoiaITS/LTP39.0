@@ -8,7 +8,7 @@
             @elseif($type != null && $eDate == null && $sDate == null)
             link = link+'?type={{ $type }}&vc='+$(this).val();
             @elseif($type != null && $eDate != null && $sDate != null)
-            link = link+'?sDate={{ date('d/m/Y', strtotime($sDate)) }}&eDate={{ date('d/m/Y', strtotime($eDate)) }}&vc='+$(this).val();
+            link = link+'?sDate={{ date('d/m/Y', strtotime($sDate)) }}&eDate={{ date('d/m/Y', strtotime($eDate)) }}&type={{ $type }}&vc='+$(this).val();
             @else
             link = link+'?vc='+$(this).val();
             @endif
@@ -22,7 +22,7 @@
             @elseif($vc != null && $eDate == null && $sDate == null)
             link = link+'?vc={{ $vc }}&type='+$(this).val();
             @elseif($vc != null && $eDate != null && $sDate != null)
-            link = link+'?sDate={{ date('d/m/Y', strtotime($sDate)) }}&eDate={{ date('d/m/Y', strtotime($eDate)) }}&type='+$(this).val();
+            link = link+'?sDate={{ date('d/m/Y', strtotime($sDate)) }}&eDate={{ date('d/m/Y', strtotime($eDate)) }}&vc={{ $vc }}&type='+$(this).val();
             @else
             link = link+'?type='+$(this).val();
             @endif

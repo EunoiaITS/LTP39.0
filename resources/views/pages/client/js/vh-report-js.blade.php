@@ -3,7 +3,7 @@
         $('#exampleFormControlSelect1').on('change', function(e){
             e.preventDefault();
             var link = '{{ url('/report/vehicle-category') }}';
-            @if($type != null && $duration == null && $sDate == null && $eDate)
+            @if($type != null && $duration == null && $sDate == null && $eDate == null)
             link = link+'?type={{ $type }}&vc='+$(this).val();
             @elseif($type == null && $duration != null)
             link = link+'?duration={{ $duration }}&vc='+$(this).val();
@@ -21,7 +21,7 @@
         $('#exampleFormControlSelect2').on('change', function(e){
             e.preventDefault();
             var link = '{{ url('/report/vehicle-category') }}';
-            @if($vc_selected != null && $duration == null && $sDate == null && $eDate)
+            @if($vc_selected != null && $duration == null && $sDate == null && $eDate == null)
             link = link+'?vc={{ $vc_selected }}&type='+$(this).val();
             @elseif($vc_selected == null && $duration != null)
             link = link+'?duration={{ $duration }}&type='+$(this).val();

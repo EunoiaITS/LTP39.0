@@ -698,8 +698,8 @@ class Owner extends Controller
         $clients = User::where('role', 'client')
             ->get();
         foreach ($clients as $c){
-            $data = Clients::where('user_id',$c->id)->first();
-            $c->type = $data->client_type;
+            $cData = Clients::where('user_id', $c->id)->first();
+            $c->type = $cData->client_type;
         }
         $daily = $weekly = $monthly = $yearly = 0;
         $data = CheckInOut::where('fair', '!=', null)
@@ -816,8 +816,75 @@ class Owner extends Controller
                 }
             }
         }
-        if(isset($request->vc) && isset($request->type)){}
-        if(isset($request->sDate) && isset($request->eDate) && !isset($request->vc) && !isset($request->type)){}
+        if(isset($request->vc) && isset($request->type)){
+            $vc_selected = $request->vc;
+            $type = $request->type;
+            $client = User::find($vc_selected);
+            $client->details = Clients::where('user_id', $client->id)->first();
+            $clData = CheckInOut::where('client_id', $vc_selected)
+                ->where('fair', '!=', null)
+                ->get();
+            $cl_daily = $cl_weekly = $cl_monthly = $cl_yearly = $from_to = 0;
+            foreach($clData as $cd){
+                if(date('Y-m-d', strtotime($cd->created_at)) == date('Y-m-d')){
+                    $cl_daily+=$cd->fair;
+                }
+                if(date('W', strtotime($cd->created_at)) == date('W')){
+                    $cl_weekly+=$cd->fair;
+                }
+                if(date('m', strtotime($cd->created_at)) == date('m')){
+                    $cl_monthly+=$cd->fair;
+                }
+                if(date('Y', strtotime($cd->created_at)) == date('Y')){
+                    $cl_yearly+=$cd->fair;
+                }
+                if(isset($request->sDate) && isset($request->eDate)){
+                    if(in_array(date('Y-m-d', strtotime($cd->created_at)), $dates) || in_array(date('Y-m-d', strtotime($cd->updated_at)), $dates)){
+                        $from_to += $cd->fair;
+                    }
+                }
+            }
+            $client->daily = $cl_daily;
+            $client->weekly = $cl_weekly;
+            $client->monthly = $cl_monthly;
+            $client->yearly = $cl_yearly;
+            $client->from_to = $from_to;
+            $result->push($client);
+        }
+        if(isset($request->sDate) && isset($request->eDate) && !isset($request->vc) && !isset($request->type)){
+            foreach($clients as $client){
+                $client->details = Clients::where('user_id', $client->id)->first();
+                $clData = CheckInOut::where('client_id', $client->id)
+                    ->where('fair', '!=', null)
+                    ->get();
+                $cl_daily = $cl_weekly = $cl_monthly = $cl_yearly = $from_to = 0;
+                foreach($clData as $cd){
+                    if(date('Y-m-d', strtotime($cd->created_at)) == date('Y-m-d')){
+                        $cl_daily+=$cd->fair;
+                    }
+                    if(date('W', strtotime($cd->created_at)) == date('W')){
+                        $cl_weekly+=$cd->fair;
+                    }
+                    if(date('m', strtotime($cd->created_at)) == date('m')){
+                        $cl_monthly+=$cd->fair;
+                    }
+                    if(date('Y', strtotime($cd->created_at)) == date('Y')){
+                        $cl_yearly+=$cd->fair;
+                    }
+                    if(isset($request->sDate) && isset($request->eDate)){
+                        if(in_array(date('Y-m-d', strtotime($cd->created_at)), $dates) || in_array(date('Y-m-d', strtotime($cd->updated_at)), $dates)){
+                            $from_to += $cd->fair;
+                        }
+                    }
+                }
+                $client->daily = $cl_daily;
+                $client->weekly = $cl_weekly;
+                $client->monthly = $cl_monthly;
+                $client->yearly = $cl_yearly;
+                $client->from_to = $from_to;
+                $result->push($client);
+            }
+        }
         return view('pages.owner.reports', [
             'result' => $result,
             'clients' => $clients,
