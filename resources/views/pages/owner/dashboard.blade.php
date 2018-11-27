@@ -42,9 +42,11 @@
                                         <option value="{{ $u->id }}">{{ $u->name }}</option>
                                     @endforeach
                                 </select>
-                                <button type="submit" id="generate" class="btn btn-primary">Generate</button>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="submit" id="generate" class="btn-info btn btn-login">Generate</button>
                     </div>
                     <!-- pie chart -->
                     <div class="col-sm-12 padding-0">
