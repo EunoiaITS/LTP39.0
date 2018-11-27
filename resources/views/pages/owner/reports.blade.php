@@ -79,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-6 col-lg-5">
+                    <div class="col-sm-6 col-md-6 col-lg-4">
                         <div class="vechicle-select optional-or pcikerlabel-relative">
                             <div class="form-group">
                                 <div class="optional-private">
@@ -92,6 +92,9 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-lg-1 col-sm-4">
+                        <button type="submit" id="generate" class="btn-info btn btn-generate">Generate</button>
                     </div>
                 </div>
                 <div class="col-sm-10 col-sm-offset-1">
