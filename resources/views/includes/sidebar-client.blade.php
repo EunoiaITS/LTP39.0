@@ -3,7 +3,7 @@
     <div class="sidebar-location clearfix text-center">
         <h4>Bashundhara city</h4>
     </div>
-    <ul class="nav navbar-nav">
+    <ul class="nav navbar-nav" id="sidebar-menu">
         <!-- Dropdown-->
         <li class="panel panel-default active" id="dropdown">
             <a data-toggle="collapse" href="#dropdown-lvl1">
