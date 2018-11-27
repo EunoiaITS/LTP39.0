@@ -285,6 +285,21 @@
       color: #fff;
       background: transparent;
     }
+    .btn.btn-generate {
+        display: table;
+        margin: 0px auto;
+        font-size: 15px;
+        text-transform: uppercase;
+        color: #be4357;
+        background: #af1b3f;
+        border-color: #af1b3f;
+        padding: 7px 50px;
+        border-radius: 0px;
+        color: #fff;
+    }
+    .btn.btn-generate:hover{
+      opacity: .6;
+    }
     .parking-login a{
         text-align: center;
         display: block;
@@ -527,7 +542,6 @@
     .dashboard-sidebar {
         width: 80%;
         max-width: 250px;
-        min-hight:450px;
         height: 100%;
         overflow-y: auto !important;
         background: rgb(245,209,207);
@@ -585,6 +599,10 @@
         padding: 3px 0px;
         width: 100%;
       }
+      #sidebar-menu{
+            height: 455px;
+            overflow: auto;
+        }
       .navbar-nav{
         padding-left: 0px;
         width: 100%;
@@ -1161,7 +1179,7 @@
         margin: 38px 0px 20px;
     }
     .vechicle-select.optional-or{
-      width: 83%;
+      width: 100%;
       float: left;
       display: inline-block;
     }

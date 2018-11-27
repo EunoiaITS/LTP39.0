@@ -27,7 +27,7 @@
                             <div class="vechicle-select">
                                 <div class="form-group">
                                     <label for="client-type">Client Type</label>
-                                    <select class="form-control get-select-picker" name="client_type" id="client-type" title="Cleint Category">
+                                    <select class="form-control get-select-picker" name="client_type" id="client-type" title="Client Category">
                                         <option value="park" @if(old('client_type') == 'park') {{ 'selected' }} @endif>Parking Client</option>
                                         <option value="ad" @if(old('client_type') == 'ad') {{ 'selected' }} @endif>Advertisement Client</option>
                                     </select>
@@ -51,7 +51,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="clint-phone" class="usr-lock"><i class="fas fa-phone"></i></label>
-                                <input type="text" name="phone" placeholder="Phone" class="form-control" id="clint-phone" value="{{ old('phone') }}" required>
+                                <input type="number" name="phone" placeholder="Phone" class="form-control" id="clint-phone" value="{{ old('phone') }}" required>
                             </div>
 
                             <div class="form-group clearfix">
