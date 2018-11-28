@@ -46,7 +46,7 @@
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url('/vip-requests') }}">New Request Notification</a></li>
                         <li><a href="{{ url('/vip-list') }}">VIP user List</a></li>
-                        <li><a href="{{ url('/vip-reject-list') }}">VIP rejct List</a></li>
+                        <li><a href="{{ url('/vip-reject-list') }}">VIP reject List</a></li>
                     </ul>
                 </div>
             </div>
