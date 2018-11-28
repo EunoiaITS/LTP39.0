@@ -60,7 +60,7 @@
                         <div class="vechicle-select">
                             <div class="form-group">
                                 <label for="exampleFormControlSelect1">(Must Select One)</label>
-                                <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Vechile Category">
+                                <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Vehicle Category">
                                     @foreach($vc as $c)
                                         <option value="{{ $c->id }}" @if($vc_selected != null && $vc_selected == $c->id){{ 'selected' }}@endif>{{ $c->type_name }}</option>
                                     @endforeach
@@ -118,7 +118,7 @@
                             <tr>
                                 <th>Serial</th>
                                 <th>ID</th>
-                                <th>Vechicle Cat.</th>
+                                <th>Vehicle Cat.</th>
                                 <th>Report Cat.</th>
                                 <th>Registration No.</th>
                                 <th>Time Out</th>
