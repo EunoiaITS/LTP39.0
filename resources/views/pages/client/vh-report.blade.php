@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-sm-12 dashboad-title">
                     <h2>Reports <img src="{{ asset('public/assets/img/down-arrow.png') }}" alt=""></h2>
-                    <h4 class="date">Vechile Category</h4>
+                    <h4 class="date">Vehicle Category</h4>
                     <h4 class="total-strong"><strong>Total</strong></h4>
                 </div>
                 <div class="col-sm-12 total-area padding-0">
@@ -61,7 +61,7 @@
                         <div class="vechicle-select">
                             <div class="form-group">
                                 <label for="exampleFormControlSelect1">(Must Select One)</label>
-                                <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Vechile Category">
+                                <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Vehicle Category">
                                     @foreach($vc as $c)
                                     <option value="{{ $c->id }}" @if($vc_selected != null && $vc_selected == $c->id){{ 'selected' }}@endif>{{ $c->type_name }}</option>
                                     @endforeach
@@ -121,7 +121,7 @@
                             <tr>
                                 <th>Serial</th>
                                 <th>ID</th>
-                                <th>Vechicle Cat.</th>
+                                <th>Vehicle Cat.</th>
                                 <th>Report Cat.</th>
                                 <th>Registration No.</th>
                                 <th>Time In</th>
