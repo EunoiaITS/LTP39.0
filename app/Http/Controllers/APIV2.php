@@ -439,4 +439,93 @@ class APIV2 extends Controller
         }
     }
 
+    /**
+     * reports - function for daily reports
+    */
+    public function reports(Request $request){
+        if($request->isMethod('post')){
+            $token = $request->_token;
+            $user = User::where('api_token', $token)->first();
+            if($user) {
+                $vc = VehicleCategory::where('client_id', $request->client_id)
+                    ->get();
+                foreach($vc as $v){
+                    $v->settings = ParkingSetting::where('vehicle_id', $v->id)
+                        ->first();
+                    $check_in = 0;
+                    $cio = CheckInOut::where('receipt_id', '=', null)
+                        ->where('vehicle_type', $v->id)
+                        ->where('client_id', $request->client_id)
+                        ->count();
+                    $check_in = $cio;
+                    $vcio = VIPCheckInOut::where('receipt_id', '=', null)
+                        ->where('client_id', $request->client_id)
+                        ->get();
+                    foreach($vcio as $vv){
+                        $vip = VIPRequests::where('vipId', $vv->vip_id)
+                            ->first();
+                        if($vip->vehicle_type == $v->id){
+                            $check_in++;
+                        }
+                    }
+                    $v->check_in = $check_in;
+                }
+                return response()->json([
+                    'status' => 'true',
+                    'report' => $vc,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'false',
+                    'message' => 'User not found!',
+                ]);
+            }
+        }
+    }
+
+    /**
+     * stats - function for check in/out statistics
+     */
+    public function stats(Request $request){
+        if($request->isMethod('post')){
+            $token = $request->_token;
+            $user = User::where('api_token', $token)->first();
+            if($user) {
+                $check_in = $check_out = $income = 0;
+                $cioData = CheckInOut::where('created_by', $user->id)
+                    ->get();
+                $vcioData = VIPCheckInOut::where('created_by', $user->id)
+                    ->get();
+                foreach($cioData as $cd){
+                    if($cd->receipt_id == null && date('Y-m-d', strtotime($cd->created_at)) == date('Y-m-d')){
+                        $check_in++;
+                    }
+                    if($cd->receipt_id != null && date('Y-m-d', strtotime($cd->created_at)) == date('Y-m-d')){
+                        $check_out++;
+                        $income += $cd->fair;
+                    }
+                }
+                foreach($vcioData as $vcd){
+                    if($vcd->receipt_id == null && date('Y-m-d', strtotime($vcd->created_at)) == date('Y-m-d')){
+                        $check_in++;
+                    }
+                    if($vcd->receipt_id != null && date('Y-m-d', strtotime($vcd->created_at)) == date('Y-m-d')){
+                        $check_out++;
+                    }
+                }
+                return response()->json([
+                    'status' => 'true',
+                    'check_in' => $check_in,
+                    'check_out' => $check_out,
+                    'income' => $income,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'false',
+                    'message' => 'User not found!',
+                ]);
+            }
+        }
+    }
+
 }

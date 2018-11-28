@@ -32,5 +32,7 @@ Route::prefix('v1')->group(function(){
         Route::post('vip-check-in', 'APIV2@vipCheckIn');
         Route::post('vip-check-out', 'APIV2@vipCheckOut');
         Route::get('/logout','APIV2@logout');
+        Route::post('reports','APIV2@reports');
+        Route::post('stats','APIV2@stats');
     });
 });
