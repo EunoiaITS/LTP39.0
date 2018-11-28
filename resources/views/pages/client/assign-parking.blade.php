@@ -34,7 +34,7 @@
                                 {{ csrf_field() }}
                                 <div class="assign-v-select vechicle-select">
                                     <div class="form-group">
-                                        <select class="form-control get-select-picker" name="vehicle_id" id="exampleFormControlSelect1" title="Vechile Category">
+                                        <select class="form-control get-select-picker" name="vehicle_id" id="exampleFormControlSelect1" title="Vehicle Category">
                                             @foreach($check as $v)
                                             <option value="{{ $v->id }}" @if(old('vehicle_id') == $v->id) {{ 'selected' }} @endif>{{ $v->type_name }}</option>
                                                 @endforeach
