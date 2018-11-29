@@ -56,7 +56,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'support@parkingkori.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'forgot-password@parkingkori.com'),
         'name' => env('MAIL_FROM_NAME', 'Parking Kori'),
     ],
 

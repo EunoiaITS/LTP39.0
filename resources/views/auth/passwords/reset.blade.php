@@ -24,7 +24,7 @@
                     </div>
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-lock"></i></label>
-                        <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
+                        <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" placeholder="Enter New Password" required>
 
                         @if ($errors->has('password'))
                             <span class="invalid-feedback" role="alert">
@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-lock"></i></label>
                         <div class="col-md-6">
-                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" placeholder="Re Enter New Password" required>
                         </div>
                     </div>
                     <div class="clearfix"></div>
