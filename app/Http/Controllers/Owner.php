@@ -67,12 +67,15 @@ class Owner extends Controller
                     $type = '02';
                 }
                 $name_array = explode(' ',$request->name);
-                $name = $name_array[0][0].$name_array[1][0];
-                $name1 = $name_array[0][0].$name_array[0][1].$name_array[1][0];
-                $client_id = $name.$type.$year;
-                $client_id1 = $name1.$type.$year;
-
-
+                if(isset($name_array[0]) && isset($name_array[1])){
+                    $name = $name_array[0][0].$name_array[1][0];
+                    $name1 = $name_array[0][0].$name_array[0][1].$name_array[1][0];
+                    $client_id = $name.$type.$year;
+                    $client_id1 = $name1.$type.$year;
+                }else{
+                    $name = $name_array[0][0].$name_array[0][1];
+                    $client_id = $name.$type.$year;
+                }
                 $user->name = $request->name;
                 $user->email = $request->email;
                 $user->password = bcrypt($request->password);

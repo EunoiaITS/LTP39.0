@@ -165,13 +165,6 @@ class APIV2 extends Controller
      **/
     public function checkOut(Request $request){
         if($request->isMethod('post')){
-            $lastReceiptId = sprintf('%08d', 1);
-            $lastReceipt = CheckInOut::where('client_id', $request->client_id)
-                ->orderBy('id', 'DESC')
-                ->first();
-            if(!empty($lastReceipt) && (int)(substr($lastReceipt->receipt_id, -8)) >= 1){
-                $lastReceiptId = sprintf('%08d', (int)(substr($lastReceipt->receipt_id, -8)) + 1);
-            }
             $token = $request->_token;
             $user = User::where('api_token', $token)->first();
             if($user) {
@@ -182,6 +175,14 @@ class APIV2 extends Controller
                         ->first();
                 }
                 if(!empty($checkOut) && $checkOut->fair == NULL){
+                    $lastReceiptId = sprintf('%08d', 1);
+                    $lastReceipt = CheckInOut::where('client_id', $checkOut->client_id)
+                        ->where('receipt_id','!=',null)
+                        ->orderBy('id', 'DESC')
+                        ->first();
+                    if(!empty($lastReceipt) && (int)(substr($lastReceipt->receipt_id, -8)) >= 1){
+                        $lastReceiptId = sprintf('%08d', (int)(substr($lastReceipt->receipt_id, -8)) + 1);
+                    }
                     $checkOut->updated_at = $request->check_out_time;
                     $checkOut->updated_by = $request->employee;
                     $checkOut->receipt_id = $checkOut->client_id.$lastReceiptId;
@@ -413,13 +414,6 @@ class APIV2 extends Controller
      */
     public function vipCheckOut(Request $request){
         if($request->isMethod('post')){
-            $lastReceiptId = sprintf('%08d', 1);
-            $lastReceipt = CheckInOut::where('client_id', $request->client_id)
-                ->orderBy('id', 'DESC')
-                ->first();
-            if(!empty($lastReceipt) && (int)(substr($lastReceipt->receipt_id, -8)) >= 1){
-                $lastReceiptId = sprintf('%08d', (int)(substr($lastReceipt->receipt_id, -8)) + 1);
-            }
             $token = $request->_token;
             $user = User::where('api_token', $token)->first();
             if($user) {
@@ -427,9 +421,17 @@ class APIV2 extends Controller
                     ->orderBy('id', 'desc')
                     ->first();
                 if(!empty($checkOut) && $checkOut->receipt_id == NULL){
+                    $lastReceiptId = sprintf('%08d', 1);
+                    $lastReceipt = VIPCheckInOut::where('client_id', $checkOut->client_id)
+                        ->where('receipt_id','!=',null)
+                        ->orderBy('id', 'DESC')
+                        ->first();
+                    if(!empty($lastReceipt) && (int)(substr($lastReceipt->receipt_id, -8)) >= 1){
+                        $lastReceiptId = sprintf('%08d', (int)(substr($lastReceipt->receipt_id, -8)) + 1);
+                    }
                     $checkOut->updated_at = $request->check_out_time;
                     $checkOut->updated_by = $request->employee;
-                    $checkOut->receipt_id = $checkOut->client_id.$lastReceiptId;
+                    $checkOut->receipt_id = 'VIP'.$checkOut->client_id.$lastReceiptId;
                     if($checkOut->save()){
                         return response()->json([
                             'status' => 'true',
