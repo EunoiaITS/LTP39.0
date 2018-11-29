@@ -21,6 +21,9 @@
         <div class="parking-kori-login clearfix">
             <div class="parking-kori-logo text-center">
                 <img src="{{ asset('public/assets/img/pklogo.png') }}" alt="parking kori">
+                @if (session('status'))
+                    <p class="alert alert-success text-center">{{ session('status') }}</p>
+                @endif
             </div>
             <form method="post" action="{{ route('login') }}" class="parking-login clearfix">
                 {{ csrf_field() }}
