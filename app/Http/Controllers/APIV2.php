@@ -231,10 +231,14 @@ class APIV2 extends Controller
                     }
                     $checkOut->fair = $fair;
                     if($checkOut->save()){
-                        $checkOut->exFrom = $exFrom;
-                        $checkOut->exTo = $exTo;
-                        $checkOut->checkIn = $ci_time;
-                        $checkOut->checkOut = $co_time;
+                        $vehicle = VehicleCategory::find($checkOut->vehicle_type);
+                        $settings = ParkingRate::where('vehicle_id', $checkOut->vehicle_type)
+                            ->first();
+                        $checkOut->vehicle_name = $vehicle->type_name;
+                        $checkOut->vehicle_base_rate = $settings->base_rate;
+                        $checkOut->vehicle_sub_rate = $settings->sub_rate;
+                        $checkOut->total_hour = $diff->h;
+                        $checkOut->total_minute = $diff->i;
                         return response()->json([
                             'status' => 'true',
                             'message' => 'Checked out successfully!',
