@@ -1,47 +1,42 @@
-@extends('layouts.app')
-
+@extends('layouts.layout-email')
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
-
-                <div class="card-body">
+    <div class="parking-kori clearfix">
+        <div class="container">
+            <div class="parking-kori-login clearfix">
+                <div class="parking-kori-logo text-center">
+                    <img src="{{ asset('/public/assets/img/pklogo.png') }}" alt="parking kori">
+                </div>
+                <form method="POST" class="parking-login clearfix" action="{{ route('password.email') }}">
+                    @csrf
+                    <div class="forget-passwrod-text text-center">
+                        <h4>Forgot Password</h4>
+                        <p>Simply Enter Your Email to Resend your Password</p>
+                    </div>
                     @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
+                        <div class="form-group alert alert-success" role="alert">
+                            <p>Password Reset link has been sent to your Email.</p>
                         </div>
                     @endif
-
-                    <form method="POST" action="{{ route('password.email') }}">
-                        @csrf
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required>
-
-                                @if ($errors->has('email'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
+                    <div class="form-group">
+                        <label for="user-name" class="usr-lock"><i class="far fa-envelope"></i></label>
+                        <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required>
+                    </div>
+                    @if ($errors->has('email'))
+                        <div class="alert alert-danger alert-simple" role="alert">
+                            We couldn't find this Email Address. <br> Please use your registered Email Address.
                         </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Send Password Reset Link') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    @endif
+                    <div class="clearfix"></div>
+                    <div class="submit-forget-password">
+                        <button class="btn-info btn btn-login">Submit</button>
+                        <button class="btn-info btn btn-login btn-cancel">Cancel</button>
+                    </div>
+                </form>
+            </div>
+            <div class="footer-content text-center">
+                <p>A Product of <a href="#">DexHub</a></p>
+                <p>Powered by <a href="#">Eunoia I.T Solutions</a></p>
             </div>
         </div>
     </div>
-</div>
 @endsection

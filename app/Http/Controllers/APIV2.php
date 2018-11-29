@@ -165,6 +165,13 @@ class APIV2 extends Controller
      **/
     public function checkOut(Request $request){
         if($request->isMethod('post')){
+            $lastReceiptId = sprintf('%08d', 1);
+            $lastReceipt = CheckInOut::where('client_id', $request->client_id)
+                ->orderBy('id', 'DESC')
+                ->first();
+            if(!empty($lastReceipt) && (int)(substr($lastReceipt->receipt_id, -8)) >= 1){
+                $lastReceiptId = sprintf('%08d', (int)(substr($lastReceipt->receipt_id, -8)) + 1);
+            }
             $token = $request->_token;
             $user = User::where('api_token', $token)->first();
             if($user) {
@@ -177,7 +184,7 @@ class APIV2 extends Controller
                 if(!empty($checkOut) && $checkOut->fair == NULL){
                     $checkOut->updated_at = $request->check_out_time;
                     $checkOut->updated_by = $request->employee;
-                    $checkOut->receipt_id = $checkOut->client_id.$this->generateRandomString(16);
+                    $checkOut->receipt_id = $checkOut->client_id.$lastReceiptId;
                     $check_in = new \DateTime($checkOut->created_at);
                     $check_out = new \DateTime($request->check_out_time);
                     $diff = $check_in->diff($check_out);
@@ -406,6 +413,13 @@ class APIV2 extends Controller
      */
     public function vipCheckOut(Request $request){
         if($request->isMethod('post')){
+            $lastReceiptId = sprintf('%08d', 1);
+            $lastReceipt = CheckInOut::where('client_id', $request->client_id)
+                ->orderBy('id', 'DESC')
+                ->first();
+            if(!empty($lastReceipt) && (int)(substr($lastReceipt->receipt_id, -8)) >= 1){
+                $lastReceiptId = sprintf('%08d', (int)(substr($lastReceipt->receipt_id, -8)) + 1);
+            }
             $token = $request->_token;
             $user = User::where('api_token', $token)->first();
             if($user) {
@@ -415,7 +429,7 @@ class APIV2 extends Controller
                 if(!empty($checkOut) && $checkOut->receipt_id == NULL){
                     $checkOut->updated_at = $request->check_out_time;
                     $checkOut->updated_by = $request->employee;
-                    $checkOut->receipt_id = $checkOut->client_id.$this->generateRandomString(16);
+                    $checkOut->receipt_id = $checkOut->client_id.$lastReceiptId;
                     if($checkOut->save()){
                         return response()->json([
                             'status' => 'true',
