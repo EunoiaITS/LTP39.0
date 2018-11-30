@@ -9,8 +9,17 @@ use App\Clients;
 use App\CompanyDevice;
 use App\CompanyBillingSettings;
 use App\CompanyPayment;
+use App\Employee;
+use App\ExemptedDuration;
+use App\ExemptedTime;
 use App\Managers;
+use App\ParkingRate;
+use App\ParkingSetting;
 use App\User;
+use App\VAT;
+use App\VehicleCategory;
+use App\VIPCheckInOut;
+use App\VIPRequests;
 use Auth;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -129,9 +138,13 @@ class Owner extends Controller
      * all clients - function to show all clients
      **/
     public function allClients(Request $request){
-        $clients = Clients::where('client_type',$request->type)
-            ->orderBy('id','desc')
+        $clients = Clients::orderBy('id','desc')
             ->get();
+        if(isset($request->type)){
+            $clients = Clients::where('client_type',$request->type)
+                ->orderBy('id','desc')
+                ->get();
+        }
         foreach($clients as $client){
             $client->data = User::find($client->user_id);
         }
@@ -141,6 +154,95 @@ class Owner extends Controller
                 $client = Clients::where('user_id',$request->client_id)->first();
                 if(User::destroy($client->user_id)){
                     Clients::destroy($client->id);
+                    $bill_settings = CompanyBillingSettings::where('client_id', $client->client_id)->get();
+                    if(!empty($bill_settings)){
+                        foreach($bill_settings as $bs){
+                            CompanyBillingSettings::destroy($bs);
+                            $payments = CompanyPayment::where('billing_id', $bs->id)->get();
+                            if(!empty($payments)){
+                                foreach($payments as $p){
+                                    CompanyPayment::destroy($p->id);
+                                }
+                            }
+                        }
+                    }
+                    $devs = CompanyDevice::where('client_id', $client->id)->get();
+                    if(!empty($devs)){
+                        foreach($devs as $d){
+                            $d->client_id = null;
+                            $d->status = 'unassigned';
+                            $d->save();
+                        }
+                    }
+                    $emps = Employee::where('client_id', $client->user_id)->get();
+                    if(!empty($emps)){
+                        foreach($emps as $e){
+                            $user_e = User::where('email', $e->email)->first();
+                            User::destroy($user_e->id);
+                            Employee::destroy($e->id);
+                        }
+                    }
+                    $exDuration = ExemptedDuration::where('client_id', $client->user_id)->get();
+                    if(!empty($exDuration)){
+                        foreach($exDuration as $exD){
+                            ExemptedDuration::destroy($exD->id);
+                        }
+                    }
+                    $exTime = ExemptedTime::where('client_id', $client->user_id)->get();
+                    if(!empty($exTime)){
+                        foreach($exTime as $exT){
+                            ExemptedTime::destroy($exT->id);
+                        }
+                    }
+                    $managers = Managers::where('client_id', $client->user_id)->get();
+                    if(!empty($managers)){
+                        foreach($managers as $m){
+                            User::destroy($m->user_id);
+                            Managers::destroy($m->id);
+                        }
+                    }
+                    $rates = ParkingRate::where('client_id', $client->user_id)->get();
+                    if(!empty($rates)){
+                        foreach($rates as $r){
+                            ParkingRate::destroy($r->id);
+                        }
+                    }
+                    $pSetti = ParkingSetting::where('client_id', $client->user_id)->get();
+                    if(!empty($pSetti)){
+                        foreach($pSetti as $ps){
+                            ParkingSetting::destroy($ps->id);
+                        }
+                    }
+                    $vat = VAT::where('client_id', $client->user_id)->get();
+                    if(!empty($vat)){
+                        foreach($vat as $v){
+                            VAT::destroy($v->id);
+                        }
+                    }
+                    $vcs = VehicleCategory::where('client_id', $client->user_id)->get();
+                    if(!empty($vcs)){
+                        foreach($vcs as $vc){
+                            VehicleCategory::destroy($vc->id);
+                        }
+                    }
+                    $vip_reqs = VIPRequests::where('client_id', $client->user_id)->get();
+                    if(!empty($vip_reqs)){
+                        foreach($vip_reqs as $vr){
+                            VIPRequests::destroy($vr->id);
+                        }
+                    }
+                    $vcios = VIPCheckInOut::where('client_id', $client->user_id)->get();
+                    if(!empty($vcios)){
+                        foreach($vcios as $vcio){
+                            VIPCheckInOut::destroy($vcio->id);
+                        }
+                    }
+                    $cios = CheckInOut::where('client_id', $client->user_id)->get();
+                    if(!empty($cios)){
+                        foreach($cios as $cio){
+                            CheckInOut::destroy($cio->id);
+                        }
+                    }
                     return redirect()
                         ->to('/clients-list')
                         ->with('success', 'The client was '.$request->action.'ed successfully!');

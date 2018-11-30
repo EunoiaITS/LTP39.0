@@ -202,7 +202,7 @@ class APIV2 extends Controller
                     if(substr($exTime->to, -2) == 'PM'){
                         $exTo += 12;
                     }
-                    $fair = 0;
+                    $fair = $rate->base_hour;
                     $ci_time = (int)date('H A', strtotime($checkOut->created_at));
                     $co_time = (int)date('H A', strtotime($request->check_out_time));
                     if($ci_time >= $exFrom && $co_time > $exTo){
