@@ -202,7 +202,7 @@ class APIV2 extends Controller
                     if(substr($exTime->to, -2) == 'PM'){
                         $exTo += 12;
                     }
-                    $fair = $rate->base_hour;
+                    $fair = 0;
                     $ci_time = (int)date('H A', strtotime($checkOut->created_at));
                     $co_time = (int)date('H A', strtotime($request->check_out_time));
                     if($ci_time >= $exFrom && $co_time > $exTo){
@@ -224,8 +224,27 @@ class APIV2 extends Controller
                             $fair = $fair + $rate->sub_rate;
                         }
                     }
-                    if($duration == 0 && $diff->i <= $exDuration->duration){
-                        $fair = 0;
+                    if(!empty($exDuration)){
+                        $total_minutes = ($duration * 60) + $diff->i;
+                        if($total_minutes <= $exDuration->duration){
+                            $fair = 0;
+                        }else{
+                            $total_minutes = $total_minutes - $exDuration->duration;
+                            $mins = $total_minutes % 60;
+                            $hours = (int) $total_minutes/60;
+                            if($hours > $rate->base_hour){
+                                $sub = ($hours - $rate->base_hour) * $rate->sub_rate;
+                                if($mins != 0){
+                                    $sub = $sub + $rate->sub_rate;
+                                }
+                                $fair = $sub + $rate->base_rate;
+                            }else{
+                                $fair = $rate->base_rate;
+                                if($mins != 0){
+                                    $fair = $fair + $rate->sub_rate;
+                                }
+                            }
+                        }
                     }
                     if($ci_time >= $exFrom && $co_time <= $exTo){
                         $fair = 0;
