@@ -220,9 +220,6 @@ class APIV2 extends Controller
                         $fair = $sub + $rate->base_rate;
                     }else{
                         $fair = $rate->base_rate;
-                        if($diff->i != 0){
-                            $fair = $fair + $rate->sub_rate;
-                        }
                     }
                     if(!empty($exDuration)){
                         $total_minutes = ($duration * 60) + $diff->i;
@@ -231,8 +228,8 @@ class APIV2 extends Controller
                         }else{
                             $total_minutes = $total_minutes - $exDuration->duration;
                             $mins = $total_minutes % 60;
-                            $hours = (int) $total_minutes/60;
-                            if($hours > $rate->base_hour){
+                            $hours = (int)floor($total_minutes/60);
+                            if($hours >= $rate->base_hour){
                                 $sub = ($hours - $rate->base_hour) * $rate->sub_rate;
                                 if($mins != 0){
                                     $sub = $sub + $rate->sub_rate;
@@ -240,9 +237,6 @@ class APIV2 extends Controller
                                 $fair = $sub + $rate->base_rate;
                             }else{
                                 $fair = $rate->base_rate;
-                                if($mins != 0){
-                                    $fair = $fair + $rate->sub_rate;
-                                }
                             }
                         }
                     }
