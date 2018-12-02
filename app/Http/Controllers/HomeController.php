@@ -34,7 +34,7 @@ class HomeController extends Controller
     {
         $page = 'pages.home.index';
         $js = 'pages.owner.js.dashboard-js';
-        $bill = $clients = $users = '';
+        $bill = $clients = $users = $client = '';
         $total_sale = 0;
         $count_cli = 0;
         $total_veh_cli = 0;
@@ -60,17 +60,15 @@ class HomeController extends Controller
                     $total_veh = 0;
                     $client = Clients::where('user_id',$u->id)
                             ->first();
-                    //dd($u->id);
-                    //dd($client->id);
-                    $cio = CheckInOut::where('client_id',$client->id)->get();
+                    $cio = CheckInOut::where('client_id',$client->user_id)->get();
                     foreach ($cio as $c){
-                        if($c->receipt_id == null){
+                        if($c->receipt_id === null){
                             $count++;
                         }
                     }
-                    $vcio = VIPCheckInOut::where('client_id',$client->id)->get();
+                    $vcio = VIPCheckInOut::where('client_id',$client->user_id)->get();
                     foreach ($vcio as $c){
-                        if($c->receipt_id == null){
+                        if($c->receipt_id === null){
                             $count++;
                         }
                     }
@@ -90,22 +88,24 @@ class HomeController extends Controller
                     $id = $mngr->client_id;
                 }
                 $client = Clients::where('user_id',$id)->first();
-                $cio = CheckInOut::where('client_id',$client->id)->get();
+                $cio = CheckInOut::where('client_id',$id)->get();
                 foreach ($cio as $c){
-                    if($c->receipt_id == null){
+                    if($c->receipt_id === null){
                         $count_cli++;
                     }
                 }
-                $vcio = VIPCheckInOut::where('client_id',$client->id)->get();
+                $vcio = VIPCheckInOut::where('client_id',$id)->get();
                 foreach ($vcio as $c){
-                    if($c->receipt_id == null){
+                    if($c->receipt_id === null){
                         $count_cli++;
                     }
                 }
+                $client->occupied = $count_cli;
                 $ps = ParkingSetting::where('client_id',$id)->get();
                 foreach ($ps as $p){
                     $total_veh_cli += $p->amount;
                 }
+                $client->total = $total_veh_cli;
                 $cio = CheckInOut::where('client_id',$id)->get();
                 foreach ($cio as $cb){
                     $total_sale += $cb->fair;
@@ -118,9 +118,8 @@ class HomeController extends Controller
             'js' => $js,
             'users' => $users,
             'bill' => $bill,
-            'count' => $count_cli,
-            'total' => $total_veh_cli,
             'clients' => $clients,
+            'client' => $client,
             'sale' => $total_sale,
             'all_clients' => $all_clients
         ]);

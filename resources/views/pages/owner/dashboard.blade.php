@@ -53,7 +53,7 @@
                         @foreach($users as $u)
                         <div class="col-sm-6 col-md-4">
                             <div class="dashboard-total clearfix">
-                                <h3 class="total-dash"> {{ $u->name }} </h3>
+                                <h3 class="total-dash"> {{ $u->name }}</h3>
                                 <div class="money-icon">
                                     <h4>Current Parking Status</h4>
                                 </div>

@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-md-5 col-md-offset-2 col-sm-offset-0  col-sm-6">
                     <div class="dashboard-total clearfix">
-                        <h3 class="total-dash">Total: <span>{{ $total }}</span> </h3>
+                        <h3 class="total-dash">Total: <span>{{ $client->total }}</span> </h3>
                         <div class="money-icon">
                             <h4>Current Parking Status</h4>
                         </div>
