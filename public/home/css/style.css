@@ -222,8 +222,8 @@
     .nav.navbar-nav.navbar-right li a i{
         width: 25px;
         height: 25px;
-        background: #fff;
-        color: #494d56;
+        background: #494d56;
+        color: #ffffff;
         border-radius: 50%;
         padding: 4px 7px;
         transition: all .8s cubic-bezier(.19,1,.22,1);
