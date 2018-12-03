@@ -604,10 +604,6 @@
           display: block;
           overflow: hidden;
       }
-      #sidebar-menu{
-            height: 455px;
-            overflow: auto;
-        }
       .navbar-nav{
         padding-left: 0px;
         width: 100%;
