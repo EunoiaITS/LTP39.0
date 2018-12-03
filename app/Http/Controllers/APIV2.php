@@ -212,7 +212,7 @@ class APIV2 extends Controller
                         }
                         $duration = $duration - $exDiff;
                     }
-                    if($duration > $rate->base_hour){
+                    if($duration >= $rate->base_hour){
                         $sub = ($duration - $rate->base_hour) * $rate->sub_rate;
                         if($diff->i != 0){
                             $sub = $sub + $rate->sub_rate;

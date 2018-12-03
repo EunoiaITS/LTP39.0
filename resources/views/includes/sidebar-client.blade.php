@@ -3,7 +3,7 @@
     <div class="sidebar-location clearfix text-center">
         <h4>{{ Auth::user()->name }}</h4>
     </div>
-    <ul class="nav navbar-nav" id="sidebar-menu">
+    <ul class="nav navbar-nav sidebar-scroll-nav" id="sidebar-menu">
         <!-- Dropdown-->
         <li class="panel panel-default active" id="dropdown">
             <a data-toggle="collapse" href="#dropdown-lvl1">
@@ -29,7 +29,7 @@
                 <div class="panel-body">
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url('/report/vehicle-category') }}">Vehicle Category</a></li>
-                        <li><a href="{{ url('/report/user-incomes') }}">Users income(check Out)</a></li>
+                        <li><a href="{{ url('/report/user-incomes') }}">Users' Income (Check Out)</a></li>
                         <li><a href="{{ url('/report/sales') }}">Sales</a></li>
                     </ul>
                 </div>
@@ -45,8 +45,8 @@
                 <div class="panel-body">
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url('/vip-requests') }}">New Request Notification</a></li>
-                        <li><a href="{{ url('/vip-list') }}">VIP user List</a></li>
-                        <li><a href="{{ url('/vip-reject-list') }}">VIP reject List</a></li>
+                        <li><a href="{{ url('/vip-list') }}">VIP User List</a></li>
+                        <li><a href="{{ url('/vip-reject-list') }}">VIP Reject List</a></li>
                     </ul>
                 </div>
             </div>
@@ -72,7 +72,7 @@
                                         <li><a class="active" href="{{ url('/settings/vehicle-types') }}">Vehicle Category</a></li>
                                         <li><a href="{{ url('/settings/assign-parking') }}">Assign Parking</a></li>
                                         <li><a href="{{ url('/settings/assign-rate') }}">Assign Hour Rate</a></li>
-                                        <li><a href="{{ url('/settings/exempted-setting') }}">Exampted Duration/Time</a></li>
+                                        <li><a href="{{ url('/settings/exempted-setting') }}">Exempted Duration/Time</a></li>
                                     </ul>
                                 </div>
                             </div>
