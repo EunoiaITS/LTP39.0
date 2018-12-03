@@ -19,7 +19,7 @@
     // nice scroll
     =========================-*/
 
-    $("body, .get-select-picker, #sidebar-menu").niceScroll({
+    $("body").niceScroll({
 	   cursorwidth:"6px"
 	 });
 
