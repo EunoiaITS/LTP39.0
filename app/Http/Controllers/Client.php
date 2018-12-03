@@ -366,6 +366,7 @@ class Client extends Controller
                     $time->client_id = $id;
                     $time->from = $request->from;
                     $time->to = $request->to;
+                    $time->exemptedtime_id = $client->client_id.'EXT'.$lastExtId;
                     if($time->save()){
                         return redirect()
                             ->to('/settings/exempted-setting')
@@ -386,7 +387,6 @@ class Client extends Controller
                 $time = ExemptedTime::find($request->time_id);
                 $time->from = $request->from;
                 $time->to = $request->to;
-                $time->exemptedtime_id = $client->client_id.'EXT'.$lastExtId;
                 if($time->save()){
                     return redirect()
                         ->to('/settings/exempted-setting')
