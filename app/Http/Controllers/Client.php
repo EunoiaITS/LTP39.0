@@ -855,7 +855,7 @@ class Client extends Controller
         return view('pages.client.vip-requests',[
             'users' => $users,
             'modal' => 'pages.client.modals.vip-requests-modal',
-            'js' => 'pages.client.js.vip-requests-js'
+            'js' => 'pages.client.js.vip-requests-js',
         ]);
     }
 
@@ -877,7 +877,8 @@ class Client extends Controller
             $u->s_by = User::find($u->approved_by);
         }
         return view('pages.client.vip-list',[
-            'vips' => $vips
+            'vips' => $vips,
+            'js' => 'pages.client.js.vip-list-js',
         ]);
     }
 

@@ -41,7 +41,6 @@
 <script src="{{ asset('public/assets/js/jquery.qrcode.min.js') }}"></script>
 <!-- pic chart -->
 <script src="{{ asset('public/assets/js/Chart.bundle.js') }}"></script>
-<script src="{{ asset('public/assets/js/index.js') }}"></script>
 <!-- bootstrap select -->
 <script src="{{ asset('public/assets/js/bootstrap-select.js') }}"></script>
 <!-- bootstrap date time picker -->

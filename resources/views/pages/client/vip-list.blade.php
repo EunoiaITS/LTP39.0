@@ -36,7 +36,7 @@
                         @php $count++; @endphp
                         <tr>
                             <td>{{ $count }}</td>
-                            <td>{{ $v->vipId }}</td>
+                            <td id="vip{{$v->id}}">{{ $v->vipId }}</td>
                             <td>{{ $v->phone }}</td>
                             <td>{{ $v->purpose }}</td>
                             <td>{{ $v->car_reg }}</td>
@@ -46,10 +46,14 @@
                             <td>{{ date('d-M-Y', strtotime($v->updated_at)) }}</td>
                             <td>{{ $v->time_duration }}</td>
                             <td>
-                                <div class="qr-code-accepted">
-                                    <img src="img/qr-code.png" class="qr-codeimg" alt="">
-                                    <button class="download-btn"><i class="fas fa-arrow-alt-circle-down"></i></button>
+                                <div class="form-group">
+                                    <button type="button" rel="{{$v->id}}" class="btn btn-default btn-genarate generate">Generate QR</button>
+                                    <div class="qr-code-option">
+                                        <div id="qr-code{{ $v->id }}"></div>
+                                    </div>
                                 </div>
+                                <input type="hidden" id="qr-image{{ $v->id }}" name="qr_image">
+                                <input name="vip_id" id="vip-id{{ $v->id }}" type="hidden" class="form-control" value="{{ $v->vipId }}">
                             </td>
                         </tr>
                         @endforeach
