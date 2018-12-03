@@ -29,7 +29,7 @@
                 <div class="panel-body">
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url('/report/vehicle-category') }}">Vehicle Category</a></li>
-                        <li><a href="{{ url('/report/user-incomes') }}">Users' Income(Check Out)</a></li>
+                        <li><a href="{{ url('/report/user-incomes') }}">Users' Income (Check Out)</a></li>
                         <li><a href="{{ url('/report/sales') }}">Sales</a></li>
                     </ul>
                 </div>
