@@ -168,7 +168,14 @@ class APIV2 extends Controller
             $token = $request->_token;
             $user = User::where('api_token', $token)->first();
             if($user) {
+                $employee = Employee::where('email', $user->email)->first();
                 $checkOut = CheckInOut::where('ticket_id', $request->ticket_id)->first();
+                if($employee->client_id != $checkOut->client_id){
+                    return response()->json([
+                        'status' => 'false',
+                        'message' => 'Please Provide enough information!'
+                    ], 422);
+                }
                 if(isset($request->vehicle_reg)){
                     $checkOut = CheckInOut::where('vehicle_reg', $request->vehicle_reg)
                         ->orderBy('id', 'DESC')
@@ -184,7 +191,7 @@ class APIV2 extends Controller
                         $lastReceiptId = sprintf('%08d', (int)(substr($lastReceipt->receipt_id, -8)) + 1);
                     }
                     $checkOut->updated_at = $request->check_out_time;
-                    $checkOut->updated_by = $request->employee;
+                    $checkOut->updated_by = $user->id;
                     $checkOut->receipt_id = $checkOut->client_id.$lastReceiptId;
                     $check_in = new \DateTime($checkOut->created_at);
                     $check_out = new \DateTime($request->check_out_time);
