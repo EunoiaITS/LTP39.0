@@ -92,22 +92,19 @@
 					
 						<div class="sl-slide bg-1" data-orientation="horizontal" data-slice1-rotation="-25" data-slice2-rotation="-25" data-slice1-scale="2" data-slice2-scale="2">
 							<div class="sl-slide-inner">
-								<h2>Lorem Ipsum Bla Bla</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt optio fugiat, illo molestiae ex error quas suscipit deleniti accusantium ea architecto est ut nisi vero quidem</p>
+								<p><b>Parking Kori</b> is your digital parking automation partner.</p>
 							</div>
 						</div>
 						
 						<div class="sl-slide bg-2" data-orientation="vertical" data-slice1-rotation="10" data-slice2-rotation="-15" data-slice1-scale="1.5" data-slice2-scale="1.5">
 							<div class="sl-slide-inner">
-								<h2>Lorem Ipsum Bla Bla</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt optio fugiat, illo molestiae ex error quas suscipit deleniti accusantium ea architecto est ut nisi vero quidem, numquam modi consectetur quis.</p>
+								<p>Days of handwritten receipt and long queues are over, with <b>ParkingKori</b> these issues can be mitigated through the use of our smart hardware and software solutions.</p>
 							</div>
 						</div>
 						
 						<div class="sl-slide bg-3" data-orientation="horizontal" data-slice1-rotation="3" data-slice2-rotation="3" data-slice1-scale="2" data-slice2-scale="1">
 							<div class="sl-slide-inner">
-								<h2>Lorem Ipsum Bla Bla</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt optio fugiat, illo molestiae ex error quas suscipit deleniti accusantium ea architecto est ut nisi vero quidem, numquam modi consectetur quis.</p>
+								<p>Experience the parking solutions catered perfectly for the digital age only with <b>ParkingKori</b></p>
 							</div>
 						</div>
 
@@ -211,7 +208,9 @@
 					<div class="col-sm-12 col-md-5 col-md-offset-3 col-xs-12">
 						<div class="pk-about-details">
 							<h2 class="pk-about-title">About Us</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Praesentium temporibus excepturi ab molestias perspiciatis facilis, voluptates, eaque expedita veniam saepe veritatis, quo dolor exercitationem obcaecati tenetur dolorum, nihil beatae corporis. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum fuga alias incidunt voluptas tempora natus esse nobis labore tenetur, facilis, velit, unde similique illum asperiores quos, temporibus repudiandae nemo eum. Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+							<p>We here at <b>DexHUB</b> believe that there's always a better way of doing things namely by digitizing and automating every possible aspect of your business. We are obsessively passionate about making your day to day workflow easier.</p>
+							<p>Current traditional parking scenarios involve problems such as being very inefficient, time consuming and more over have the problems such as mismanagement and lack of orderly cash management.</p>
+							<p>We wanted to have these problems mitigated hence we spent immense time in the research and development of a solution. Therefore let us introduce ParkingKori, your parking automation partner. We are here to ease the hassle of managing parking at your business more efficient and easier than ever.</p>
 						</div>
 					</div>
 				</div>
