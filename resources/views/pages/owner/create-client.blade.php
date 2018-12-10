@@ -35,7 +35,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="user-name" class="usr-lock"><i class="fas fa-user"></i></label>
-                                <input type="text" name="name" placeholder="name" class="form-control" id="user-name" value="{{ old('name') }}" required>
+                                <input type="text" name="name" placeholder="Name" class="form-control" id="user-name" value="{{ old('name') }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="user-email" class="usr-lock"><i class="far fa-envelope"></i></label>
