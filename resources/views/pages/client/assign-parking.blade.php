@@ -6,7 +6,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12 dashboad-title">
-                    <h2>Settings<img src="img/down-arrow.png" alt=""></h2>
+                    <h2>Settings <img src="{{ asset('public/assets/img/down-arrow.png') }}" alt=""></h2>
                     <h4 class="date">Assign Parking</h4>
                 </div>
                 <div class="col-sm-12 padding-0">
