@@ -14,8 +14,8 @@
                         <tr>
                             <th>Serial</th>
                             <th>ID</th>
-                            <th>Factory Serial</th>
-                            <th>Charger Serial</th>
+                            <th>IMEI Number</th>
+                            <th>Device Serial Number</th>
                             <th>Client Id</th>
                             <th>Client Name</th>
                             <th>Action</th>
