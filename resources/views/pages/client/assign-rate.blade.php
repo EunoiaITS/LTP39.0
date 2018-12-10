@@ -31,7 +31,7 @@
                                 <th>ID</th>
                                 <th>Vehicle Type Number</th>
                                 <th>Base Hour</th>
-                                <th>Base Fair</th>
+                                <th>Base Fare</th>
                                 <th>Subsequent Hour Rate</th>
                                 <th>Actions</th>
                             </tr>
