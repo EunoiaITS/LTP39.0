@@ -9,7 +9,7 @@
     width: 22px;
     height: 22px;
     border: 8px solid #ddd;
-    border: 3px solid rgba(0,0,0,0.4);;
+    border: 3px solid rgba(255,255,255,0.4);
     text-indent: -90000px;
     margin-top: -40px;
     cursor: pointer;
@@ -56,7 +56,7 @@
     height: 2px;
     border-radius: 0;
     margin: 3px;
-    background: rgba(0,0,0,0.4);
+    background: (255,255,255,0.4);
     cursor: pointer;
 }
 
@@ -70,7 +70,7 @@
 	top: 0px;
 	left: 0px;
 	border-radius: 0%;
-	background: rgba(0,0,0,1);
+	background: (255,255,255,1);
 }
 
 /* Content elements */
@@ -98,10 +98,14 @@
     width: 35%;
     position: absolute;
     font-family: 'Lato', sans-serif;
-    font-size: 17px;
+    font-size: 22px;
+    background: rgba(0,0,0,.3);
+    padding:10px;
+    line-height: 28px;
+    color:#fff;
     left: 33%;
     top: 49%;
-    text-align: center;
+    text-align: justify;
 }
 
 .demo-1 .bg-2.sl-slide h2,
