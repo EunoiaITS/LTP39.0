@@ -51,8 +51,8 @@
             </form>
         </div>
         <div class="footer-content text-center">
-            <p>A Product of <a href="#">DexHub</a></p>
-            <p>Powered by <a href="#">Eunoia I.T Solutions</a></p>
+            <p>A Product of <a target="_blank" href="https://www.dexhub.org/">DexHub</a></p>
+            <p>Powered by <a target="_blank" href="http://www.eunoiaits.com/">Eunoia I.T Solutions</a></p>
         </div>
     </div>
 </div>
