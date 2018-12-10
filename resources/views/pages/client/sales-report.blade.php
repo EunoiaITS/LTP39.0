@@ -122,7 +122,7 @@
                                 <th>Report Cat.</th>
                                 <th>Registration No.</th>
                                 <th>Time Out</th>
-                                <th>Fair</th>
+                                <th>Fare</th>
                                 <th>Check Out By</th>
                                 <th>Date</th>
                             </tr>
