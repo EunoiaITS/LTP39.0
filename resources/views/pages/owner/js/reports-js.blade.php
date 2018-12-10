@@ -55,7 +55,7 @@
             @elseif($type == null && $vc != null)
             link = link+'?vc={{ $vc }}&eDate='+$(this).val()+'&sDate='+sDate;
             @elseif($type != null && $vc != null)
-            link = link+'?type={{ $type }}&vc={{ $vc }}}&eDate='+$(this).val()+'&sDate='+sDate;
+            link = link+'?type={{ $type }}&vc={{ $vc }}&eDate='+$(this).val()+'&sDate='+sDate;
             @else
             link = link+'?eDate='+$(this).val()+'&sDate='+sDate;
             @endif
