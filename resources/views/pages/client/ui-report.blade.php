@@ -6,7 +6,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12 dashboad-title">
-                    <h2>Reports <img src="img/down-arrow.png" alt=""></h2>
+                    <h2>Reports <img src="{{ asset('public/assets/img/down-arrow.png') }}" alt=""></h2>
                     <h4 class="date">Users income</h4>
                     <h4 class="total-strong"><strong>Total</strong></h4>
                 </div>
