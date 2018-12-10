@@ -6,6 +6,9 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/public/assets/img/pk-icon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/public/assets/img/pk-icon.ico') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/public/assets/img/pk-icon.ico') }}">
 
     <!-- stylesheet css -->
     <link rel="stylesheet" href="{{ asset('public/assets/css/fontawesome-all.min.css') }}">
