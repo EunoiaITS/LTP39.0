@@ -81,7 +81,7 @@
                             <div class="form-group">
                                 <div class="optional-private">
                                      <input type="text" name="sDate" id="sDate" value="" class="form-control">
-                                    <span class="date-pickerlabel">Form</span>
+                                    <span class="date-pickerlabel">From</span>
                                 </div>
                                 <div class="optional-private">
                                     <input type="text" name="eDate" id="eDate" class="form-control">
@@ -102,7 +102,7 @@
                                 <th>Weekly</th>
                                 <th>Monthly</th>
                                 <th>Yearly</th>
-                                <th>Form - To</th>
+                                <th>From - To</th>
                             </tr>
                             </thead>
                             <tbody>
