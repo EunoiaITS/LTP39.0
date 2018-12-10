@@ -169,6 +169,7 @@ class APIV2 extends Controller
             $user = User::where('api_token', $token)->first();
             if($user) {
                 $employee = Employee::where('email', $user->email)->first();
+                $checkOut = null;
                 if(isset($request->ticket_id)) {
                     $checkOut = CheckInOut::where('ticket_id', $request->ticket_id)->first();
                 }
@@ -177,7 +178,7 @@ class APIV2 extends Controller
                         ->orderBy('id', 'DESC')
                         ->first();
                 }
-                if($employee->client_id != $checkOut->client_id){
+                if(empty($checkOut) || $employee->client_id != $checkOut->client_id){
                     return response()->json([
                         'status' => 'false',
                         'message' => 'Please Provide enough information!'
