@@ -20,11 +20,11 @@
                     <form name="create_device" action="{{ url('/create-device') }}" method="post">
                         {{ csrf_field() }}
                         <div class="form-group">
-                            <label for="factory-serial">Factory Serial</label>
+                            <label for="factory-serial">IMEI Number</label>
                             <input type="text" name="factory_id" placeholder="S/N002948928393289" class="form-control" id="factory-serial" required>
                         </div>
                         <div class="form-group">
-                            <label for="charger-serial">Charger Serial</label>
+                            <label for="charger-serial">Device Serial Number</label>
                             <input type="text" name="charger_id" placeholder="S/N849484859389484" class="form-control" id="charger-serial">
                         </div>
                         <div class="submit-forget-password">
