@@ -33,7 +33,7 @@
             </div>
             <!-- select client -->
             <div class="col-sm-12">
-                <div class="employee-form form-employee-center">
+                <div class="employee-form form-employee-center" style="width:100%;">
                     <div class="col-sm-4">
                         <div class="vechicle-select">
                             <div class="form-group">
