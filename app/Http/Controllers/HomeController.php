@@ -33,7 +33,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $page = 'pages.home.index';
-        $js = 'pages.owner.js.dashboard-js';
+        $js = 'pages.home.index-js';
         $bill = $clients = $users = $client = '';
         $total_sale = 0;
         $count_cli = 0;
@@ -113,6 +113,28 @@ class HomeController extends Controller
             }
         }else{
             $page = 'pages.home.index';
+        }
+        foreach($all_clients as $ac){
+            $total_parkings = $occupied_parkings = 0;
+            $parking_settings = ParkingSetting::where('client_id', $ac->id)
+                ->get();
+            foreach($parking_settings as $ps){
+                $total_parkings += $ps->amount;
+            }
+            $ci = CheckInOut::where('client_id', $ac->id)
+                ->where('receipt_id', '=', null)
+                ->get();
+            foreach($ci as $ic){
+                $occupied_parkings++;
+            }
+            $vci = VIPCheckInOut::where('client_id', $ac->id)
+                ->where('receipt_id', '=', null)
+                ->get();
+            foreach($vci as $icv){
+                $occupied_parkings++;
+            }
+            $ac->total_parking = $total_parkings;
+            $ac->occupied_parking = $occupied_parkings;
         }
         return view($page,[
             'js' => $js,

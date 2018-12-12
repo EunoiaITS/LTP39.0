@@ -979,8 +979,12 @@ class Client extends Controller
             $cio = CheckInOut::where('client_id', $id)
                 ->where('vehicle_type', $request->vc)
                 ->get();
+            if($request->vc == 'all'){
+                $cio = CheckInOut::where('client_id', $id)
+                    ->get();
+            }
             foreach($cio as $cc){
-                $cc->v_type = VehicleCategory::find($vc_selected);
+                $cc->v_type = VehicleCategory::find($cc->vehicle_type);
                 $cc->req_by = User::find($cc->created_by);
                 if($cc->updated_by != null){
                     $cc->co_by = User::find($cc->updated_by);
@@ -1221,6 +1225,11 @@ class Client extends Controller
                     ->where('vehicle_type', $request->vc)
                     ->where('fair', '=', null)
                     ->get();
+                if($request->vc == 'all'){
+                    $results = CheckInOut::where('client_id', $id)
+                        ->where('fair', '=', null)
+                        ->get();
+                }
                 foreach($results as $r){
                     $r->v_type = VehicleCategory::find($r->vehicle_type);
                     $r->req_by = User::find($r->created_by);
@@ -1259,6 +1268,11 @@ class Client extends Controller
                     ->where('fair', '!=', null)
                     ->where('vehicle_type', $request->vc)
                     ->get();
+                if($request->vc == 'all'){
+                    $results = CheckInOut::where('client_id', $id)
+                        ->where('fair', '!=', null)
+                        ->get();
+                }
                 foreach($results as $r){
                     $r->v_type = VehicleCategory::find($r->vehicle_type);
                     $r->req_by = User::find($r->created_by);
@@ -1584,6 +1598,11 @@ class Client extends Controller
                 ->where('created_by', $emp)
                 ->where('fair', '!=', null)
                 ->get();
+            if($emp == 'all'){
+                $cio = CheckInOut::where('client_id', $id)
+                    ->where('fair', '!=', null)
+                    ->get();
+            }
             foreach($cio as $cc){
                 $cc->v_type = VehicleCategory::find($cc->vehicle_type);
                 $cc->req_by = User::find($cc->created_by);
@@ -1765,8 +1784,13 @@ class Client extends Controller
                 ->where('vehicle_type', $request->vc)
                 ->where('fair', '!=', null)
                 ->get();
+            if($request->vc == 'all'){
+                $cio = CheckInOut::where('client_id', $id)
+                    ->where('fair', '!=', null)
+                    ->get();
+            }
             foreach($cio as $cc){
-                $cc->v_type = VehicleCategory::find($vc_selected);
+                $cc->v_type = VehicleCategory::find($cc->vehicle_type);
                 $cc->req_by = User::find($cc->created_by);
                 if($cc->updated_by != null){
                     $cc->co_by = User::find($cc->updated_by);
@@ -1932,6 +1956,11 @@ class Client extends Controller
                     ->where('fair', '!=', null)
                     ->where('vehicle_type', $request->vc)
                     ->get();
+                if($request->vc == 'all'){
+                    $results = CheckInOut::where('client_id', $id)
+                        ->where('fair', '!=', null)
+                        ->get();
+                }
                 foreach($results as $r){
                     $r->v_type = VehicleCategory::find($r->vehicle_type);
                     $r->req_by = User::find($r->created_by);

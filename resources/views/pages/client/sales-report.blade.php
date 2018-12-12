@@ -61,6 +61,7 @@
                             <div class="form-group">
                                 <label for="exampleFormControlSelect1">(Must Select One)</label>
                                 <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Vehicle Category">
+                                    <option value="all" @if($vc_selected != null && $vc_selected == 'all'){{ 'selected' }}@endif>All</option>
                                     @foreach($vc as $c)
                                         <option value="{{ $c->id }}" @if($vc_selected != null && $vc_selected == $c->id){{ 'selected' }}@endif>{{ $c->type_name }}</option>
                                     @endforeach
@@ -128,7 +129,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <?php $i = 1; ?>
+                            <?php $i = 1; $total = 0; ?>
                             @if($result != null)
                                 @foreach($result as $r)
                                     <tr>
@@ -138,11 +139,22 @@
                                         <td>@if($r->receipt_id == null){{ 'Checked In' }}@else{{ 'Checked Out' }}@endif</td>
                                         <td>{{ $r->vehicle_reg }}</td>
                                         <td>@if($r->receipt_id != null){{ date('Y-m-d H:i A', strtotime($r->updated_at)) }}@endif</td>
-                                        <td>@if(isset($r->fair)){{ $r->fair }}@endif</td>
+                                        <td>@if(isset($r->fair)){{ $r->fair }} <?php $total += $r->fair; ?> @endif</td>
                                         <td>@if(isset($r->co_by)){{ $r->co_by->name }}@endif</td>
                                         <td>{{ date('d/m/Y', strtotime($r->created_at)) }}</td>
                                     </tr>
                             @endforeach
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Total = {{ $total }}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
                             @endif
                         </table>
                     </div>

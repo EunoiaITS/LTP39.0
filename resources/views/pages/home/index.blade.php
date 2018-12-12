@@ -128,66 +128,18 @@
 			<div class="container-fluid padding-0">
 				<h3 class="pk-title">Current Parking Status</h3>
 				<div class="item-slick-carosel">
+                    @foreach($all_clients as $ac)
 					<div class="item padding-0-pk">
 						<div class="padding-0-color color-plate-1">
 							<div class="pk-chart">
-								<h4 class="pk-chart-title">Boshundhara City</h4>
+								<h4 class="pk-chart-title">{{ $ac->name }}</h4>
 								 <div class="chart-bundle-js">
-								 	<canvas id="chart-area" width="200px" height="200px"/>
+								 	<canvas id="chart-area{{ $ac->id }}" width="200px" height="200px"/>
 								 </div>
 							</div>	
 						</div>
 					</div>
-					<div class="item padding-0-pk">
-						<div class="padding-0-color color-plate-2">
-							<div class="pk-chart">
-								<h4 class="pk-chart-title">Rapa Plaza</h4>
-								 <div class="chart-bundle-js">
-								 	<canvas id="chart-area-2" width="200px" height="200px"/>
-								 </div>
-							</div>	
-						</div>
-					</div>
-					<div class="item padding-0-pk">
-						<div class="padding-0-color color-plate-3">
-							<div class="pk-chart">
-								<h4 class="pk-chart-title">Jomuna Future Park</h4>
-								 <div class="chart-bundle-js">
-								 	<canvas id="chart-area-3" width="200px" height="200px"/>
-								 </div>
-							</div>	
-						</div>
-					</div>
-					<div class="item padding-0-pk">
-						<div class="padding-0-color color-plate-1">
-							<div class="pk-chart">
-								<h4 class="pk-chart-title">Police Plaza</h4>
-								 <div class="chart-bundle-js">
-								 	<canvas id="chart-area-4" width="200px" height="200px"/>
-								 </div>
-							</div>	
-						</div>
-					</div>
-					<div class="item padding-0-pk">
-						<div class="padding-0-color color-plate-2">
-							<div class="pk-chart">
-								<h4 class="pk-chart-title">Twin Tower</h4>
-								 <div class="chart-bundle-js">
-								 	<canvas id="chart-area-5" width="200px" height="200px"/>
-								 </div>
-							</div>	
-						</div>
-					</div>
-					<div class="item padding-0-pk">
-						<div class="padding-0-color color-plate-3">
-							<div class="pk-chart">
-								<h4 class="pk-chart-title">Motaleb Plaza</h4>
-								 <div class="chart-bundle-js">
-								 	<canvas id="chart-area-6" width="200px" height="200px"/>
-								 </div>
-							</div>	
-						</div>
-					</div>
+                    @endforeach
 				</div>
 			</div>
 		</div><!--/ end current status -->
@@ -306,7 +258,6 @@
     <script src="{{ asset('/public/home/js/jquery.slitslider.js') }}"></script>
     <!-- pic chart -->
     <script src="{{ asset('/public/home/js/Chart.bundle.js') }}"></script>
-    <script src="{{ asset('/public/home/js/index.js') }}"></script>
     <!-- svgleader js -->
     <script src="{{ asset('/public/home/js/TweenMax.min.js') }}"></script>
 	<script src="{{ asset('/public/home/js/MorphSVGPlugin.min.js') }}"></script>
@@ -421,5 +372,8 @@
 		$('.slider-container.demo-1').css('height', $(window).height());
 	});
     </script>
+        @if(isset($js))
+            @include($js)
+            @endif
 </body>
 </html>

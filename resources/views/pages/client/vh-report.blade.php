@@ -62,6 +62,7 @@
                             <div class="form-group">
                                 <label for="exampleFormControlSelect1">(Must Select One)</label>
                                 <select class="form-control get-select-picker" id="exampleFormControlSelect1" title="Vehicle Category">
+                                    <option value="all" @if($vc_selected != null && $vc_selected == 'all'){{ 'selected' }}@endif>All</option>
                                     @foreach($vc as $c)
                                     <option value="{{ $c->id }}" @if($vc_selected != null && $vc_selected == $c->id){{ 'selected' }}@endif>{{ $c->type_name }}</option>
                                     @endforeach

@@ -62,6 +62,7 @@
                             <div class="form-group">
                                 <label for="exampleFormControlSelect1">(Must Select One)</label>
                                 <select class="form-control get-select-picker" name="emp" id="exampleFormControlSelect1" title="Select Employee">
+                                    <option value="all" @if($emp == 'all'){{ 'selected' }}@endif>All</option>
                                     @foreach($employees as $e)
                                     <option value="{{ $e->details->id }}" @if($e->details->id == $emp){{ 'selected' }}@endif>{{ $e->name }}</option>
                                         @endforeach
@@ -113,7 +114,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <?php $i = 1; ?>
+                            <?php $i = 1; $total = 0; ?>
                             @foreach($result as $r)
                             <tr>
                                 <td>{{ $i++ }}</td>
@@ -125,7 +126,18 @@
                                 <td>BDT. {{ $r->fair }}</td>
                                 <td>{{ date('d/m/Y', strtotime($r->created_at)) }}</td>
                             </tr>
+                                <?php $total+= $r->fair; ?>
                             @endforeach
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Total = {{ $total }}</td>
+                                <td></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
