@@ -18,7 +18,7 @@
                             </div>
                             <div class="date-timepicker">
                                 <h4 class="date-span">{{ $daily }}</h4>
-                                <div class="per">+5%</div>
+                                <div class="per">{{ ($daily - $last_daily)/100 }}%</div>
                             </div>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
                             </div>
                             <div class="date-timepicker">
                                 <h4 class="date-span">{{ $weekly }}</h4>
-                                <div class="per">+5%</div>
+                                <div class="per">{{ ($weekly - $last_weekly)/100 }}%</div>
                             </div>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                             </div>
                             <div class="date-timepicker">
                                 <h4 class="date-span">{{ $monthly }}</h4>
-                                <div class="per">+5%</div>
+                                <div class="per">{{ ($monthly - $last_monthly)/100 }}%</div>
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                             </div>
                             <div class="date-timepicker">
                                 <h4 class="date-span">{{ $yearly }}</h4>
-                                <div class="per">+5%</div>
+                                <div class="per">{{ ($yearly - $last_yearly)/100 }}%</div>
                             </div>
                         </div>
                     </div>

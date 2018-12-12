@@ -914,34 +914,71 @@ class Client extends Controller
         }
         $vc = VehicleCategory::where('client_id', $id)->get();
         $daily = $weekly = $monthly = $yearly = 0;
+        $last_daily = $last_weekly = $last_monthly = $last_yearly = 0;
         $data = CheckInOut::where('client_id', $id)->get();
         $vipData = VIPCheckInOut::where('client_id', $id)->get();
         foreach($data as $d){
             if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
                 $daily++;
             }
+            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d', strtotime("-1 days"))){
+                $last_daily++;
+            }
             if(date('W', strtotime($d->created_at)) == date('W')){
                 $weekly++;
+            }
+            if(date('W', strtotime($d->created_at)) == (date('W') - 1)){
+                $last_weekly++;
             }
             if(date('m', strtotime($d->created_at)) == date('m')){
                 $monthly++;
             }
+            if((date('m') - 1) == 1){
+                if(date('m', strtotime($d->created_at)) == 12){
+                    $last_monthly++;
+                }
+            }else{
+                if(date('m', strtotime($d->created_at)) == (date('m') - 1)){
+                    $last_monthly++;
+                }
+            }
             if(date('Y', strtotime($d->created_at)) == date('Y')){
                 $yearly++;
+            }
+            if(date('Y', strtotime($d->created_at)) == (date('Y') - 1)){
+                $last_yearly++;
             }
         }
         foreach($vipData as $d){
             if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
                 $daily++;
             }
+            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d', strtotime("-1 days"))){
+                $last_daily++;
+            }
             if(date('W', strtotime($d->created_at)) == date('W')){
                 $weekly++;
+            }
+            if(date('W', strtotime($d->created_at)) == (date('W') - 1)){
+                $last_weekly++;
             }
             if(date('m', strtotime($d->created_at)) == date('m')){
                 $monthly++;
             }
+            if((date('m') - 1) == 1){
+                if(date('m', strtotime($d->created_at)) == 12){
+                    $last_monthly++;
+                }
+            }else{
+                if(date('m', strtotime($d->created_at)) == (date('m') - 1)){
+                    $last_monthly++;
+                }
+            }
             if(date('Y', strtotime($d->created_at)) == date('Y')){
                 $yearly++;
+            }
+            if(date('Y', strtotime($d->created_at)) == (date('Y') - 1)){
+                $last_yearly++;
             }
         }
         $result = new Collection();
@@ -1526,6 +1563,10 @@ class Client extends Controller
             'weekly' => $weekly,
             'monthly' => $monthly,
             'yearly' => $yearly,
+            'last_daily' => $last_daily,
+            'last_weekly' => $last_weekly,
+            'last_monthly' => $last_monthly,
+            'last_yearly' => $last_yearly,
             'js' => 'pages.client.js.vh-report-js'
         ]);
     }
@@ -1545,6 +1586,7 @@ class Client extends Controller
                 ->first();
         }
         $daily = $weekly = $monthly = $yearly = 0;
+        $last_daily = $last_weekly = $last_monthly = $last_yearly = 0;
         $data = CheckInOut::where('client_id', $id)
             ->where('fair', '!=', null)
             ->get();
@@ -1552,14 +1594,32 @@ class Client extends Controller
             if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
                 $daily+=$d->fair;
             }
+            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d', strtotime("-1 days"))){
+                $last_daily+=$d->fair;
+            }
             if(date('W', strtotime($d->created_at)) == date('W')){
                 $weekly+=$d->fair;
+            }
+            if(date('W', strtotime($d->created_at)) == (date('W') - 1)){
+                $last_weekly+=$d->fair;
             }
             if(date('m', strtotime($d->created_at)) == date('m')){
                 $monthly+=$d->fair;
             }
+            if((date('m') - 1) == 1){
+                if(date('m', strtotime($d->created_at)) == 12){
+                    $last_monthly+=$d->fair;
+                }
+            }else{
+                if(date('m', strtotime($d->created_at)) == (date('m') - 1)){
+                    $last_monthly+=$d->fair;
+                }
+            }
             if(date('Y', strtotime($d->created_at)) == date('Y')){
                 $yearly+=$d->fair;
+            }
+            if(date('Y', strtotime($d->created_at)) == (date('Y') - 1)){
+                $last_yearly+=$d->fair;
             }
         }
         $result = new Collection();
@@ -1713,6 +1773,10 @@ class Client extends Controller
             'weekly' => $weekly,
             'monthly' => $monthly,
             'yearly' => $yearly,
+            'last_daily' => $last_daily,
+            'last_weekly' => $last_weekly,
+            'last_monthly' => $last_monthly,
+            'last_yearly' => $last_yearly,
             'js' => 'pages.client.js.ui-report-js'
         ]);
     }
@@ -1728,6 +1792,7 @@ class Client extends Controller
         }
         $vc = VehicleCategory::where('client_id', $id)->get();
         $daily = $weekly = $monthly = $yearly = 0;
+        $last_daily = $last_weekly = $last_monthly = $last_yearly = 0;
         $data = CheckInOut::where('client_id', $id)
             ->where('fair', '!=', null)
             ->get();
@@ -1738,14 +1803,32 @@ class Client extends Controller
             if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
                 $daily+=$d->fair;
             }
+            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d', strtotime("-1 days"))){
+                $last_daily+=$d->fair;
+            }
             if(date('W', strtotime($d->created_at)) == date('W')){
                 $weekly+=$d->fair;
+            }
+            if(date('W', strtotime($d->created_at)) == (date('W') - 1)){
+                $last_weekly+=$d->fair;
             }
             if(date('m', strtotime($d->created_at)) == date('m')){
                 $monthly+=$d->fair;
             }
+            if((date('m') - 1) == 1){
+                if(date('m', strtotime($d->created_at)) == 12){
+                    $last_monthly+=$d->fair;
+                }
+            }else{
+                if(date('m', strtotime($d->created_at)) == (date('m') - 1)){
+                    $last_monthly+=$d->fair;
+                }
+            }
             if(date('Y', strtotime($d->created_at)) == date('Y')){
                 $yearly+=$d->fair;
+            }
+            if(date('Y', strtotime($d->created_at)) == (date('Y') - 1)){
+                $last_yearly+=$d->fair;
             }
         }
         $result = new Collection();
@@ -2173,6 +2256,10 @@ class Client extends Controller
             'weekly' => $weekly,
             'monthly' => $monthly,
             'yearly' => $yearly,
+            'last_daily' => $last_daily,
+            'last_weekly' => $last_weekly,
+            'last_monthly' => $last_monthly,
+            'last_yearly' => $last_yearly,
             'js' => 'pages.client.js.sales-report-js'
         ]);
     }
