@@ -157,7 +157,7 @@
                                 </tr>
                             @endif
                         </table>
-                        <p style="text-align:right; margin-right:15%; font-size:16px;margin-top: 10px;"><b>Total</b> = {{ $total }}</p>
+                        <p style="text-align:right; margin-right:24%; font-size:16px;margin-top: 10px;"><b>Total</b> = {{ $total }}</p>
                     </div>
                 </div>
             </div>
