@@ -139,7 +139,7 @@
                                 <td></td>
                             </tr>
                         </table>
-                        <p style="text-align:right; margin-right:8%; font-size:17px;"><b>Total</b> = {{ $total }}</p>
+                        <p style="text-align: right;padding-right: 13%; margin-top: 10px; font-size:16px;"><b>Total</b> = {{ $total }}</p>
                     </div>
                 </div>
             </div>
