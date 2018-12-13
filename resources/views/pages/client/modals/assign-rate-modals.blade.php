@@ -23,7 +23,7 @@
                     </div>
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="far fa-clock"></i></label>
-                        <input type="number" placeholder="Base Fair" name="base_rate" class="form-control" value="{{ old('base_rate') }}" required>
+                        <input type="number" placeholder="Base Fare" name="base_rate" class="form-control" value="{{ old('base_rate') }}" required>
                     </div>
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-hourglass-half"></i></label>
