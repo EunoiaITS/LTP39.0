@@ -140,7 +140,7 @@
                             </tr>
                         </table>
                     </div>
-                    <p style="text-align: right;padding-right: 14%; font-size:16px;"><b style="font-size:18px;">Total =</b> {{ total }}</p>
+                    <p style="text-align: right;padding-right: 14%; font-size:16px;"><b style="font-size:18px;">Total =</b> {{ $total }}</p>
                 </div>
             </div>
         </div>
