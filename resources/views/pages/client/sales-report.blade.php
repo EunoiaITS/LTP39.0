@@ -151,12 +151,13 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td>Total = {{ $total }}</td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                 </tr>
                             @endif
                         </table>
+                        <p style="text-align:right; margin-right:11%; font-size:17px;"><b>Total</b> = {{ $total }}</p>
                     </div>
                 </div>
             </div>
