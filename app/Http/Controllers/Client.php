@@ -1059,13 +1059,43 @@ class Client extends Controller
                 ->get();
             foreach($vcio as $vcc){
                 $vip = VIPRequests::where('vipId', $vcc->vip_id)->first();
+                $vcc->v_type = VehicleCategory::find($vip->vehicle_type);
+                $vcc->req_by = User::find($vcc->created_by);
+                $vcc->vehicle_reg = $vip->car_reg;
+                if($vcc->updated_by != null){
+                    $vcc->co_by = User::find($vcc->updated_by);
+                }
                 if($vip->vehicle_type == $vc_selected){
-                    $vcc->v_type = VehicleCategory::find($vc_selected);
-                    $vcc->req_by = User::find($vcc->created_by);
-                    $vcc->vehicle_reg = $vip->car_reg;
-                    if($vcc->updated_by != null){
-                        $vcc->co_by = User::find($vcc->updated_by);
+                    if($duration != null){
+                        if($duration == 'd'){
+                            if(date('Y-m-d', strtotime($vcc->created_at)) == date('Y-m-d')){
+                                $result->push($vcc);
+                            }
+                        }
+                        if($duration == 'w'){
+                            if(date('W', strtotime($vcc->created_at)) == date('W')){
+                                $result->push($vcc);
+                            }
+                        }
+                        if($duration == 'm'){
+                            if(date('m', strtotime($vcc->created_at)) == date('m')){
+                                $result->push($vcc);
+                            }
+                        }
+                        if($duration == 'y'){
+                            if(date('Y', strtotime($vcc->created_at)) == date('Y')){
+                                $result->push($vcc);
+                            }
+                        }
+                    }elseif(isset($request->sDate) && isset($request->eDate)){
+                        if(in_array(date('Y-m-d', strtotime($vcc->created_at)), $dates) || in_array(date('Y-m-d', strtotime($vcc->updated_at)), $dates)){
+                            $result->push($vcc);
+                        }
+                    }else{
+                        $result->push($vcc);
                     }
+                }
+                if($vc_selected == 'all'){
                     if($duration != null){
                         if($duration == 'd'){
                             if(date('Y-m-d', strtotime($vcc->created_at)) == date('Y-m-d')){
@@ -1383,6 +1413,36 @@ class Client extends Controller
                             $result->push($r);
                         }
                     }
+                    if($vc_selected == 'all'){
+                        if($duration != null){
+                            if($duration == 'd'){
+                                if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'w'){
+                                if(date('W', strtotime($r->created_at)) == date('W')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'm'){
+                                if(date('m', strtotime($r->created_at)) == date('m')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'y'){
+                                if(date('Y', strtotime($r->created_at)) == date('Y')){
+                                    $result->push($r);
+                                }
+                            }
+                        }elseif(isset($request->sDate) && isset($request->eDate)){
+                            if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
+                                $result->push($r);
+                            }
+                        }else{
+                            $result->push($r);
+                        }
+                    }
                 }
             }
             if($type == 4){
@@ -1396,6 +1456,36 @@ class Client extends Controller
                     $r->vehicle_reg = $vip->car_reg;
                     $r->co_by = User::find($r->updated_by);
                     if($vip->vehicle_type == $vc_selected){
+                        if($duration != null){
+                            if($duration == 'd'){
+                                if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'w'){
+                                if(date('W', strtotime($r->created_at)) == date('W')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'm'){
+                                if(date('m', strtotime($r->created_at)) == date('m')){
+                                    $result->push($r);
+                                }
+                            }
+                            if($duration == 'y'){
+                                if(date('Y', strtotime($r->created_at)) == date('Y')){
+                                    $result->push($r);
+                                }
+                            }
+                        }elseif(isset($request->sDate) && isset($request->eDate)){
+                            if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
+                                $result->push($r);
+                            }
+                        }else{
+                            $result->push($r);
+                        }
+                    }
+                    if($vc_selected == 'all'){
                         if($duration != null){
                             if($duration == 'd'){
                                 if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
