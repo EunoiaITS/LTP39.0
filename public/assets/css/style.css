@@ -348,7 +348,7 @@
 
     /*modal css*/
 
-.modal{
+.modal.modal-home{
     z-index:10500;
 }
 
@@ -464,6 +464,8 @@
       margin-left: 0px;
       margin-top: 10px;
     }
+    
+
 
 
 
