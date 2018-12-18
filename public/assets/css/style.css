@@ -348,9 +348,6 @@
 
     /*modal css*/
 
-.modal.modal-home{
-    z-index:10500;
-}
 
     .modal-content{
       border-radius: 0px;
