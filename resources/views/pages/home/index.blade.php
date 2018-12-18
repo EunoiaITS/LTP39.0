@@ -243,13 +243,13 @@
 			<div class="modal-dialog modal-sm" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" id="ok" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<button type="button" class="close ok" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 						<div class="modal-title text-center" id="myModalLabel"><img src="{{ asset('/public/assets/img/pksmlogo.png') }}" alt=""></div>
 					</div>
 					<div class="modal-body">
 						<p class="text-center">Your Request has been received. We will contact with you soon!</p>
 					</div>
-					<button id="ok" type="button" class="btn btn-dark btn-flat">Ok</button>
+					<button type="button" class="btn btn-dark btn-flat ok">Ok</button>
 				</div>
 			</div>
 		</div>
@@ -391,7 +391,7 @@
          $(window).on('load',function(){
             $('#myModal').modal('show');
          });
-         $('#ok').on('click',function(e) {
+         $('.ok').on('click',function(e) {
            e.preventDefault();
            window.location.href = 'https://pkcompany.acumenits.com';
          });
