@@ -191,19 +191,20 @@
 						    <div role="tabpanel" class="tab-pane fade in active" id="contact-us">
 						    	<!-- contact us form -->
 						    	<div class="contact-details-form clearfix">
-						    		<form action="#">
-						    			<div class="form-group clearfix">
+						    		<form action="{{ url('/contact') }}" method="post">
+						    			@csrf
+										<div class="form-group clearfix">
 							    			<div class="col-sm-6">
 							    				<label for="name" class="form-label">Name <span>*</span></label>
-							    				<input type="text" class="form-control from-input" id="name" required="required">
+							    				<input name="name" type="text" class="form-control from-input" id="name" required="required">
 							    			</div>
 							    			<div class="col-sm-6">
 							    				<label for="email" class="form-label">Email <span>*</span></label>
-							    				<input type="text" class="form-control from-input" id="email" required="required">
+							    				<input name="email" type="email" class="form-control from-input" id="email" required="required">
 							    			</div>
 							    			<div class="col-sm-12 clearfix">
 							    				<label for="message" class="form-label">Message <span>*</span></label>
-							    				<textarea name="" id="message" cols="30" class="form-control from-input" rows="3"></textarea>
+							    				<textarea name="message" id="message" cols="30" class="form-control from-input" rows="3"></textarea>
 							    			</div>
 							    		</div>
 							    		<button class="btn btn-info btn-from text-center">Submit</button>
@@ -237,9 +238,21 @@
 				</div>
 			</div>
 		</div><!--end about us araa -->
-
 	</div>
-	
+		<div id="myModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<div class="modal-title text-center" id="myModalLabel"><img src="{{ asset('/public/assets/img/pksmlogo.png') }}" alt=""></div>
+					</div>
+					<div class="modal-body">
+						<p class="text-center">Your Request has been received. We will contact with you soon!</p>
+					</div>
+					<button id="ok" type="button" class="btn btn-dark btn-flat">Ok</button>
+				</div>
+			</div>
+		</div>
 	
 	
 	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -372,6 +385,19 @@
 		$('.slider-container.demo-1').css('height', $(window).height());
 	});
     </script>
+    @if(isset($text))
+        @if ($text == 1)
+            echo "<script type='text/javascript'>
+         $(window).on('load',function(){
+            $('#myModal').modal('show');
+         });
+         $('#ok').on('click',function(e) {
+           e.preventDefault();
+           window.location.href = 'https://pkcompany.acumenits.com';
+         });
+    </script>";
+	@endif
+		@endif
         @if(isset($js))
             @include($js)
             @endif

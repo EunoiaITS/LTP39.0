@@ -136,6 +136,7 @@ class HomeController extends Controller
             $ac->total_parking = $total_parkings;
             $ac->occupied_parking = $occupied_parkings;
         }
+        $status = $request->con;
         return view($page,[
             'js' => $js,
             'users' => $users,
@@ -143,7 +144,43 @@ class HomeController extends Controller
             'clients' => $clients,
             'client' => $client,
             'sale' => $total_sale,
-            'all_clients' => $all_clients
+            'all_clients' => $all_clients,
+            'text' => $status
         ]);
+    }
+
+    /**
+     * Function for contact us form
+    **/
+    public function contact(Request $request){
+        if($request->isMethod('post')){
+            $text = 0;
+            $transport = (new \Swift_SmtpTransport('ssl://mail.parkingkori.com', 465))
+                ->setUsername("info@parkingkori.com")
+                ->setPassword('K$eoh#coolg5z');
+
+            $mailer = new \Swift_Mailer($transport);
+
+            $message = new \Swift_Message('Parking Kori - Contact Form');
+            $message->setFrom(['info@parkingkori.com' => 'Parking Kori - Contact Form']);
+            $message->setTo(['info@parkingkori.com']);
+            $message->setBody('<html><body>'.
+                '<h1>Hi '.$request->name .',</h1>'.
+                '<p style="font-size:18px;">Name : '.$request->name.'</p>'.
+                '<p style="font-size:18px;">Email : '.$request->email.'</p>'.
+                '<p style="font-size:18px;">Message : '.$request->message.'</p>'.
+                '<table width="100%" border="0" cellspacing="0" cellpadding="0">
+             </table>'.
+                '<br><br>Thank You<br>Parking Kori<br>Contact Form</body></html>',
+                'text/html');
+            if($mailer->send($message)){
+                $text = 1;
+            }else{
+                $text = 0;
+            }
+            //dd($text);
+            return redirect()
+                ->to('/?con='.$text);
+        }
     }
 }
