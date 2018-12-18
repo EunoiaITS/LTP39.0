@@ -522,6 +522,22 @@
        color: #cbcbcb;
     }
 
+     .modal{
+        z-index:105000;
+     }
+
+     .modal .modal-title img{
+        width:25%;
+        display:block;
+     }
+    .btn.btn-dark.btn-f;at{
+        margin: 5px auto 15px;
+        display: block;
+        background: #ae1b3f;
+        font-size: 16px;
+        border-color: #ae1b3f;
+    }
+
 
 
 
