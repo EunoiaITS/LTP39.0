@@ -565,7 +565,7 @@ class APIV2 extends Controller
                     if($cd->receipt_id == null && date('Y-m-d', strtotime($cd->created_at)) == date('Y-m-d')){
                         $check_in++;
                     }
-                    if($cd->receipt_id != null && date('Y-m-d', strtotime($cd->created_at)) == date('Y-m-d')){
+                    if($cd->updated_by == $user->id && $cd->receipt_id != null && date('Y-m-d', strtotime($cd->updated_at)) == date('Y-m-d')){
                         $check_out++;
                         $income += $cd->fair;
                     }
@@ -574,7 +574,7 @@ class APIV2 extends Controller
                     if($vcd->receipt_id == null && date('Y-m-d', strtotime($vcd->created_at)) == date('Y-m-d')){
                         $check_in++;
                     }
-                    if($vcd->receipt_id != null && date('Y-m-d', strtotime($vcd->created_at)) == date('Y-m-d')){
+                    if($vcd->updated_by == $user->id && $vcd->receipt_id != null && date('Y-m-d', strtotime($vcd->updated_at)) == date('Y-m-d')){
                         $check_out++;
                     }
                 }
