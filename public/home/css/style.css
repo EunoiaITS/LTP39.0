@@ -522,6 +522,23 @@
        color: #cbcbcb;
     }
 
+     .modal{
+        z-index:105000;
+     }
+
+     .modal .modal-title img{
+        width:25%;
+        display:inline-block;
+     }
+    .btn.btn-dark.btn-flat{
+        margin: 5px auto 15px;
+        display: block;
+        background: #ae1b3f;
+        font-size: 16px;
+        color:#fff;
+        border-color: #ae1b3f;
+    }
+
 
 
 

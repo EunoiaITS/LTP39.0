@@ -12,6 +12,7 @@
 */
 
 Route::get('/', 'HomeController@index')->name('home');
+Route::post('/contact', 'HomeController@contact')->name('contact');
 
 Route::group(['middleware' => ['auth', 'owner']], function(){
 
