@@ -35,7 +35,7 @@ class Client extends Controller
 
     /**
      * vehicleType - function for adding vehicle types
-    */
+     */
     public function vehicleType(Request $request){
         $id = Auth::id();
         $lastVehId = sprintf('%03d', 1);
@@ -125,7 +125,7 @@ class Client extends Controller
 
     /**
      * assignParking - function to assign parking for each vehicle category
-    */
+     */
     public function assignParking(Request $request){
         $id = Auth::id();
         if(Auth::user()->role == 'manager'){
@@ -597,9 +597,9 @@ class Client extends Controller
             $client = Clients::where('user_id',$emp->client_id)
                 ->first();
             $user = User::where('id',$client->user_id)->first();
-            if(Hash::check($request->old_password,$user->password) == false){
-                $errors[] = 'Old Password didn\'t match.';
-            }
+            //if(Hash::check($request->old_password,$user->password) == false){
+            //    $errors[] = 'Old Password didn\'t match.';
+            //}
             if($request->password != $request->repass){
                 $errors[] = 'Password didn\'t match.';
             }
@@ -646,7 +646,7 @@ class Client extends Controller
 
     /**
      * vat - function to save VAT settings
-    */
+     */
     public function vat(Request $request){
         $id = Auth::id();
         $client = Clients::where('user_id',$id)->first();
@@ -904,8 +904,8 @@ class Client extends Controller
     }
 
     /**
- * vhReport - shows the reports based on vehicle categories
- */
+     * vhReport - shows the reports based on vehicle categories
+     */
     public function vhReport(Request $request){
         $id = Auth::id();
         if(Auth::user()->role == 'manager'){

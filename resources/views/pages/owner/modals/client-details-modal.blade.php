@@ -8,10 +8,10 @@
                 <h3>Reset Password</h3>
                 <form method="post" action="{{ url('/client-details?client_id='.$client->client_id) }}" id="reset-pass">
                     {{ csrf_field() }}
-                    <div class="form-group">
-                        <label for="user-name" class="usr-lock"><i class="fas fa-lock"></i></label>
-                        <input type="password" name="password" placeholder="Type old Password" class="form-control" required>
-                    </div>
+                    {{--<div class="form-group">--}}
+                        {{--<label for="user-name" class="usr-lock"><i class="fas fa-lock"></i></label>--}}
+                        {{--<input type="password" name="password" placeholder="Type old Password" class="form-control" required>--}}
+                    {{--</div>--}}
                     <div class="form-group">
                         <label for="user-name" class="usr-lock"><i class="fas fa-lock"></i></label>
                         <input type="password" name="password" placeholder="Type new Password" class="form-control" required>
