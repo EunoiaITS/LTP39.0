@@ -104,7 +104,6 @@
 						
 						<div class="sl-slide bg-3" data-orientation="horizontal" data-slice1-rotation="3" data-slice2-rotation="3" data-slice1-scale="2" data-slice2-scale="1">
 							<div class="sl-slide-inner">
-								<p>Experience the parking solutions catered perfectly for the digital age only with <b>ParkingKori</b></p>
 							</div>
 						</div>
 
