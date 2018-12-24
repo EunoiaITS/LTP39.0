@@ -594,9 +594,8 @@ class Client extends Controller
     public function editPassword(Request $request){
         if($request->isMethod('post')){
             $emp = Employee::find($request->emp_id);
-            $client = Clients::where('user_id',$emp->client_id)
-                ->first();
-            $user = User::where('id',$client->user_id)->first();
+            $user = User::where('email',$emp->email)->first();
+            //dd($user);
             //if(Hash::check($request->old_password,$user->password) == false){
             //    $errors[] = 'Old Password didn\'t match.';
             //}
@@ -606,7 +605,7 @@ class Client extends Controller
             if(empty($errors)){
                 $emp->password = bcrypt($request->password);
                 $user->password = bcrypt($request->password);
-                if($emp->save()){
+                if($emp->save() && $user->save()){
                     return redirect()
                         ->to('/manage-employee')
                         ->with('success', 'The password was changed successfully!!');
