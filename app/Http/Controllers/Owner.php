@@ -807,20 +807,39 @@ class Owner extends Controller
             $c->type = $cData->client_type;
         }
         $daily = $weekly = $monthly = $yearly = 0;
+        $last_daily = $last_weekly = $last_monthly = $last_yearly = 0;
         $data = CheckInOut::where('fair', '!=', null)
             ->get();
         foreach($data as $d){
             if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
                 $daily+=$d->fair;
             }
+            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d', strtotime("-1 days"))){
+                $last_daily+=$d->fair;
+            }
             if(date('W', strtotime($d->created_at)) == date('W')){
                 $weekly+=$d->fair;
+            }
+            if(date('W', strtotime($d->created_at)) == (date('W') - 1)){
+                $last_weekly+=$d->fair;
             }
             if(date('m', strtotime($d->created_at)) == date('m')){
                 $monthly+=$d->fair;
             }
+            if((date('m') - 1) == 1){
+                if(date('m', strtotime($d->created_at)) == 12){
+                    $last_monthly+=$d->fair;
+                }
+            }else{
+                if(date('m', strtotime($d->created_at)) == (date('m') - 1)){
+                    $last_monthly+=$d->fair;
+                }
+            }
             if(date('Y', strtotime($d->created_at)) == date('Y')){
                 $yearly+=$d->fair;
+            }
+            if(date('Y', strtotime($d->created_at)) == (date('Y') - 1)){
+                $last_yearly+=$d->fair;
             }
         }
         $result = new Collection();
@@ -1001,6 +1020,10 @@ class Owner extends Controller
             'weekly' => $weekly,
             'monthly' => $monthly,
             'yearly' => $yearly,
+            'last_daily' => $last_daily,
+            'last_weekly' => $last_weekly,
+            'last_monthly' => $last_monthly,
+            'last_yearly' => $last_yearly,
             'js' => 'pages.owner.js.reports-js'
         ]);
     }
