@@ -11,7 +11,7 @@
                     <h4 class="total-strong"><strong>Total</strong></h4>
                 </div>
                 <div class="col-sm-12 total-area padding-0">
-                    <div class="col-sm-6 col-md-3">
+                    <div class="col-sm-6 col-md-5">
                         <div class="calender-area-date">
                             <div class="date-icon">
                                 <span>D</span>
@@ -22,7 +22,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-3">
+                    <div class="col-sm-6 col-sm-offset-0 col-md-offset-2">
                         <div class="calender-area-date">
                             <div class="date-icon">
                                 <span>W</span>
@@ -33,7 +33,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-3">
+                    <div class="col-sm-6 col-md-5">
                         <div class="calender-area-date">
                             <div class="date-icon">
                                 <span>M</span>
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-3">
+                    <div class="col-sm-6 col-sm-offset-0 col-md-offset-2">
                         <div class="calender-area-date">
                             <div class="date-icon">
                                 <span>Y</span>
