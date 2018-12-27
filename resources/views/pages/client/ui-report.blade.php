@@ -22,7 +22,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-sm-offset-0 col-md-offset-2">
+                    <div class="col-sm-6 col-md-5 col-sm-offset-0 col-md-offset-2">
                         <div class="calender-area-date">
                             <div class="date-icon">
                                 <span>W</span>
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-sm-offset-0 col-md-offset-2">
+                    <div class="col-sm-6 col-md-5 col-sm-offset-0 col-md-offset-2">
                         <div class="calender-area-date">
                             <div class="date-icon">
                                 <span>Y</span>
