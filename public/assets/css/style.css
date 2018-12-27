@@ -1069,7 +1069,8 @@
     }
     .calender-area-date{
       background: #fff;
-      padding: 30px 0px 25px;
+      padding: 40px 0px 40px;
+      margin-bottom:40px;
       position: relative;
     }
     .date-icon{
@@ -1100,7 +1101,7 @@
         font-weight: bold;
         color: #000;
         float: left;
-        width: 80%;
+        width: 70%;
         padding-left: 16px;
     }
     .date-span span{
@@ -1112,11 +1113,11 @@
     }
     .per {
         float: left;
-        width: 35px;
+        width: 120px;
         background: #af1b3f;
         color: #fff;
         margin-top: 10px;
-        font-size: 13px;
+        font-size: 11px;
         text-align: center;
         padding: 9px 0px;
     }
@@ -1421,6 +1422,9 @@
       .fluid-padding {
           margin: 0px 2%;
       }
+      .date-span{
+          width:65%;
+      }
     }
 
     @media(max-width: 992px){
@@ -1446,6 +1450,10 @@
       .fluid-padding {
         margin: 0px 2%;
       }
+      .date-span {
+           font-size: 23px;
+           width: 61%;
+        }
     }
 
     @media (min-width: 768px){
@@ -1478,6 +1486,9 @@
       }
       .request-notification .download-btn{
         margin-top: 0;
+      }
+      .date-span{
+          width:66%;
       }
 
 
@@ -1531,6 +1542,10 @@
       }
       .alert.alert-success, .alert.alert-danger {
           width: 100%;
+      }
+      .date-span{
+          width:55%;
+          font-size:17px;
       }
 
 
