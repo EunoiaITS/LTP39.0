@@ -52,6 +52,11 @@
                                         <input type="number" name="duration" class="form-control e-duration" placeholder="minutes" value="@if(!empty($exDuration)){{ $exDuration->duration }}@endif" required>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="placement" class="form-control" data-toggle="toggle" value="@if(!empty($exDuration) && $exDuration->placement == 1){{ 'on' }}@else{{ 'off' }}@endif" @if(!empty($exDuration) && $exDuration->placement == 1){{ 'checked' }}@endif> Count after base hour
+                                    </label>
+                                </div>
                                 @if(!empty($exDuration))
                                     <input type="hidden" name="action" value="ex-duration">
                                     <input type="hidden" name="duration_id" value="{{ $exDuration->id }}">

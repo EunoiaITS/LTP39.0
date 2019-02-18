@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AdditionalSettings;
 use App\CheckInOut;
 use App\Clients;
 use App\Employee;
@@ -13,6 +14,7 @@ use App\User;
 use App\VehicleCategory;
 use App\VIPCheckInOut;
 use App\VIPRequests;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class APIV2 extends Controller
@@ -196,62 +198,210 @@ class APIV2 extends Controller
                     $checkOut->updated_at = $request->check_out_time;
                     $checkOut->updated_by = $user->id;
                     $checkOut->receipt_id = $checkOut->client_id.$lastReceiptId;
-                    $check_in = new \DateTime($checkOut->created_at);
-                    $check_out = new \DateTime($request->check_out_time);
+                    $ci_time = $checkOut->created_at;
+                    $co_time = $request->check_out_time;
+                    $check_in = new \DateTime($ci_time);
+                    $check_out = new \DateTime($co_time);
                     $diff = $check_in->diff($check_out);
-
-                    $duration = $diff->h;
+                    $total_time = $diff->d.':'.$diff->h.':'.$diff->m;
+                    $total_hour = $hours = $minutes = 0;
                     $rate = ParkingRate::where('vehicle_id', $checkOut->vehicle_type)->first();
                     $exDuration = ExemptedDuration::where('client_id', $checkOut->client_id)->first();
                     $exTime = ExemptedTime::where('client_id', $checkOut->client_id)->first();
-                    $exFrom = (int)$exTime->from;
-                    $exTo = (int)$exTime->to;
-                    if(substr($exTime->from, -2) == 'PM'){
-                        $exFrom += 12;
-                    }
-                    if(substr($exTime->to, -2) == 'PM'){
-                        $exTo += 12;
-                    }
-                    $fair = 0;
-                    $ci_time = (int)date('H A', strtotime($checkOut->created_at));
-                    $co_time = (int)date('H A', strtotime($request->check_out_time));
-                    if($ci_time >= $exFrom && $co_time > $exTo){
-                        $exDiff = $exTo - $exFrom;
-                        if($exDiff < 0){
-                            $exDiff = $exDiff + 12;
+                    $exFrom = $exTo = $exTimeFrom = $exTimeTo = null;
+                    if(!empty($exTime)){
+                        $exFrom = (int)$exTime->from;
+                        $exTo = (int)$exTime->to;
+                        $finalExF = $exTime->from;
+                        $finalExT = $exTime->to;
+                        if(substr($exTime->from, -2) == 'AM' && $exFrom == 12){
+                            $finalExF = '00'.substr($exTime->from, 2);
                         }
-                        $duration = $duration - $exDiff;
-                    }
-                    if($duration >= $rate->base_hour){
-                        $sub = ($duration - $rate->base_hour) * $rate->sub_rate;
-                        if($diff->i != 0){
-                            $sub = $sub + $rate->sub_rate;
+                        if(substr($exTime->to, -2) == 'AM' && $exTo == 12){
+                            $finalExT = '00'.substr($exTime->to, 2);
                         }
-                        $fair = $sub + $rate->base_rate;
-                    }else{
-                        $fair = $rate->base_rate;
-                    }
-                    if(!empty($exDuration)){
-                        $total_minutes = ($duration * 60) + $diff->i;
-                        if($total_minutes <= $exDuration->duration){
-                            $fair = 0;
-                        }else{
-                            $total_minutes = $total_minutes - $exDuration->duration;
-                            $mins = $total_minutes % 60;
-                            $hours = (int)floor($total_minutes/60);
-                            if($hours >= $rate->base_hour){
-                                $sub = ($hours - $rate->base_hour) * $rate->sub_rate;
-                                if($mins != 0){
-                                    $sub = $sub + $rate->sub_rate;
+                        if(substr($exTime->from, -2) == 'PM' && $exFrom < 12){
+                            $exFrom += 12;
+                            $finalExF = $exFrom.substr($exTime->from, 2);
+                        }
+                        if(substr($exTime->to, -2) == 'PM' && $exTo < 12){
+                            $exTo += 12;
+                            $finalExT = $exTo.substr($exTime->to, 2);
+                        }
+
+                        while(date('Y-m-d', strtotime($ci_time)) != date('Y-m-d', strtotime($co_time))){
+                            $lci_time = $ci_time;
+                            $lco_time = date('Y-m-d H:i:s', strtotime(date('Y-m-d').' 23:59:59'));
+                            $eF = date('Y-m-d', strtotime($lci_time)).' '.substr($finalExF, 0, -3).':00';
+                            $eT = date('Y-m-d', strtotime($lci_time)).' '.substr($finalExT, 0, -3).':00';
+                            $exTimeFrom = date('Y-m-d H:i:s', strtotime($eF));
+                            $exTimeTo = date('Y-m-d H:i:s', strtotime($eT));
+                            if(strtotime($lci_time) >= strtotime($eF) && strtotime($lco_time) <= strtotime($eT)){
+                                $hours = $hours + 0;
+                            }elseif(strtotime($lci_time) < strtotime($eF) && strtotime($lco_time) <= strtotime($eF)){
+                                $check_in = new \DateTime($lci_time);
+                                $check_out = new \DateTime($lco_time);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
                                 }
-                                $fair = $sub + $rate->base_rate;
+                            }elseif(strtotime($lci_time) < strtotime($eF) && strtotime($lco_time) > strtotime($eF) && strtotime($lco_time) <= strtotime($eT)){
+                                $check_in = new \DateTime($lci_time);
+                                $check_out = new \DateTime($exTimeFrom);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
+                                }
+                            }elseif(strtotime($lci_time) >= strtotime($eF) && strtotime($lci_time) <= strtotime($eT) && strtotime($lco_time) > strtotime($eT)){
+                                $check_in = new \DateTime($exTimeTo);
+                                $check_out = new \DateTime($lco_time);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
+                                }
+                            }elseif(strtotime($lci_time) > strtotime($eT) && strtotime($lco_time) > strtotime($eT)){
+                                $check_in = new \DateTime($lci_time);
+                                $check_out = new \DateTime($lco_time);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
+                                }
+                            }elseif(strtotime($lci_time) < strtotime($eF) && strtotime($lco_time) > strtotime($eT)){
+                                $check_in = new \DateTime($lci_time);
+                                $check_out = new \DateTime($exTimeFrom);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
+                                }
+                                $check_in = new \DateTime($exTimeTo);
+                                $check_out = new \DateTime($lco_time);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
+                                }
                             }else{
-                                $fair = $rate->base_rate;
+                                $hours = $hours + 0;
+                            }
+                            $ci_time = date('Y-m-d', strtotime($lci_time." + 1 day")).'00:00:00';
+                        }
+
+                        $eF = date('Y-m-d', strtotime($ci_time)).' '.substr($finalExF, 0, -3).':00';
+                        $eT = date('Y-m-d', strtotime($ci_time)).' '.substr($finalExT, 0, -3).':00';
+                        $exTimeFrom = date('Y-m-d H:i:s', strtotime($eF));
+                        $exTimeTo = date('Y-m-d H:i:s', strtotime($eT));
+
+                        if(date('Y-m-d', strtotime($ci_time)) == date('Y-m-d', strtotime($co_time))){
+                            if(strtotime($ci_time) >= strtotime($eF) && strtotime($co_time) <= strtotime($eT)){
+                                $hours = $hours + 0;
+                            }elseif(strtotime($ci_time) < strtotime($eF) && strtotime($co_time) <= strtotime($eF)){
+                                $check_in = new \DateTime($ci_time);
+                                $check_out = new \DateTime($co_time);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
+                                }
+                            }elseif(strtotime($ci_time) < strtotime($eF) && strtotime($co_time) > strtotime($eF) && strtotime($co_time) <= strtotime($eT)){
+                                $check_in = new \DateTime($ci_time);
+                                $check_out = new \DateTime($exTimeFrom);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
+                                }
+                            }elseif(strtotime($ci_time) >= strtotime($eF) && strtotime($ci_time) <= strtotime($eT) && strtotime($co_time) > strtotime($eT)){
+                                $check_in = new \DateTime($exTimeTo);
+                                $check_out = new \DateTime($co_time);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
+                                }
+                            }elseif(strtotime($ci_time) > strtotime($eT) && strtotime($co_time) > strtotime($eT)){
+                                $check_in = new \DateTime($ci_time);
+                                $check_out = new \DateTime($co_time);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
+                                }
+                            }elseif(strtotime($ci_time) < strtotime($eF) && strtotime($co_time) > strtotime($eT)){
+                                $check_in = new \DateTime($ci_time);
+                                $check_out = new \DateTime($exTimeFrom);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
+                                }
+                                $check_in = new \DateTime($exTimeTo);
+                                $check_out = new \DateTime($co_time);
+                                $diff = $check_in->diff($check_out);
+                                $hours = $hours + $diff->h;
+                                if($diff->i != 0){
+                                    $minutes = $minutes + $diff->i;
+                                }
+                            }else{
+                                $hours = $hours + 0;
                             }
                         }
+                    }else{
+                        $hours = $diff->h;
+                        if($diff->m != 0){
+                            $minutes = $diff->m;
+                        }
                     }
-                    if($ci_time >= $exFrom && $co_time <= $exTo){
-                        $fair = 0;
+
+                    $minutes = $minutes + ($hours*60);
+                    $base_fair = $sub_fair = $fair = 0;
+                    $base_minutes = $rate->base_hour * 60;
+                    if(!empty($exDuration)){
+                        if(isset($exDuration->placement) && $exDuration->placement == 1){
+                            if($minutes <= $base_minutes){
+                                $fair = $rate->base_hour * $rate->base_rate;
+                            }else{
+                                $base_fair = $rate->base_hour * $rate->base_rate;
+                                $minutes = $minutes - $base_minutes - $exDuration->duration;
+                                $total_hour = round($minutes/60);
+                                if(($minutes/60) - $total_hour > 0){
+                                    $total_hour++;
+                                }
+                                $sub_fair = $total_hour * $rate->sub_rate;
+                                $fair = $base_fair + $sub_fair;
+                            }
+                        }else{
+                            if($minutes <= $base_minutes){
+                                $fair = $rate->base_hour * $rate->base_rate;
+                            }else{
+                                $minutes = $minutes - $exDuration->duration;
+                                $base_fair = $rate->base_hour * $rate->base_rate;
+                                $minutes = $minutes - $base_minutes;
+                                $total_hour = round($minutes/60);
+                                if(($minutes/60) - $total_hour > 0){
+                                    $total_hour++;
+                                }
+                                $sub_fair = $total_hour * $rate->sub_rate;
+                                $fair = $base_fair + $sub_fair;
+                            }
+                        }
+                    }else{
+                        if($minutes <= $base_minutes){
+                            $fair = $rate->base_hour * $rate->base_rate;
+                        }else{
+                            $base_fair = $rate->base_hour * $rate->base_rate;
+                            $minutes = $minutes - $base_minutes;
+                            $total_hour = round($minutes/60);
+                            if(($minutes/60) - $total_hour > 0){
+                                $total_hour++;
+                            }
+                            $sub_fair = $total_hour * $rate->sub_rate;
+                            $fair = $base_fair + $sub_fair;
+                        }
                     }
                     $checkOut->fair = $fair;
                     if($checkOut->save()){
@@ -261,8 +411,7 @@ class APIV2 extends Controller
                         $checkOut->vehicle_name = $vehicle->type_name;
                         $checkOut->vehicle_base_rate = $settings->base_rate;
                         $checkOut->vehicle_sub_rate = $settings->sub_rate;
-                        $checkOut->total_hour = $diff->h;
-                        $checkOut->total_minute = $diff->i;
+                        $checkOut->total_hour = $total_time;
                         return response()->json([
                             'status' => 'true',
                             'message' => 'Checked out successfully!',
@@ -288,6 +437,132 @@ class APIV2 extends Controller
             }
         }
     }
+
+//    public function checkOut(Request $request){
+//        if($request->isMethod('post')){
+//            $token = $request->_token;
+//            $user = User::where('api_token', $token)->first();
+//            if($user) {
+//                $employee = Employee::where('email', $user->email)->first();
+//                $checkOut = null;
+//                if(isset($request->ticket_id)) {
+//                    $checkOut = CheckInOut::where('ticket_id', $request->ticket_id)->first();
+//                }
+//                if(isset($request->vehicle_reg)){
+//                    $checkOut = CheckInOut::where('vehicle_reg', $request->vehicle_reg)
+//                        ->orderBy('id', 'DESC')
+//                        ->first();
+//                }
+//                if(empty($checkOut) || $employee->client_id != $checkOut->client_id){
+//                    return response()->json([
+//                        'status' => 'false',
+//                        'message' => 'Please Provide enough information!'
+//                    ], 422);
+//                }
+//                if(!empty($checkOut) && $checkOut->fair == NULL){
+//                    $lastReceiptId = sprintf('%08d', 1);
+//                    $lastReceipt = CheckInOut::where('client_id', $checkOut->client_id)
+//                        ->where('receipt_id','!=',null)
+//                        ->orderBy('id', 'DESC')
+//                        ->first();
+//                    if(!empty($lastReceipt) && (int)(substr($lastReceipt->receipt_id, -8)) >= 1){
+//                        $lastReceiptId = sprintf('%08d', (int)(substr($lastReceipt->receipt_id, -8)) + 1);
+//                    }
+//                    $checkOut->updated_at = $request->check_out_time;
+//                    $checkOut->updated_by = $user->id;
+//                    $checkOut->receipt_id = $checkOut->client_id.$lastReceiptId;
+//                    $check_in = new \DateTime($checkOut->created_at);
+//                    $check_out = new \DateTime($request->check_out_time);
+//                    $diff = $check_in->diff($check_out);
+//
+//                    $duration = $diff->h;
+//                    $rate = ParkingRate::where('vehicle_id', $checkOut->vehicle_type)->first();
+//                    $exDuration = ExemptedDuration::where('client_id', $checkOut->client_id)->first();
+//                    $exTime = ExemptedTime::where('client_id', $checkOut->client_id)->first();
+//                    $exFrom = (int)$exTime->from;
+//                    $exTo = (int)$exTime->to;
+//                    if(substr($exTime->from, -2) == 'PM'){
+//                        $exFrom += 12;
+//                    }
+//                    if(substr($exTime->to, -2) == 'PM'){
+//                        $exTo += 12;
+//                    }
+//                    $fair = 0;
+//                    $ci_time = (int)date('H A', strtotime($checkOut->created_at));
+//                    $co_time = (int)date('H A', strtotime($request->check_out_time));
+//                    if($ci_time >= $exFrom && $co_time > $exTo){
+//                        $exDiff = $exTo - $exFrom;
+//                        if($exDiff < 0){
+//                            $exDiff = $exDiff + 12;
+//                        }
+//                        $duration = $duration - $exDiff;
+//                    }
+//                    if($duration >= $rate->base_hour){
+//                        $sub = ($duration - $rate->base_hour) * $rate->sub_rate;
+//                        if($diff->i != 0){
+//                            $sub = $sub + $rate->sub_rate;
+//                        }
+//                        $fair = $sub + $rate->base_rate;
+//                    }else{
+//                        $fair = $rate->base_rate;
+//                    }
+//                    if(!empty($exDuration)){
+//                        $total_minutes = ($duration * 60) + $diff->i;
+//                        if($total_minutes <= $exDuration->duration){
+//                            $fair = 0;
+//                        }else{
+//                            $total_minutes = $total_minutes - $exDuration->duration;
+//                            $mins = $total_minutes % 60;
+//                            $hours = (int)floor($total_minutes/60);
+//                            if($hours >= $rate->base_hour){
+//                                $sub = ($hours - $rate->base_hour) * $rate->sub_rate;
+//                                if($mins != 0){
+//                                    $sub = $sub + $rate->sub_rate;
+//                                }
+//                                $fair = $sub + $rate->base_rate;
+//                            }else{
+//                                $fair = $rate->base_rate;
+//                            }
+//                        }
+//                    }
+//                    if($ci_time >= $exFrom && $co_time <= $exTo){
+//                        $fair = 0;
+//                    }
+//                    $checkOut->fair = $fair;
+//                    if($checkOut->save()){
+//                        $vehicle = VehicleCategory::find($checkOut->vehicle_type);
+//                        $settings = ParkingRate::where('vehicle_id', $checkOut->vehicle_type)
+//                            ->first();
+//                        $checkOut->vehicle_name = $vehicle->type_name;
+//                        $checkOut->vehicle_base_rate = $settings->base_rate;
+//                        $checkOut->vehicle_sub_rate = $settings->sub_rate;
+//                        $checkOut->total_hour = $diff->h;
+//                        $checkOut->total_minute = $diff->i;
+//                        return response()->json([
+//                            'status' => 'true',
+//                            'message' => 'Checked out successfully!',
+//                            'data' => $checkOut
+//                        ], 200);
+//                    }else{
+//                        return response()->json([
+//                            'status' => 'false',
+//                            'message' => 'Please Provide enough information!'
+//                        ], 422);
+//                    }
+//                }else{
+//                    return response()->json([
+//                        'status' => 'false',
+//                        'message' => 'Please Provide enough information!'
+//                    ], 422);
+//                }
+//            } else {
+//                return response()->json([
+//                    'status' => 'false',
+//                    'message' => 'User not found!',
+//                ]);
+//            }
+//        }
+//    }
 
     /**
      * random string generator - ALPHA-NUMERIC
@@ -556,26 +831,66 @@ class APIV2 extends Controller
             $token = $request->_token;
             $user = User::where('api_token', $token)->first();
             if($user) {
+                $emp = Employee::where('email', $user->email)->first();
                 $check_in = $check_out = $income = 0;
                 $cioData = CheckInOut::where('created_by', $user->id)
                     ->get();
                 $vcioData = VIPCheckInOut::where('created_by', $user->id)
                     ->get();
-                foreach($cioData as $cd){
-                    if($cd->receipt_id == null && date('Y-m-d', strtotime($cd->created_at)) == date('Y-m-d')){
-                        $check_in++;
+                $reportTime = AdditionalSettings::where('client_id', $emp->client_id)
+                    ->where('key', 'report_starts_from')
+                    ->first();
+                if(!empty($reportTime)){
+                    $exFrom = (int)$reportTime->value;
+                    $finalExF = $reportTime->value;
+                    if(substr($reportTime->value, -2) == 'AM' && $exFrom == 12){
+                        $finalExF = '00'.substr($reportTime->value, 2);
                     }
-                    if($cd->updated_by == $user->id && $cd->receipt_id != null && date('Y-m-d', strtotime($cd->updated_at)) == date('Y-m-d')){
-                        $check_out++;
-                        $income += $cd->fair;
+                    if(substr($reportTime->value, -2) == 'PM' && $exFrom < 12){
+                        $exFrom += 12;
+                        $finalExF = $exFrom.substr($reportTime->value, 2);
                     }
-                }
-                foreach($vcioData as $vcd){
-                    if($vcd->receipt_id == null && date('Y-m-d', strtotime($vcd->created_at)) == date('Y-m-d')){
-                        $check_in++;
+                    $times = explode(':', substr($finalExF, 0, 5));
+                    $cioData = CheckInOut::where('created_by', $user->id)
+                        ->where('updated_at', '>', Carbon::create(date('Y'), date('m'), date('d'), (int)$times[0], (int)$times[1], 0))
+                        ->get();
+                    $vcioData = VIPCheckInOut::where('created_by', $user->id)
+                        ->where('updated_at', '>', Carbon::create(date('Y'), date('m'), date('d'), (int)$times[0], (int)$times[1], 0))
+                        ->get();
+                    foreach($cioData as $cd){
+                        if($cd->receipt_id == null){
+                            $check_in++;
+                        }
+                        if($cd->updated_by == $user->id && $cd->receipt_id != null){
+                            $check_out++;
+                            $income += $cd->fair;
+                        }
                     }
-                    if($vcd->updated_by == $user->id && $vcd->receipt_id != null && date('Y-m-d', strtotime($vcd->updated_at)) == date('Y-m-d')){
-                        $check_out++;
+                    foreach($vcioData as $vcd){
+                        if($vcd->receipt_id == null && date('Y-m-d', strtotime($vcd->created_at)) == date('Y-m-d')){
+                            $check_in++;
+                        }
+                        if($vcd->updated_by == $user->id && $vcd->receipt_id != null && date('Y-m-d', strtotime($vcd->updated_at)) == date('Y-m-d')){
+                            $check_out++;
+                        }
+                    }
+                }else{
+                    foreach($cioData as $cd){
+                        if($cd->receipt_id == null && date('Y-m-d', strtotime($cd->created_at)) == date('Y-m-d')){
+                            $check_in++;
+                        }
+                        if($cd->updated_by == $user->id && $cd->receipt_id != null && date('Y-m-d', strtotime($cd->updated_at)) == date('Y-m-d')){
+                            $check_out++;
+                            $income += $cd->fair;
+                        }
+                    }
+                    foreach($vcioData as $vcd){
+                        if($vcd->receipt_id == null && date('Y-m-d', strtotime($vcd->created_at)) == date('Y-m-d')){
+                            $check_in++;
+                        }
+                        if($vcd->updated_by == $user->id && $vcd->receipt_id != null && date('Y-m-d', strtotime($vcd->updated_at)) == date('Y-m-d')){
+                            $check_out++;
+                        }
                     }
                 }
                 return response()->json([

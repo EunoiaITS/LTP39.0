@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{{ asset('public/assets/css/bootstrap-select.css') }}">
     <!-- bootstrap date time picker -->
     <link rel="stylesheet" href="{{ asset('public/assets/css/bootstrap-datetimepicker.css') }}">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('public/assets/css/style.css') }}">
     <!-- mordernizr css -->
     <script src="{{ asset('public/assets/js/vendor/modernizr.custom.97074.js') }}"></script>

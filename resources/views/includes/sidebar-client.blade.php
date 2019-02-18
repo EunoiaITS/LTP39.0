@@ -79,6 +79,7 @@
                         </li>
                         {{--<li><a href="{{ url('/settings/vip-parking') }}">Assign VIP Parking Rate</a></li>--}}
                         <li><a href="{{ url('/settings/vat') }}">VAT</a></li>
+                        <li><a href="{{ url('/settings/additional') }}">Additional</a></li>
                     </ul>
                 </div>
             </div>

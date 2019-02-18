@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\ExemptedDuration;
+use App\ExemptedTime;
+use App\ParkingRate;
 use App\VehicleCategory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Auth;
 use App\Clients;
@@ -183,4 +187,5 @@ class HomeController extends Controller
                 ->to('/?con='.$text);
         }
     }
+    
 }

@@ -46,6 +46,7 @@
 <!-- bootstrap date time picker -->
 <script src="{{ asset('public/assets/js/moment.js') }}"></script>
 <script src="{{ asset('public/assets/js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script src="{{ asset('public/assets/js/plugins.js') }}"></script>
 <script src="{{ asset('public/assets/js/niceScroll.min.js') }}"></script>
 <!-- main js file -->

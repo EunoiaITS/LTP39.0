@@ -5,19 +5,18 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 
-class ExemptedDuration extends Model
+class AdditionalSettings extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'client_id', 'duration', 'placement'
+        'client_id', 'key', 'value', 'created_by', 'updated_by'
     ];
 
     protected $rules = array(
-        'duration'  => 'required',
+        'client_id'  => 'exists:users,id',
+        'key' => 'required',
+        'value' => 'required',
+        'created_by'  => 'exists:users,id',
+        'updated_by'  => 'exists:users,id'
     );
 
     protected $errors;

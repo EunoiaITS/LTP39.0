@@ -34,5 +34,6 @@ Route::prefix('v1')->group(function(){
         Route::get('/logout','APIV2@logout');
         Route::post('reports','APIV2@reports');
         Route::post('stats','APIV2@stats');
+        Route::post('test-check-out', 'APIV2@testCheckOut');
     });
 });

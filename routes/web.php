@@ -13,6 +13,7 @@
 
 Route::get('/', 'HomeController@index')->name('home');
 Route::post('/contact', 'HomeController@contact')->name('contact');
+Route::get('/test-co', 'HomeController@testCo');
 
 Route::group(['middleware' => ['auth', 'owner']], function(){
 
@@ -75,6 +76,8 @@ Route::group(['middleware' => ['auth', 'client']], function(){
     Route::post('/settings/exempted-setting', 'Client@exemptedDuration');
     Route::get('/settings/vat', 'Client@vat');
     Route::post('/settings/vat', 'Client@vat');
+    Route::get('/settings/additional', 'Client@additionalSettings');
+    Route::post('/settings/additional', 'Client@additionalSettings');
     //Route::get('/settings/vip-parking', 'Client@vipParking');
     //Route::post('/settings/vip-parking', 'Client@vipParking');
 

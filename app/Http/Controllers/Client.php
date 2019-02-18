@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AdditionalSettings;
 use App\CheckInOut;
 use App\VIPCheckInOut;
 use App\VIPRequests;
@@ -411,6 +412,10 @@ class Client extends Controller
                 if(empty($errors)){
                     $time->client_id = $id;
                     $time->duration = $request->duration;
+                    $time->placement = '0';
+                    if(isset($request->placement)){
+                        $time->placement = '1';
+                    }
                     $time->exempteddur_id = $client->client_id.'EXD'.$lastExdId;
                     if($time->save()){
                         return redirect()
@@ -431,6 +436,11 @@ class Client extends Controller
             if($request->action == 'ex-duration'){
                 $duration = ExemptedDuration::find($request->duration_id);
                 $duration->duration = $request->duration;
+                if(isset($request->placement)){
+                    $duration->placement = '1';
+                }else{
+                    $duration->placement = '0';
+                }
                 if($duration->save()){
                     return redirect()
                         ->to('/settings/exempted-setting')
@@ -447,6 +457,48 @@ class Client extends Controller
             'exDuration' => $exDuration,
             'js' => 'pages.client.js.exempted-duration-js',
             'modal' => 'pages.client.modals.exempted-duration-modals'
+        ]);
+    }
+
+    /**
+     * additionalSettings - function to set additional settings
+    */
+    public function additionalSettings(Request $request){
+        $additional = AdditionalSettings::where('client_id', Auth::id())->get();
+        if($request->isMethod('post')){
+            if($request->action == 'rsf'){
+                $rsf = new AdditionalSettings();
+                $rsf->client_id = Auth::id();
+                $rsf->key = 'report_starts_from';
+                $rsf->value = $request->report_starts_from;
+                $rsf->created_by = Auth::id();
+                if($rsf->save()){
+                    return redirect()
+                        ->to('/settings/additional')
+                        ->with('success', 'Setting was saved successfully!');
+                }else{
+                    return redirect()
+                        ->to('/settings/additional')
+                        ->with('success', 'Something went wrong!');
+                }
+            }
+            if($request->action == 'ex-rsf'){
+                $rsf = AdditionalSettings::find($request->time_id);
+                $rsf->value = $request->report_starts_from;
+                $rsf->updated_by = Auth::id();
+                if($rsf->save()){
+                    return redirect()
+                        ->to('/settings/additional')
+                        ->with('success', 'Setting was saved successfully!');
+                }else{
+                    return redirect()
+                        ->to('/settings/additional')
+                        ->with('success', 'Something went wrong!');
+                }
+            }
+        }
+        return view('pages.client.additional-settings', [
+            'addSetti' => $additional
         ]);
     }
 
