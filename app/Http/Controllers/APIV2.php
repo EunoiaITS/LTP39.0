@@ -180,7 +180,7 @@ class APIV2 extends Controller
                         ->orderBy('id', 'DESC')
                         ->first();
                 }
-                if(empty($checkOut) || $employee->client_id != $checkOut->client_id){
+                if(empty($checkOut)){
                     return response()->json([
                         'status' => 'false',
                         'message' => 'Please Provide enough information!'
