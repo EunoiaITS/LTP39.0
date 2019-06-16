@@ -1,7 +1,7 @@
 <script>
     $(document).ready(function(){
         $.ajax({
-            url: "{{ url('/report/sales-report-stats') }}",
+            url: "{{ url('/report/vh-ajax-counts') }}",
             type: 'GET',
             dataType: 'json',
             success: function(response) {
@@ -16,9 +16,10 @@
             }
         });
         {{--$('#exampleFormControlSelect1').on('change', function(e){--}}
+            {{--alert(55);--}}
             {{--e.preventDefault();--}}
-            {{--var link = '{{ url('/report/sales') }}';--}}
-            {{--@if($type != null && $duration == null && $sDate == null && $eDate)--}}
+            {{--var link = '{{ url('/report/vh-ajax-ui') }}';--}}
+            {{--@if($type != null && $duration == null && $sDate == null && $eDate == null)--}}
             {{--link = link+'?type={{ $type }}&vc='+$(this).val();--}}
             {{--@elseif($type == null && $duration != null)--}}
             {{--link = link+'?duration={{ $duration }}&vc='+$(this).val();--}}
@@ -35,8 +36,8 @@
         {{--});--}}
         {{--$('#exampleFormControlSelect2').on('change', function(e){--}}
             {{--e.preventDefault();--}}
-            {{--var link = '{{ url('/report/sales') }}';--}}
-            {{--@if($vc_selected != null && $duration == null && $sDate == null && $eDate)--}}
+            {{--var link = '{{ url('/report/vh-ajax-ui') }}';--}}
+            {{--@if($vc_selected != null && $duration == null && $sDate == null && $eDate == null)--}}
             {{--link = link+'?vc={{ $vc_selected }}&type='+$(this).val();--}}
             {{--@elseif($vc_selected == null && $duration != null)--}}
             {{--link = link+'?duration={{ $duration }}&type='+$(this).val();--}}
@@ -56,7 +57,7 @@
             $('#sDate').val('');
             $('#eDate').val('');
         });
-        var s_date = e_date = '{{ date('Y-m-d') }}';
+        var s_date = e_date = '{{ date('Y-m-d', strtotime(date('Y-m-d').' -1 day')) }}';
         @if($sDate != null)
         s_date = '{{ $sDate }}';
         @endif

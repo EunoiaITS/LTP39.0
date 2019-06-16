@@ -1713,7 +1713,7 @@ class Client extends Controller
     }
 
     /**
-     * vhReport - shows the reports based on vehicle categories
+     * uiReport - shows the reports based on user incomes
      */
     public function uiReport(Request $request){
         $id = Auth::id();
@@ -1728,188 +1728,214 @@ class Client extends Controller
         }
         $daily = $weekly = $monthly = $yearly = 0;
         $last_daily = $last_weekly = $last_monthly = $last_yearly = 0;
-        $data = CheckInOut::where('client_id', $id)
-            ->where('fair', '!=', null)
-            ->get();
-        foreach($data as $d){
-            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
-                $daily+=$d->fair;
-            }
-            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d', strtotime("-1 days"))){
-                $last_daily+=$d->fair;
-            }
-            if(date('W', strtotime($d->created_at)) == date('W')){
-                $weekly+=$d->fair;
-            }
-            if(date('W', strtotime($d->created_at)) == (date('W') - 1)){
-                $last_weekly+=$d->fair;
-            }
-            if(date('m', strtotime($d->created_at)) == date('m')){
-                $monthly+=$d->fair;
-            }
-            if((date('m') - 1) == 1){
-                if(date('m', strtotime($d->created_at)) == 12){
-                    $last_monthly+=$d->fair;
-                }
-            }else{
-                if(date('m', strtotime($d->created_at)) == (date('m') - 1)){
-                    $last_monthly+=$d->fair;
-                }
-            }
-            if(date('Y', strtotime($d->created_at)) == date('Y')){
-                $yearly+=$d->fair;
-            }
-            if(date('Y', strtotime($d->created_at)) == (date('Y') - 1)){
-                $last_yearly+=$d->fair;
-            }
-        }
-        $result = new Collection();
-        $emp = $duration = $sDate = $eDate = null;
+        $data = null;
+        $emp = $duration = $sDate = $eDate = $sDateRaw = $eDateRaw = null;
         if(isset($request->duration)){
             $duration = $request->duration;
         }
-        $dates = array();
-        if(isset($request->sDate) && isset($request->eDate)){
+        if(isset($request->emp)){
+            $emp = $request->emp;
+        }
+        if(isset($request->sDate)){
+            $sDateRaw = $request->sDate;
+        }
+        if(isset($request->eDate)){
+            $eDateRaw = $request->eDate;
+        }
+        /**
+         * only sDate & eDate selected
+        */
+        if($request->emp == null && $request->duration == null && $request->sDate != null && $request->eDate != null){
             $exS = explode('/', $request->sDate);
             $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
             $exE = explode('/', $request->eDate);
             $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            $from = date('Y-m-d');
+            $to = date('Y-m-d', strtotime($from.' +1 day'));
             if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
-                $period = new \DatePeriod(
-                    new \DateTime($sDate),
-                    new \DateInterval('P1D'),
-                    new \DateTime($eDate)
-                );
-                $dates[] = $eDate;
+                $from = date('Y-m-d', strtotime($sDate));
+                $to = date('Y-m-d', strtotime($eDate.' +1 day'));
             }else{
-                $period = new \DatePeriod(
-                    new \DateTime($eDate),
-                    new \DateInterval('P1D'),
-                    new \DateTime($sDate)
-                );
-                $dates[] = $sDate;
+                $from = date('Y-m-d', strtotime($eDate));
+                $to = date('Y-m-d', strtotime($sDate.' +1 day'));
             }
-            foreach ($period as $key => $value) {
-                $dates[] = $value->format('Y-m-d');
-            }
-        }
-        if(isset($request->emp)){
-            $emp = $request->emp;
-            $cio = CheckInOut::where('client_id', $id)
-                ->where('created_by', $emp)
+            $data = \App\CheckInOut::whereBetween('created_at', [$from, $to])
+                ->where('client_id', $id)
                 ->where('fair', '!=', null)
-                ->get();
+                ->paginate(8);
+        }
+        /**
+         * only emplyee selected
+        */
+        if($request->emp != null && $request->duration == null && $request->sDate == null && $request->eDate == null){
             if($emp == 'all'){
-                $cio = CheckInOut::where('client_id', $id)
+                $data = CheckInOut::where('client_id', $id)
                     ->where('fair', '!=', null)
-                    ->get();
+                    ->paginate(8);
+            }else{
+                $data = CheckInOut::where('client_id', $id)
+                    ->where('created_by', $emp)
+                    ->where('fair', '!=', null)
+                    ->paginate(8);
             }
-            foreach($cio as $cc){
-                $cc->v_type = VehicleCategory::find($cc->vehicle_type);
-                $cc->req_by = User::find($cc->created_by);
-                if($cc->updated_by != null){
-                    $cc->co_by = User::find($cc->updated_by);
-                }
-                if($duration != null){
-                    if($duration == 'd'){
-                        if(date('Y-m-d', strtotime($cc->created_at)) == date('Y-m-d')){
-                            $result->push($cc);
-                        }
-                    }
-                    if($duration == 'w'){
-                        if(date('W', strtotime($cc->created_at)) == date('W')){
-                            $result->push($cc);
-                        }
-                    }
-                    if($duration == 'm'){
-                        if(date('m', strtotime($cc->created_at)) == date('m')){
-                            $result->push($cc);
-                        }
-                    }
-                    if($duration == 'y'){
-                        if(date('Y', strtotime($cc->created_at)) == date('Y')){
-                            $result->push($cc);
-                        }
-                    }
-                }elseif(isset($request->sDate) && isset($request->eDate)){
-                    if(in_array(date('Y-m-d', strtotime($cc->created_at)), $dates) || in_array(date('Y-m-d', strtotime($cc->updated_at)), $dates)){
-                        $result->push($cc);
-                    }
+        }
+        /**************************************************
+         * condition for only duration
+         */
+        if(!isset($request->emp) && !isset($request->sDate) && !isset($request->eDate) && isset($request->duration)){
+            /**
+             * condition for today
+             */
+            if($request->duration == 'd'){
+                $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                    ->where('client_id', $id)
+                    ->where('fair', '!=', null)
+                    ->paginate(8);
+            }
+            /**
+             * condition for current week
+             */
+            if($request->duration == 'w'){
+                \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                    ->where('client_id', $id)
+                    ->where('fair', '!=', null)
+                    ->paginate(8);
+            }
+            /**
+             * condition for current month
+             */
+            if($request->duration == 'm'){
+                $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                    ->where('client_id', $id)
+                    ->where('fair', '!=', null)
+                    ->paginate(8);
+            }
+            /**
+             * condition for current year
+             */
+            if($request->duration == 'y'){
+                $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                    ->where('client_id', $id)
+                    ->where('fair', '!=', null)
+                    ->paginate(8);
+            }
+        }
+        /**************************************************
+         * condition for both employee & duration
+         */
+        if(isset($request->emp) && !isset($request->sDate) && !isset($request->eDate) && isset($request->duration)){
+            /**
+             * condition for today
+             */
+            if($request->duration == 'd'){
+                if($request->emp == 'all'){
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('client_id', $id)
+                        ->where('fair', '!=', null)
+                        ->paginate(8);
                 }else{
-                    $result->push($cc);
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('client_id', $id)
+                        ->where('fair', '!=', null)
+                        ->where('created_by', $emp)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for current week
+             */
+            if($request->duration == 'w'){
+                \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                if($request->emp == 'all'){
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('client_id', $id)
+                        ->where('fair', '!=', null)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('client_id', $id)
+                        ->where('fair', '!=', null)
+                        ->where('created_by', $emp)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for current month
+             */
+            if($request->duration == 'm'){
+                if($request->emp == 'all'){
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('client_id', $id)
+                        ->where('fair', '!=', null)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('client_id', $id)
+                        ->where('fair', '!=', null)
+                        ->where('created_by', $emp)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for current year
+             */
+            if($request->duration == 'y'){
+                if($request->emp == 'all'){
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('client_id', $id)
+                        ->where('fair', '!=', null)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('client_id', $id)
+                        ->where('fair', '!=', null)
+                        ->where('created_by', $emp)
+                        ->paginate(8);
                 }
             }
         }
-        if(isset($request->duration) && !isset($request->emp)){
-            $duration = $request->duration;
-            if($duration == 'd'){
-                foreach($data as $d){
-                    if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
-                        $d->v_type = VehicleCategory::find($d->vehicle_type);
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $result->push($d);
-                    }
-                }
+        /**
+         * both employee & sDate & eDate selected
+         */
+        if($request->emp != null && $request->duration == null && $request->sDate != null && $request->eDate != null){
+            $exS = explode('/', $request->sDate);
+            $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
+            $exE = explode('/', $request->eDate);
+            $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            $from = date('Y-m-d');
+            $to = date('Y-m-d', strtotime($from.' +1 day'));
+            if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
+                $from = date('Y-m-d', strtotime($sDate));
+                $to = date('Y-m-d', strtotime($eDate.' +1 day'));
+            }else{
+                $from = date('Y-m-d', strtotime($eDate));
+                $to = date('Y-m-d', strtotime($sDate.' +1 day'));
             }
-            if($duration == 'w'){
-                foreach($data as $d){
-                    if(date('W', strtotime($d->created_at)) == date('W')){
-                        $d->v_type = VehicleCategory::find($d->vehicle_type);
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $result->push($d);
-                    }
-                }
-            }
-            if($duration == 'm'){
-                foreach($data as $d){
-                    if(date('m', strtotime($d->created_at)) == date('m')){
-                        $d->v_type = VehicleCategory::find($d->vehicle_type);
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $result->push($d);
-                    }
-                }
-            }
-            if($duration == 'y'){
-                foreach($data as $d){
-                    if(date('Y', strtotime($d->created_at)) == date('Y')){
-                        $d->v_type = VehicleCategory::find($d->vehicle_type);
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $result->push($d);
-                    }
-                }
-            }
-        }
-        if(isset($request->eDate) && isset($request->sDate) && !isset($request->emp)){
-            foreach($data as $d){
-                $d->v_type = VehicleCategory::find($d->vehicle_type);
-                $d->req_by = User::find($d->created_by);
-                if($d->updated_by != null){
-                    $d->co_by = User::find($d->updated_by);
-                }
-                if(in_array(date('Y-m-d', strtotime($d->created_at)), $dates) || in_array(date('Y-m-d', strtotime($d->updated_at)), $dates)){
-                    $result->push($d);
-                }
+            if($request->emp == 'all'){
+                $data = \App\CheckInOut::whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->where('fair', '!=', null)
+                    ->paginate(8);
+            }else{
+                $data = \App\CheckInOut::whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->where('fair', '!=', null)
+                    ->where('created_by', $emp)
+                    ->paginate(8);
             }
         }
         return view('pages.client.ui-report', [
-            'result' => $result,
+            'result' => $data,
             'employees' => $employees,
             'emp' => $emp,
             'duration' => $duration,
             'sDate' => $sDate,
             'eDate' => $eDate,
+            'sDateRaw' => $sDateRaw,
+            'eDateRaw' => $eDateRaw,
             'daily' => $daily,
             'weekly' => $weekly,
             'monthly' => $monthly,
@@ -1921,9 +1947,68 @@ class Client extends Controller
             'js' => 'pages.client.js.ui-report-js'
         ]);
     }
+    
+    /**
+     * uiReportAjax - shows the stats
+    */
+    public function uiReportAjax(Request $request){
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = \App\Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $daily = $weekly = $monthly = $yearly = 0;
+        $last_daily = $last_weekly = $last_monthly = $last_yearly = 0;
+        $daily = \App\CheckInOut::where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+            ->sum('fair');
+        $last_daily = \App\CheckInOut::where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->whereRaw('date(`created_at`) = ?', array(date('Y-m-d', strtotime("-1 days"))))
+            ->sum('fair');
+        \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+        \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+        $weekly = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $last_weekly = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->addWeeks(-1)->startOfWeek(), \Illuminate\Support\Carbon::now()->addWeeks(-1)->endOfWeek()])
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $monthly = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $last_monthly = \App\CheckInOut::whereMonth(
+            'created_at', '=', \Illuminate\Support\Carbon::now()->subMonth()->month
+        )
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $yearly = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $last_yearly = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y', strtotime("-1 year"))))
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $result = new \Illuminate\Database\Eloquent\Collection();
+        $result->put('daily', $daily);
+        $result->put('weekly', $weekly);
+        $result->put('monthly', $monthly);
+        $result->put('yearly', $yearly);
+        $result->put('last_daily', $last_daily);
+        $result->put('last_weekly', $last_weekly);
+        $result->put('last_monthly', $last_monthly);
+        $result->put('last_yearly', $last_yearly);
+        return response()->json($result, 200);
+    }
 
     /**
-     * vhReport - shows the reports based on vehicle categories
+     * salesReport - shows the reports based on sales
      */
     public function salesReport(Request $request){
         $id = Auth::id();
@@ -1932,475 +2017,997 @@ class Client extends Controller
             $id = $mngr->client_id;
         }
         $vc = VehicleCategory::where('client_id', $id)->get();
-        $daily = $weekly = $monthly = $yearly = 0;
-        $last_daily = $last_weekly = $last_monthly = $last_yearly = 0;
-        $data = CheckInOut::where('client_id', $id)
-            ->where('fair', '!=', null)
-            ->get();
-        $vipData = VIPCheckInOut::where('client_id', $id)
-            ->where('receipt_id', '!=', null)
-            ->get();
-        foreach($data as $d){
-            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
-                $daily+=$d->fair;
-            }
-            if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d', strtotime("-1 days"))){
-                $last_daily+=$d->fair;
-            }
-            if(date('W', strtotime($d->created_at)) == date('W')){
-                $weekly+=$d->fair;
-            }
-            if(date('W', strtotime($d->created_at)) == (date('W') - 1)){
-                $last_weekly+=$d->fair;
-            }
-            if(date('m', strtotime($d->created_at)) == date('m')){
-                $monthly+=$d->fair;
-            }
-            if((date('m') - 1) == 1){
-                if(date('m', strtotime($d->created_at)) == 12){
-                    $last_monthly+=$d->fair;
-                }
-            }else{
-                if(date('m', strtotime($d->created_at)) == (date('m') - 1)){
-                    $last_monthly+=$d->fair;
-                }
-            }
-            if(date('Y', strtotime($d->created_at)) == date('Y')){
-                $yearly+=$d->fair;
-            }
-            if(date('Y', strtotime($d->created_at)) == (date('Y') - 1)){
-                $last_yearly+=$d->fair;
-            }
+        $vc_selected = $type = $duration = $sDate = $eDate = $sDateRaw = $eDateRaw = null;
+        if(isset($request->vc)){
+            $vc_selected = $request->vc;
         }
-        $result = new Collection();
-        $vc_selected = $type = $duration = $sDate = $eDate = null;
         if(isset($request->duration)){
             $duration = $request->duration;
         }
-        $dates = array();
-        if(isset($request->sDate) && isset($request->eDate)){
+        if(isset($request->type)){
+            $type = $request->type;
+        }
+        if(isset($request->sDate)){
+            $sDateRaw = $request->sDate;
+        }
+        if(isset($request->eDate)){
+            $eDateRaw = $request->eDate;
+        }
+        $data = null;
+        /**************************************************
+         * condition for only vehicle type
+         */
+        if(isset($request->vc) && !isset($request->type) && !isset($request->duration) && !isset($request->sDate) && !isset($request->eDate)){
+            if($request->vc == 'all'){
+                $data = \App\CheckInOut::where('client_id', $id)
+                    ->paginate(8);
+            }else{
+                $data = \App\CheckInOut::where('vehicle_type', $request->vc)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+        }
+        /*********************************************
+         * condition for only report category type
+         */
+        if(!isset($request->vc) && isset($request->type) && !isset($request->duration) && !isset($request->sDate) && !isset($request->eDate)){
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
+                $data = \App\CheckInOut::where('vip_id', '=', null)
+                    ->where('fair', '=', null)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                $data = \App\CheckInOut::where('vip_id', '=', null)
+                    ->where('fair', '!=', null)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                $data = \App\CheckInOut::where('vip_id', '!=', null)
+                    ->where('receipt_id', '=', null)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                $data = \App\CheckInOut::where('vip_id', '!=', null)
+                    ->where('receipt_id', '!=', null)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+        }
+        /**************************************************
+         * condition for only duration
+         */
+        if(!isset($request->vc) && !isset($request->type) && isset($request->duration)){
+            /**
+             * condition for today
+             */
+            if($request->duration == 'd'){
+                $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for current week
+             */
+            if($request->duration == 'w'){
+                \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for current month
+             */
+            if($request->duration == 'm'){
+                $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for current year
+             */
+            if($request->duration == 'y'){
+                $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+        }
+        /****************************************************
+         * condition for only sDate & eDate
+         */
+        if(!isset($request->vc) && !isset($request->type) && isset($request->sDate) && isset($request->eDate)){
             $exS = explode('/', $request->sDate);
             $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
             $exE = explode('/', $request->eDate);
             $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            $from = date('Y-m-d');
+            $to = date('Y-m-d', strtotime($from.' +1 day'));
             if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
-                $period = new \DatePeriod(
-                    new \DateTime($sDate),
-                    new \DateInterval('P1D'),
-                    new \DateTime($eDate)
-                );
-                $dates[] = $eDate;
+                $from = date('Y-m-d', strtotime($sDate));
+                $to = date('Y-m-d', strtotime($eDate.' +1 day'));
             }else{
-                $period = new \DatePeriod(
-                    new \DateTime($eDate),
-                    new \DateInterval('P1D'),
-                    new \DateTime($sDate)
-                );
-                $dates[] = $sDate;
+                $from = date('Y-m-d', strtotime($eDate));
+                $to = date('Y-m-d', strtotime($sDate.' +1 day'));
             }
-            foreach ($period as $key => $value) {
-                $dates[] = $value->format('Y-m-d');
-            }
+            $data = \App\CheckInOut::whereBetween('created_at', [$from, $to])
+                ->where('client_id', $id)
+                ->paginate(8);
         }
-        if(isset($request->vc) && !isset($request->type)){
-            $vc_selected = $request->vc;
-            $cio = CheckInOut::where('client_id', $id)
-                ->where('vehicle_type', $request->vc)
-                ->where('fair', '!=', null)
-                ->get();
-            if($request->vc == 'all'){
-                $cio = CheckInOut::where('client_id', $id)
-                    ->where('fair', '!=', null)
-                    ->get();
-            }
-            foreach($cio as $cc){
-                $cc->v_type = VehicleCategory::find($cc->vehicle_type);
-                $cc->req_by = User::find($cc->created_by);
-                if($cc->updated_by != null){
-                    $cc->co_by = User::find($cc->updated_by);
-                }
-                if($duration != null){
-                    if($duration == 'd'){
-                        if(date('Y-m-d', strtotime($cc->created_at)) == date('Y-m-d')){
-                            $result->push($cc);
-                        }
-                    }
-                    if($duration == 'w'){
-                        if(date('W', strtotime($cc->created_at)) == date('W')){
-                            $result->push($cc);
-                        }
-                    }
-                    if($duration == 'm'){
-                        if(date('m', strtotime($cc->created_at)) == date('m')){
-                            $result->push($cc);
-                        }
-                    }
-                    if($duration == 'y'){
-                        if(date('Y', strtotime($cc->created_at)) == date('Y')){
-                            $result->push($cc);
-                        }
-                    }
-                }elseif(isset($request->sDate) && isset($request->eDate)){
-                    if(in_array(date('Y-m-d', strtotime($cc->created_at)), $dates) || in_array(date('Y-m-d', strtotime($cc->updated_at)), $dates)){
-                        $result->push($cc);
-                    }
-                }else{
-                    $result->push($cc);
-                }
-            }
-            $vcio = VIPCheckInOut::where('client_id', $id)
-                ->where('receipt_id', '!=', null)
-                ->get();
-            foreach($vcio as $vcc){
-                $vip = VIPRequests::where('vipId', $vcc->vip_id)->first();
-                if($vip->vehicle_type == $vc_selected){
-                    $vcc->v_type = VehicleCategory::find($vc_selected);
-                    $vcc->req_by = User::find($vcc->created_by);
-                    $vcc->vehicle_reg = $vip->car_reg;
-                    if($vcc->updated_by != null){
-                        $vcc->co_by = User::find($vcc->updated_by);
-                    }
-                    if($duration != null){
-                        if($duration == 'd'){
-                            if(date('Y-m-d', strtotime($vcc->created_at)) == date('Y-m-d')){
-                                $result->push($vcc);
-                            }
-                        }
-                        if($duration == 'w'){
-                            if(date('W', strtotime($vcc->created_at)) == date('W')){
-                                $result->push($vcc);
-                            }
-                        }
-                        if($duration == 'm'){
-                            if(date('m', strtotime($vcc->created_at)) == date('m')){
-                                $result->push($vcc);
-                            }
-                        }
-                        if($duration == 'y'){
-                            if(date('Y', strtotime($vcc->created_at)) == date('Y')){
-                                $result->push($vcc);
-                            }
-                        }
-                    }elseif(isset($request->sDate) && isset($request->eDate)){
-                        if(in_array(date('Y-m-d', strtotime($vcc->created_at)), $dates) || in_array(date('Y-m-d', strtotime($vcc->updated_at)), $dates)){
-                            $result->push($vcc);
-                        }
-                    }else{
-                        $result->push($vcc);
-                    }
-                }
-            }
-        }
-        if(isset($request->type) && !isset($request->vc)){
-            $type = $request->type;
-            if($type == 2){
-                $results = CheckInOut::where('client_id', $id)
-                    ->where('fair', '!=', null)
-                    ->get();
-                foreach($results as $r){
-                    $r->v_type = VehicleCategory::find($r->vehicle_type);
-                    $r->req_by = User::find($r->created_by);
-                    $r->co_by = User::find($r->updated_by);
-                    if($duration != null){
-                        if($duration == 'd'){
-                            if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
-                                $result->push($r);
-                            }
-                        }
-                        if($duration == 'w'){
-                            if(date('W', strtotime($r->created_at)) == date('W')){
-                                $result->push($r);
-                            }
-                        }
-                        if($duration == 'm'){
-                            if(date('m', strtotime($r->created_at)) == date('m')){
-                                $result->push($r);
-                            }
-                        }
-                        if($duration == 'y'){
-                            if(date('Y', strtotime($r->created_at)) == date('Y')){
-                                $result->push($r);
-                            }
-                        }
-                    }elseif(isset($request->sDate) && isset($request->eDate)){
-                        if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
-                            $result->push($r);
-                        }
-                    }else{
-                        $result->push($r);
-                    }
-                }
-            }
-            if($type == 4){
-                $results = VIPCheckInOut::where('client_id', $id)
-                    ->where('receipt_id', '!=', null)
-                    ->get();
-                foreach($results as $r){
-                    $vip = VIPRequests::where('vipId', $r->vip_id)->first();
-                    $r->v_type = VehicleCategory::find($vip->vehicle_type);
-                    $r->req_by = User::find($r->created_by);
-                    $r->vehicle_reg = $vip->car_reg;
-                    $r->co_by = User::find($r->updated_by);
-                    if($duration != null){
-                        if($duration == 'd'){
-                            if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
-                                $result->push($r);
-                            }
-                        }
-                        if($duration == 'w'){
-                            if(date('W', strtotime($r->created_at)) == date('W')){
-                                $result->push($r);
-                            }
-                        }
-                        if($duration == 'm'){
-                            if(date('m', strtotime($r->created_at)) == date('m')){
-                                $result->push($r);
-                            }
-                        }
-                        if($duration == 'y'){
-                            if(date('Y', strtotime($r->created_at)) == date('Y')){
-                                $result->push($r);
-                            }
-                        }
-                    }elseif(isset($request->sDate) && isset($request->eDate)){
-                        if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
-                            $result->push($r);
-                        }
-                    }else{
-                        $result->push($r);
-                    }
-                }
-            }
-        }
-        if(isset($request->vc) && isset($request->type)){
-            $type = $request->type;
-            $vc_selected = $request->vc;
-            if($type == 2){
-                $results = CheckInOut::where('client_id', $id)
-                    ->where('fair', '!=', null)
-                    ->where('vehicle_type', $request->vc)
-                    ->get();
+        /**********************************************************
+         * condition for both vehicle type & report category type
+         */
+        if(isset($request->vc) && isset($request->type) && !isset($request->duration) && !isset($request->sDate) && !isset($request->eDate)){
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
                 if($request->vc == 'all'){
-                    $results = CheckInOut::where('client_id', $id)
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vehicle_type', $request->vc)
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
                         ->where('fair', '!=', null)
-                        ->get();
-                }
-                foreach($results as $r){
-                    $r->v_type = VehicleCategory::find($r->vehicle_type);
-                    $r->req_by = User::find($r->created_by);
-                    $r->co_by = User::find($r->updated_by);
-                    if($duration != null){
-                        if($duration == 'd'){
-                            if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
-                                $result->push($r);
-                            }
-                        }
-                        if($duration == 'w'){
-                            if(date('W', strtotime($r->created_at)) == date('W')){
-                                $result->push($r);
-                            }
-                        }
-                        if($duration == 'm'){
-                            if(date('m', strtotime($r->created_at)) == date('m')){
-                                $result->push($r);
-                            }
-                        }
-                        if($duration == 'y'){
-                            if(date('Y', strtotime($r->created_at)) == date('Y')){
-                                $result->push($r);
-                            }
-                        }
-                    }elseif(isset($request->sDate) && isset($request->eDate)){
-                        if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
-                            $result->push($r);
-                        }
-                    }else{
-                        $result->push($r);
-                    }
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vehicle_type', $request->vc)
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
                 }
             }
-            if($type == 4){
-                $results = VIPCheckInOut::where('client_id', $id)
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vehicle_type', $request->vc)
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vehicle_type', $request->vc)
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+        }
+        /*************************************************
+         * condition for both vehicle type and duration
+         */
+        if(isset($request->vc) && !isset($request->type) && isset($request->duration)){
+            /**
+             * condition for today
+             */
+            if($request->duration == 'd'){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for current week
+             */
+            if($request->duration == 'w'){
+                \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for current month
+             */
+            if($request->duration == 'm'){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for current year
+             */
+            if($request->duration == 'y'){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+        }
+        /****************************************************
+         * condition for both duration & report category type
+         */
+        if(!isset($request->vc) && isset($request->type) && isset($request->duration)){
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+        }
+        /******************************************************
+         * condition for both report category type & sDate & eDate
+         */
+        if(!isset($request->vc) && isset($request->type) && isset($request->sDate) && isset($request->eDate)){
+            $exS = explode('/', $request->sDate);
+            $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
+            $exE = explode('/', $request->eDate);
+            $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            $from = date('Y-m-d');
+            $to = date('Y-m-d', strtotime($from.' +1 day'));
+            if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
+                $from = date('Y-m-d', strtotime($sDate));
+                $to = date('Y-m-d', strtotime($eDate.' +1 day'));
+            }else{
+                $from = date('Y-m-d', strtotime($eDate));
+                $to = date('Y-m-d', strtotime($sDate.' +1 day'));
+            }
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
+                $data = \App\CheckInOut::where('vip_id', '=', null)
+                    ->where('fair', '=', null)
+                    ->whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                $data = \App\CheckInOut::where('vip_id', '=', null)
+                    ->where('fair', '!=', null)
+                    ->whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                $data = \App\CheckInOut::where('vip_id', '!=', null)
+                    ->where('receipt_id', '=', null)
+                    ->whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                $data = \App\CheckInOut::where('vip_id', '!=', null)
                     ->where('receipt_id', '!=', null)
-                    ->get();
-                foreach($results as $r){
-                    $vip = VIPRequests::where('vipId', $r->vip_id)->first();
-                    $r->v_type = VehicleCategory::find($vip->vehicle_type);
-                    $r->req_by = User::find($r->created_by);
-                    $r->vehicle_reg = $vip->car_reg;
-                    $r->co_by = User::find($r->updated_by);
-                    if($vip->vehicle_type == $vc_selected){
-                        if($duration != null){
-                            if($duration == 'd'){
-                                if(date('Y-m-d', strtotime($r->created_at)) == date('Y-m-d')){
-                                    $result->push($r);
-                                }
-                            }
-                            if($duration == 'w'){
-                                if(date('W', strtotime($r->created_at)) == date('W')){
-                                    $result->push($r);
-                                }
-                            }
-                            if($duration == 'm'){
-                                if(date('m', strtotime($r->created_at)) == date('m')){
-                                    $result->push($r);
-                                }
-                            }
-                            if($duration == 'y'){
-                                if(date('Y', strtotime($r->created_at)) == date('Y')){
-                                    $result->push($r);
-                                }
-                            }
-                        }elseif(isset($request->sDate) && isset($request->eDate)){
-                            if(in_array(date('Y-m-d', strtotime($r->created_at)), $dates) || in_array(date('Y-m-d', strtotime($r->updated_at)), $dates)){
-                                $result->push($r);
-                            }
-                        }else{
-                            $result->push($r);
-                        }
-                    }
+                    ->whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+        }
+        /****************************************************
+         * condition for both vehicle category & sDate & eDate
+         */
+        if(isset($request->vc) && !isset($request->type) && isset($request->sDate) && isset($request->eDate)){
+            $exS = explode('/', $request->sDate);
+            $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
+            $exE = explode('/', $request->eDate);
+            $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            $from = date('Y-m-d');
+            $to = date('Y-m-d', strtotime($from.' +1 day'));
+            if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
+                $from = date('Y-m-d', strtotime($sDate));
+                $to = date('Y-m-d', strtotime($eDate.' +1 day'));
+            }else{
+                $from = date('Y-m-d', strtotime($eDate));
+                $to = date('Y-m-d', strtotime($sDate.' +1 day'));
+            }
+            if($request->vc == 'all'){
+                $data = \App\CheckInOut::whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }else{
+                $data = \App\CheckInOut::whereBetween('created_at', [$from, $to])
+                    ->where('vehicle_type', $request->vc)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+        }
+        /*****************************************************************
+         * condition for vehicle type, report category type & sDate & eDate altogether
+         */
+        if(isset($request->vc) && isset($request->type) && isset($request->sDate) && isset($request->eDate)){
+            $exS = explode('/', $request->sDate);
+            $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
+            $exE = explode('/', $request->eDate);
+            $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            $from = date('Y-m-d');
+            $to = date('Y-m-d', strtotime($from.' +1 day'));
+            if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
+                $from = date('Y-m-d', strtotime($sDate));
+                $to = date('Y-m-d', strtotime($eDate.' +1 day'));
+            }else{
+                $from = date('Y-m-d', strtotime($eDate));
+                $to = date('Y-m-d', strtotime($sDate.' +1 day'));
+            }
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
                 }
             }
         }
-        if(isset($request->duration) && !isset($request->vc) && !isset($request->type)){
-            $duration = $request->duration;
-            if($duration == 'd'){
-                foreach($data as $d){
-                    if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
-                        $d->v_type = VehicleCategory::find($d->vehicle_type);
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $result->push($d);
+        /****************************************************
+         * condition for vehicle type, duration & report category type altogether
+         */
+        if(isset($request->vc) && isset($request->type) && isset($request->duration)){
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
                     }
                 }
-                foreach($vipData as $d){
-                    if(date('Y-m-d', strtotime($d->created_at)) == date('Y-m-d')){
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $vip = VIPRequests::where('vipId', $d->vip_id)->first();
-                        $d->v_type = VehicleCategory::find($vip->vehicle_type);
-                        $d->vehicle_reg = $vip->car_reg;
-                        $result->push($d);
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
                     }
                 }
-            }
-            if($duration == 'w'){
-                foreach($data as $d){
-                    if(date('W', strtotime($d->created_at)) == date('W')){
-                        $d->v_type = VehicleCategory::find($d->vehicle_type);
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $result->push($d);
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
                     }
                 }
-                foreach($vipData as $d){
-                    if(date('W', strtotime($d->created_at)) == date('W')){
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $vip = VIPRequests::where('vipId', $d->vip_id)->first();
-                        $d->v_type = VehicleCategory::find($vip->vehicle_type);
-                        $d->vehicle_reg = $vip->car_reg;
-                        $result->push($d);
-                    }
-                }
-            }
-            if($duration == 'm'){
-                foreach($data as $d){
-                    if(date('m', strtotime($d->created_at)) == date('m')){
-                        $d->v_type = VehicleCategory::find($d->vehicle_type);
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $result->push($d);
-                    }
-                }
-                foreach($vipData as $d){
-                    if(date('m', strtotime($d->created_at)) == date('m')){
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $vip = VIPRequests::where('vipId', $d->vip_id)->first();
-                        $d->v_type = VehicleCategory::find($vip->vehicle_type);
-                        $d->vehicle_reg = $vip->car_reg;
-                        $result->push($d);
-                    }
-                }
-            }
-            if($duration == 'y'){
-                foreach($data as $d){
-                    if(date('Y', strtotime($d->created_at)) == date('Y')){
-                        $d->v_type = VehicleCategory::find($d->vehicle_type);
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $result->push($d);
-                    }
-                }
-                foreach($vipData as $d){
-                    if(date('Y', strtotime($d->created_at)) == date('Y')){
-                        $d->req_by = User::find($d->created_by);
-                        if($d->updated_by != null){
-                            $d->co_by = User::find($d->updated_by);
-                        }
-                        $vip = VIPRequests::where('vipId', $d->vip_id)->first();
-                        $d->v_type = VehicleCategory::find($vip->vehicle_type);
-                        $d->vehicle_reg = $vip->car_reg;
-                        $result->push($d);
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
                     }
                 }
             }
-        }
-        if(isset($request->eDate) && isset($request->sDate) && !isset($request->vc) && !isset($request->type)){
-            foreach($data as $d){
-                $d->v_type = VehicleCategory::find($d->vehicle_type);
-                $d->req_by = User::find($d->created_by);
-                if($d->updated_by != null){
-                    $d->co_by = User::find($d->updated_by);
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
                 }
-                if(in_array(date('Y-m-d', strtotime($d->created_at)), $dates) || in_array(date('Y-m-d', strtotime($d->updated_at)), $dates)){
-                    $result->push($d);
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
                 }
             }
-            foreach($vipData as $d){
-                $d->req_by = User::find($d->created_by);
-                if($d->updated_by != null){
-                    $d->co_by = User::find($d->updated_by);
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
                 }
-                $vip = VIPRequests::where('vipId', $d->vip_id)->first();
-                $d->v_type = VehicleCategory::find($vip->vehicle_type);
-                $d->vehicle_reg = $vip->car_reg;
-                if(in_array(date('Y-m-d', strtotime($d->created_at)), $dates) || in_array(date('Y-m-d', strtotime($d->updated_at)), $dates)){
-                    $result->push($d);
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
                 }
             }
         }
         return view('pages.client.sales-report', [
-            'result' => $result,
+            'result' => $data,
             'vc' => $vc,
             'vc_selected' => $vc_selected,
             'type' => $type,
             'duration' => $duration,
             'sDate' => $sDate,
             'eDate' => $eDate,
-            'daily' => $daily,
-            'weekly' => $weekly,
-            'monthly' => $monthly,
-            'yearly' => $yearly,
-            'last_daily' => $last_daily,
-            'last_weekly' => $last_weekly,
-            'last_monthly' => $last_monthly,
-            'last_yearly' => $last_yearly,
+            'sDateRaw' => $sDateRaw,
+            'eDateRaw' => $eDateRaw,
             'js' => 'pages.client.js.sales-report-js'
         ]);
     }
@@ -2418,4 +3025,1114 @@ class Client extends Controller
     public function receiptReport(Request $request){
         return view('pages.client.receipt-report');
     }
+    
+    public function vhReportAjaxUI(Request $request){
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $vc = VehicleCategory::where('client_id', $id)->get();
+        $vc_selected = $type = $duration = $sDate = $eDate = $sDateRaw = $eDateRaw = null;
+        if(isset($request->vc)){
+            $vc_selected = $request->vc;
+        }
+        if(isset($request->duration)){
+            $duration = $request->duration;
+        }
+        if(isset($request->type)){
+            $type = $request->type;
+        }
+        if(isset($request->sDate)){
+            $sDateRaw = $request->sDate;
+        }
+        if(isset($request->eDate)){
+            $eDateRaw = $request->eDate;
+        }
+        $data = null;
+        /**************************************************
+         * condition for only vehicle type
+         */
+        if(isset($request->vc) && !isset($request->type) && !isset($request->duration) && !isset($request->sDate) && !isset($request->eDate)){
+            if($request->vc == 'all'){
+                $data = \App\CheckInOut::where('client_id', $id)
+                    ->paginate(8);
+            }else{
+                $data = \App\CheckInOut::where('vehicle_type', $request->vc)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+        }
+        /*********************************************
+         * condition for only report category type
+         */
+        if(!isset($request->vc) && isset($request->type) && !isset($request->duration) && !isset($request->sDate) && !isset($request->eDate)){
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
+                $data = \App\CheckInOut::where('vip_id', '=', null)
+                    ->where('fair', '=', null)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                $data = \App\CheckInOut::where('vip_id', '=', null)
+                    ->where('fair', '!=', null)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                $data = \App\CheckInOut::where('vip_id', '!=', null)
+                    ->where('receipt_id', '=', null)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                $data = \App\CheckInOut::where('vip_id', '!=', null)
+                    ->where('receipt_id', '!=', null)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+        }
+        /**************************************************
+         * condition for only duration
+         */
+        if(!isset($request->vc) && !isset($request->type) && isset($request->duration)){
+            /**
+             * condition for today
+             */
+            if($request->duration == 'd'){
+                $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for current week
+             */
+            if($request->duration == 'w'){
+                \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for current month
+             */
+            if($request->duration == 'm'){
+                $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for current year
+             */
+            if($request->duration == 'y'){
+                $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+        }
+        /****************************************************
+         * condition for only sDate & eDate
+         */
+        if(!isset($request->vc) && !isset($request->type) && isset($request->sDate) && isset($request->eDate)){
+            $exS = explode('/', $request->sDate);
+            $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
+            $exE = explode('/', $request->eDate);
+            $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            $from = date('Y-m-d');
+            $to = date('Y-m-d', strtotime($from.' +1 day'));
+            if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
+                $from = date('Y-m-d', strtotime($sDate));
+                $to = date('Y-m-d', strtotime($eDate.' +1 day'));
+            }else{
+                $from = date('Y-m-d', strtotime($eDate));
+                $to = date('Y-m-d', strtotime($sDate.' +1 day'));
+            }
+            $data = \App\CheckInOut::whereBetween('created_at', [$from, $to])
+                ->where('client_id', $id)
+                ->paginate(8);
+        }
+        /**********************************************************
+         * condition for both vehicle type & report category type
+         */
+        if(isset($request->vc) && isset($request->type) && !isset($request->duration) && !isset($request->sDate) && !isset($request->eDate)){
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vehicle_type', $request->vc)
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vehicle_type', $request->vc)
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vehicle_type', $request->vc)
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vehicle_type', $request->vc)
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+        }
+        /*************************************************
+         * condition for both vehicle type and duration
+         */
+        if(isset($request->vc) && !isset($request->type) && isset($request->duration)){
+            /**
+             * condition for today
+             */
+            if($request->duration == 'd'){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for current week
+             */
+            if($request->duration == 'w'){
+                \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for current month
+             */
+            if($request->duration == 'm'){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for current year
+             */
+            if($request->duration == 'y'){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+        }
+        /****************************************************
+         * condition for both duration & report category type
+         */
+        if(!isset($request->vc) && isset($request->type) && isset($request->duration)){
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                        ->where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+        }
+        /******************************************************
+         * condition for both report category type & sDate & eDate
+         */
+        if(!isset($request->vc) && isset($request->type) && isset($request->sDate) && isset($request->eDate)){
+            $exS = explode('/', $request->sDate);
+            $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
+            $exE = explode('/', $request->eDate);
+            $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            $from = date('Y-m-d');
+            $to = date('Y-m-d', strtotime($from.' +1 day'));
+            if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
+                $from = date('Y-m-d', strtotime($sDate));
+                $to = date('Y-m-d', strtotime($eDate.' +1 day'));
+            }else{
+                $from = date('Y-m-d', strtotime($eDate));
+                $to = date('Y-m-d', strtotime($sDate.' +1 day'));
+            }
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
+                $data = \App\CheckInOut::where('vip_id', '=', null)
+                    ->where('fair', '=', null)
+                    ->whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                $data = \App\CheckInOut::where('vip_id', '=', null)
+                    ->where('fair', '!=', null)
+                    ->whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                $data = \App\CheckInOut::where('vip_id', '!=', null)
+                    ->where('receipt_id', '=', null)
+                    ->whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                $data = \App\CheckInOut::where('vip_id', '!=', null)
+                    ->where('receipt_id', '!=', null)
+                    ->whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+        }
+        /****************************************************
+         * condition for both vehicle category & sDate & eDate
+         */
+        if(isset($request->vc) && !isset($request->type) && isset($request->sDate) && isset($request->eDate)){
+            $exS = explode('/', $request->sDate);
+            $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
+            $exE = explode('/', $request->eDate);
+            $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            $from = date('Y-m-d');
+            $to = date('Y-m-d', strtotime($from.' +1 day'));
+            if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
+                $from = date('Y-m-d', strtotime($sDate));
+                $to = date('Y-m-d', strtotime($eDate.' +1 day'));
+            }else{
+                $from = date('Y-m-d', strtotime($eDate));
+                $to = date('Y-m-d', strtotime($sDate.' +1 day'));
+            }
+            if($request->vc == 'all'){
+                $data = \App\CheckInOut::whereBetween('created_at', [$from, $to])
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }else{
+                $data = \App\CheckInOut::whereBetween('created_at', [$from, $to])
+                    ->where('vehicle_type', $request->vc)
+                    ->where('client_id', $id)
+                    ->paginate(8);
+            }
+        }
+        /*****************************************************************
+         * condition for vehicle type, report category type & sDate & eDate altogether
+         */
+        if(isset($request->vc) && isset($request->type) && isset($request->sDate) && isset($request->eDate)){
+            $exS = explode('/', $request->sDate);
+            $sDate = $exS[2].'-'.$exS[1].'-'.$exS[0];
+            $exE = explode('/', $request->eDate);
+            $eDate = $exE[2].'-'.$exE[1].'-'.$exE[0];
+            $from = date('Y-m-d');
+            $to = date('Y-m-d', strtotime($from.' +1 day'));
+            if(date('Y-m-d', strtotime($eDate)) > date('Y-m-d', strtotime($sDate))){
+                $from = date('Y-m-d', strtotime($sDate));
+                $to = date('Y-m-d', strtotime($eDate.' +1 day'));
+            }else{
+                $from = date('Y-m-d', strtotime($eDate));
+                $to = date('Y-m-d', strtotime($sDate.' +1 day'));
+            }
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
+                        ->where('fair', '=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vip_id', '=', null)
+                        ->where('fair', '!=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                if($request->vc == 'all'){
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }else{
+                    $data = \App\CheckInOut::where('vip_id', '!=', null)
+                        ->where('receipt_id', '!=', null)
+                        ->whereBetween('created_at', [$from, $to])
+                        ->where('vehicle_type', $request->vc)
+                        ->where('client_id', $id)
+                        ->paginate(8);
+                }
+            }
+        }
+        /****************************************************
+         * condition for vehicle type, duration & report category type altogether
+         */
+        if(isset($request->vc) && isset($request->type) && isset($request->duration)){
+            /**
+             * condition for only check-in's
+             */
+            if($request->type == 1){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+            }
+            /**
+             * condition for only check-out's
+             */
+            if($request->type == 2){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '=', null)
+                            ->where('fair', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+            }
+            /**
+             * condition for only vip check-in's
+             */
+            if($request->type == 3){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+            }
+            /**
+             * condition for only vip check-out's
+             */
+            if($request->type == 4){
+                /**
+                 * condition for today
+                 */
+                if($request->duration == 'd'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current week
+                 */
+                if($request->duration == 'w'){
+                    \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+                    \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current month
+                 */
+                if($request->duration == 'm'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+                /**
+                 * condition for current year
+                 */
+                if($request->duration == 'y'){
+                    if($request->vc == 'all'){
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }else{
+                        $data = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+                            ->where('vip_id', '!=', null)
+                            ->where('receipt_id', '!=', null)
+                            ->where('vehicle_type', $request->vc)
+                            ->where('client_id', $id)
+                            ->paginate(8);
+                    }
+                }
+            }
+        }
+        return view('pages.client.vh-report-ajax', [
+            'result' => $data,
+            'vc' => $vc,
+            'vc_selected' => $vc_selected,
+            'type' => $type,
+            'duration' => $duration,
+            'sDate' => $sDate,
+            'eDate' => $eDate,
+            'sDateRaw' => $sDateRaw,
+            'eDateRaw' => $eDateRaw,
+            'js' => 'pages.client.js.vh-report-ajax-js'
+        ]);
+    }
+
+    public function vhReportCounts(Request $request){
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = \App\Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $daily = $weekly = $monthly = $yearly = 0;
+        $last_daily = $last_weekly = $last_monthly = $last_yearly = 0;
+        $daily = \App\CheckInOut::where('client_id', $id)
+            ->whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+            ->count();
+        $last_daily = \App\CheckInOut::where('client_id', $id)
+            ->whereRaw('date(`created_at`) = ?', array(date('Y-m-d', strtotime("-1 days"))))
+            ->count();
+        \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+        \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+        $weekly = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+            ->where('client_id', $id)
+            ->count();
+        $last_weekly = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->addWeeks(-1)->startOfWeek(), \Illuminate\Support\Carbon::now()->addWeeks(-1)->endOfWeek()])
+            ->where('client_id', $id)
+            ->count();
+        $monthly = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+            ->where('client_id', $id)
+            ->count();
+        $last_monthly = \App\CheckInOut::whereMonth(
+            'created_at', '=', \Illuminate\Support\Carbon::now()->subMonth()->month
+        )
+            ->where('client_id', $id)
+            ->count();
+        $yearly = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+            ->where('client_id', $id)
+            ->count();
+        $last_yearly = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y', strtotime("-1 year"))))
+            ->where('client_id', $id)
+            ->count();
+        $result = new \Illuminate\Database\Eloquent\Collection();
+        $result->put('daily', $daily);
+        $result->put('weekly', $weekly);
+        $result->put('monthly', $monthly);
+        $result->put('yearly', $yearly);
+        $result->put('last_daily', $last_daily);
+        $result->put('last_weekly', $last_weekly);
+        $result->put('last_monthly', $last_monthly);
+        $result->put('last_yearly', $last_yearly);
+        return response()->json($result, 200);
+    }
+    
+    /**
+     * salesReportStats - returns the sales report stats
+    */
+    public function salesReportStats(Request $request){
+        $id = Auth::id();
+        if(Auth::user()->role == 'manager'){
+            $mngr = \App\Managers::where('user_id', Auth::id())->first();
+            $id = $mngr->client_id;
+        }
+        $daily = $weekly = $monthly = $yearly = 0;
+        $last_daily = $last_weekly = $last_monthly = $last_yearly = 0;
+        $daily = \App\CheckInOut::where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->whereRaw('date(`created_at`) = ?', array(date('Y-m-d')))
+            ->sum('fair');
+        $last_daily = \App\CheckInOut::where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->whereRaw('date(`created_at`) = ?', array(date('Y-m-d', strtotime("-1 days"))))
+            ->sum('fair');
+        \Illuminate\Support\Carbon::setWeekStartsAt(\Illuminate\Support\Carbon::SATURDAY);
+        \Illuminate\Support\Carbon::setWeekEndsAt(\Illuminate\Support\Carbon::FRIDAY);
+        $weekly = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->startOfWeek(), \Illuminate\Support\Carbon::now()->endOfWeek()])
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $last_weekly = \App\CheckInOut::whereBetween('created_at', [\Illuminate\Support\Carbon::now()->addWeeks(-1)->startOfWeek(), \Illuminate\Support\Carbon::now()->addWeeks(-1)->endOfWeek()])
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $monthly = \App\CheckInOut::whereRaw('month(`created_at`) = ?', array(date('m')))
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $last_monthly = \App\CheckInOut::whereMonth(
+            'created_at', '=', \Illuminate\Support\Carbon::now()->subMonth()->month
+        )
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $yearly = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y')))
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $last_yearly = \App\CheckInOut::whereRaw('year(`created_at`) = ?', array(date('Y', strtotime("-1 year"))))
+            ->where('client_id', $id)
+            ->where('receipt_id', '!=', null)
+            ->sum('fair');
+        $result = new \Illuminate\Database\Eloquent\Collection();
+        $result->put('daily', $daily);
+        $result->put('weekly', $weekly);
+        $result->put('monthly', $monthly);
+        $result->put('yearly', $yearly);
+        $result->put('last_daily', $last_daily);
+        $result->put('last_weekly', $last_weekly);
+        $result->put('last_monthly', $last_monthly);
+        $result->put('last_yearly', $last_yearly);
+        return response()->json($result, 200);
+    }
+    
 }

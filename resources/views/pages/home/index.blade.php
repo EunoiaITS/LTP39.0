@@ -104,7 +104,6 @@
 						
 						<div class="sl-slide bg-3" data-orientation="horizontal" data-slice1-rotation="3" data-slice2-rotation="3" data-slice1-scale="2" data-slice2-scale="1">
 							<div class="sl-slide-inner">
-								<p>Experience the parking solutions catered perfectly for the digital age only with <b>ParkingKori</b></p>
 							</div>
 						</div>
 
@@ -289,8 +288,8 @@
 						$nav = $( '#nav-dots > span' ),
 						slitslider = $( '#slider' ).slitslider( {
 							autoplay: true, 
-    						interval: 4000,
-    						speed : 2500,
+    						interval:5000,
+    						speed : 4500,
     						translateFactor : 230,
 							onBeforeChange : function( slide, pos ) {
 
@@ -352,7 +351,7 @@
 
 				$.Slitslider.defaults = {
 				    // transitions speed
-				    speed : 800,
+				    speed : 3000,
 				    // if true the item's slices will also animate the opacity value
 				    optOpacity : false,
 				    // amount (%) to translate both slices - adjust as necessary

@@ -105,7 +105,7 @@ Route::group(['middleware' => ['auth', 'client']], function(){
     /**
      * Report pages
     */
-    Route::get('/report/vehicle-category', 'Client@vhReport');
+    Route::get('/report/vehicle-category', 'Client@vhReportAjaxUI');
     Route::post('/report/vehicle-category', 'Client@vhReport');
     Route::get('/report/user-incomes', 'Client@uiReport');
     Route::post('/report/user-incomes', 'Client@uiReport');
@@ -115,6 +115,14 @@ Route::group(['middleware' => ['auth', 'client']], function(){
     Route::post('/report/tickets', 'Client@ticketReport');
     Route::get('/report/receipts', 'Client@receiptReport');
     Route::post('/report/receipts', 'Client@receiptReport');
+    
+    /**
+     * Routes for modified search
+    */
+    Route::get('/report/vh-ajax-ui', 'Client@vhReportAjaxUI');
+    Route::get('/report/vh-ajax-counts', 'Client@vhReportCounts');
+    Route::get('/report/ui-report-ajax', 'Client@uiReportAjax');
+    Route::get('/report/sales-report-stats', 'Client@salesReportStats');
 
 });
 

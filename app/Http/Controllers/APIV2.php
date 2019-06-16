@@ -180,7 +180,7 @@ class APIV2 extends Controller
                         ->orderBy('id', 'DESC')
                         ->first();
                 }
-                if(empty($checkOut)){
+                if(empty($checkOut) || $employee->client_id != $checkOut->client_id){
                     return response()->json([
                         'status' => 'false',
                         'message' => 'Please Provide enough information!'
@@ -641,6 +641,144 @@ class APIV2 extends Controller
         }
     }
 
+    // /**
+    //  * vipCheckIn - function for VIP check in entry
+    //  */
+    // public function vipCheckIn(Request $request){
+    //     if($request->isMethod('post')){
+    //         $token = $request->_token;
+    //         $user = User::where('api_token', $token)->first();
+    //         if($user) {
+    //             $employee = Employee::where('email', $user->email)->first();
+    //             $vip = VIPRequests::where('vipId', $request->vip_id)->first();
+    //             if(empty($vip) || strtotime($vip->time_duration) < strtotime('today midnight') || $vip->status != 'accepted'){
+    //                 return response()->json([
+    //                     'status' => 'false',
+    //                     'message' => 'Please Provide enough information!'
+    //                 ], 422);
+    //             }
+    //             $checkIn = new VIPCheckInOut();
+    //             $errors = array();
+    //             if(!$checkIn->validate($request->all())){
+    //                 $checkIn_e = $checkIn->errors();
+    //                 foreach ($checkIn_e->messages() as $k => $v){
+    //                     foreach ($v as $e){
+    //                         $errors[] = $e;
+    //                     }
+    //                 }
+    //             }
+    //             if($employee->client_id != $request->client_id){
+    //                 $errors[] = 'Client submitted was mismatched!';
+    //             }
+    //             $prev = VIPCheckInOut::where('client_id', $request->client_id)
+    //                 ->where('vip_id', $request->vip_id)
+    //                 ->where('updated_by', '=', null)
+    //                 ->orderBy('id', 'DESC')
+    //                 ->first();
+    //             if(!empty($prev)){
+    //                 $errors[] = 'User already checked in!';
+    //             }
+    //             if($vip->client_id != $request->client_id || $vip->client_id != $employee->client_id){
+    //                 $errors[] = 'Invalid VIP user for the client supplied!';
+    //             }
+    //             if(empty($errors)){
+    //                 $lastTicketId = sprintf('%08d', 1);
+    //                 $lastTicket = VIPCheckInOut::where('client_id', $request->client_id)
+    //                     ->orderBy('id', 'DESC')
+    //                     ->first();
+    //                 if(!empty($lastTicket) && (int)(substr($lastTicket->ticket_id, -8)) >= 1){
+    //                     $lastTicketId = sprintf('%08d', (int)(substr($lastTicket->ticket_id, -8)) + 1);
+    //                 }
+    //                 $client = Clients::where('user_id', $request->client_id)->first();
+    //                 $checkIn->ticket_id = $client->client_id.$lastTicketId;
+    //                 $checkIn->client_id = $request->client_id;
+    //                 $checkIn->vip_id = $request->vip_id;
+    //                 $checkIn->created_by = $request->created_by;
+    //                 if($checkIn->save()){
+    //                     return response()->json([
+    //                         'status' => 'true',
+    //                         'message' => 'Check In successfully added!',
+    //                         'data' => $checkIn
+    //                     ], 200);
+    //                 }else{
+    //                     return response()->json([
+    //                         'status' => 'false',
+    //                         'message' => 'Please Provide enough information!'
+    //                     ], 422);
+    //                 }
+    //             }else{
+    //                 return response()->json([
+    //                     'status' => 'false',
+    //                     'message' => 'Please Provide enough information!',
+    //                     'errors' => $errors
+    //                 ], 422);
+    //             }
+    //         } else {
+    //             return response()->json([
+    //                 'status' => 'false',
+    //                 'message' => 'User not found!',
+    //             ]);
+    //         }
+    //     }
+    // }
+
+    // /**
+    //  * vipCheckOut - function for VIP check out entry
+    //  */
+    // public function vipCheckOut(Request $request){
+    //     if($request->isMethod('post')){
+    //         $token = $request->_token;
+    //         $user = User::where('api_token', $token)->first();
+    //         if($user) {
+    //             $employee = Employee::where('email', $user->email)->first();
+    //             $checkOut = VIPCheckInOut::where('vip_id', $request->vip_id)
+    //                 ->orderBy('id', 'desc')
+    //                 ->first();
+    //             if($employee->client_id != $checkOut->client_id){
+    //                 return response()->json([
+    //                     'status' => 'false',
+    //                     'message' => 'Please Provide enough information!'
+    //                 ], 422);
+    //             }
+    //             if(!empty($checkOut) && $checkOut->receipt_id == NULL){
+    //                 $lastReceiptId = sprintf('%08d', 1);
+    //                 $lastReceipt = VIPCheckInOut::where('client_id', $checkOut->client_id)
+    //                     ->where('receipt_id','!=',null)
+    //                     ->orderBy('id', 'DESC')
+    //                     ->first();
+    //                 if(!empty($lastReceipt) && (int)(substr($lastReceipt->receipt_id, -8)) >= 1){
+    //                     $lastReceiptId = sprintf('%08d', (int)(substr($lastReceipt->receipt_id, -8)) + 1);
+    //                 }
+    //                 $checkOut->updated_at = $request->check_out_time;
+    //                 $checkOut->updated_by = $user->id;
+    //                 $checkOut->receipt_id = 'VIP'.$checkOut->client_id.$lastReceiptId;
+    //                 if($checkOut->save()){
+    //                     return response()->json([
+    //                         'status' => 'true',
+    //                         'message' => 'Checked out successfully!',
+    //                         'data' => $checkOut
+    //                     ], 200);
+    //                 }else{
+    //                     return response()->json([
+    //                         'status' => 'false',
+    //                         'message' => 'Please Provide enough information!'
+    //                     ], 422);
+    //                 }
+    //             }else{
+    //                 return response()->json([
+    //                     'status' => 'false',
+    //                     'message' => 'Please Provide enough information!'
+    //                 ], 422);
+    //             }
+    //         } else {
+    //             return response()->json([
+    //                 'status' => 'false',
+    //                 'message' => 'User not found!',
+    //             ]);
+    //         }
+    //     }
+    // }
+    
     /**
      * vipCheckIn - function for VIP check in entry
      */
@@ -657,9 +795,13 @@ class APIV2 extends Controller
                         'message' => 'Please Provide enough information!'
                     ], 422);
                 }
-                $checkIn = new VIPCheckInOut();
+                $checkIn = new CheckInOut();
+                $nReq = new Request();
+                $nReq->setMethod('post');
+                $nReq->request->add(['client_id' => $request->client_id]);
+                $nReq->request->add(['vehicle_reg' => $vip->car_reg]);
                 $errors = array();
-                if(!$checkIn->validate($request->all())){
+                if(!$checkIn->validate($nReq->all())){
                     $checkIn_e = $checkIn->errors();
                     foreach ($checkIn_e->messages() as $k => $v){
                         foreach ($v as $e){
@@ -670,7 +812,7 @@ class APIV2 extends Controller
                 if($employee->client_id != $request->client_id){
                     $errors[] = 'Client submitted was mismatched!';
                 }
-                $prev = VIPCheckInOut::where('client_id', $request->client_id)
+                $prev = CheckInOut::where('client_id', $request->client_id)
                     ->where('vip_id', $request->vip_id)
                     ->where('updated_by', '=', null)
                     ->orderBy('id', 'DESC')
@@ -683,7 +825,8 @@ class APIV2 extends Controller
                 }
                 if(empty($errors)){
                     $lastTicketId = sprintf('%08d', 1);
-                    $lastTicket = VIPCheckInOut::where('client_id', $request->client_id)
+                    $lastTicket = CheckInOut::where('client_id', $request->client_id)
+                        ->where('vip_id', '!=', 'null')
                         ->orderBy('id', 'DESC')
                         ->first();
                     if(!empty($lastTicket) && (int)(substr($lastTicket->ticket_id, -8)) >= 1){
@@ -692,6 +835,8 @@ class APIV2 extends Controller
                     $client = Clients::where('user_id', $request->client_id)->first();
                     $checkIn->ticket_id = $client->client_id.$lastTicketId;
                     $checkIn->client_id = $request->client_id;
+                    $checkIn->vehicle_reg = $vip->car_reg;
+                    $checkIn->vehicle_type = $vip->vehicle_type;
                     $checkIn->vip_id = $request->vip_id;
                     $checkIn->created_by = $request->created_by;
                     if($checkIn->save()){
@@ -731,7 +876,7 @@ class APIV2 extends Controller
             $user = User::where('api_token', $token)->first();
             if($user) {
                 $employee = Employee::where('email', $user->email)->first();
-                $checkOut = VIPCheckInOut::where('vip_id', $request->vip_id)
+                $checkOut = CheckInOut::where('vip_id', $request->vip_id)
                     ->orderBy('id', 'desc')
                     ->first();
                 if($employee->client_id != $checkOut->client_id){
@@ -742,7 +887,8 @@ class APIV2 extends Controller
                 }
                 if(!empty($checkOut) && $checkOut->receipt_id == NULL){
                     $lastReceiptId = sprintf('%08d', 1);
-                    $lastReceipt = VIPCheckInOut::where('client_id', $checkOut->client_id)
+                    $lastReceipt = CheckInOut::where('client_id', $checkOut->client_id)
+                        ->where('vip_id', '!=', null)
                         ->where('receipt_id','!=',null)
                         ->orderBy('id', 'DESC')
                         ->first();
