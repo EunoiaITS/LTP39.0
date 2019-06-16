@@ -187,5 +187,5 @@ class HomeController extends Controller
                 ->to('/?con='.$text);
         }
     }
-    
+
 }
